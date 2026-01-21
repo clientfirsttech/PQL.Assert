@@ -4,7 +4,8 @@
     "Initial Tests",
     "Example.Tests",
     "Table.Test",
-    "Retrieve Tests"
+    "Retrieve Tests",
+    "Query 1"
   ],
-  "defaultTab": "Example.Tests"
+  "defaultTab": "Query 1"
 }

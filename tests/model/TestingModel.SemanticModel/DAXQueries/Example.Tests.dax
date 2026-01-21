@@ -3,7 +3,8 @@ DEFINE
 	UNION (
 		PQL.Assert.ShouldNotBeNull("ShouldNotBeNull: DISTINCTCOUNTNOBLANK expression should pass", DISTINCTCOUNTNOBLANK('TestData'[ID])),
 		PQL.Assert.Col.ShouldNotBeNull("Col.ShouldNotBeNull: ID has values", 'TestData'[ID]),
-		PQL.Assert.Col.ShouldNotBeNull("Col.ShouldNotBeNull: Nullable should have values", 'TestData'[NullableField])
+		PQL.Assert.Col.ShouldNotBeNull("Col.ShouldNotBeNull: NullableField should have values", 'TestData'[NullableField]),
+		PQL.Assert.Col.ShouldNotBeBlankOrEmpty("Col.ShouldNotBeNull: Nullable should have values", 'TestData'[NullableField])
 	)
 
 EVALUATE Example.Tests()

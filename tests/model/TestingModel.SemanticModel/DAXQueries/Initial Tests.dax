@@ -26,28 +26,41 @@ VAR _AssertFalse_Expression = PQL.Assert.ShouldBeFalse("ShouldBeFalse: Expressio
 VAR _AssertFalse_ComplexExpr = PQL.Assert.ShouldBeFalse("ShouldBeFalse: Complex expression should pass", 5 < 3 || 10 > 20)
 
 // ============================================
-// PQL.Assert.ShouldNotBeNull Tests
+// PQL.Assert.ShouldBeBlank Tests
 // ============================================
-VAR _AssertNotNull_Pass_Int = PQL.Assert.ShouldNotBeNull("ShouldNotBeNull: Integer value should pass", 42)
-VAR _AssertNotNull_Pass_Str = PQL.Assert.ShouldNotBeNull("ShouldNotBeNull: String value should pass", "Hello")
-VAR _AssertNotNull_Pass_Zero = PQL.Assert.ShouldNotBeNull("ShouldNotBeNull: Zero should pass", 0)
-VAR _AssertNotNull_Pass_EmptyStr = PQL.Assert.ShouldNotBeNull("ShouldNotBeNull: Empty string should pass", "")
-VAR _AssertNotNull_Fail = PQL.Assert.ShouldNotBeNull("ShouldNotBeNull: BLANK should fail", BLANK())
-VAR _AssertNotNull_Pass_Expr = PQL.Assert.ShouldNotBeNull("ShouldNotBeNull: DISTINCTCOUNTNOBLANK expression should pass", DISTINCTCOUNTNOBLANK('TestData'[ID]))
+VAR _AssertBlank_Pass = PQL.Assert.ShouldBeBlank("ShouldBeBlank: BLANK should pass", BLANK())
+VAR _AssertBlank_Fail_Int = PQL.Assert.ShouldBeBlank("ShouldBeBlank: Integer should fail", 42)
+VAR _AssertBlank_Fail_Empty = PQL.Assert.ShouldBeBlank("ShouldBeBlank: Empty string should fail", "")
 
 // ============================================
-// PQL.Assert.Col.ShouldNotBeNull Tests
+// PQL.Assert.ShouldNotBeBlank Tests
 // ============================================
-VAR _AssertColumnNotNull_Pass = PQL.Assert.Col.ShouldNotBeNull("Col.ShouldNotBeNull: ID has values", 'TestData'[ID])
-VAR _AssertColumnNotNull_Pass_DateDim = PQL.Assert.Col.ShouldNotBeNull("Col.ShouldNotBeNull: ID has values", 'TestData'[ID])
+VAR _AssertNotBlank_Pass_Int = PQL.Assert.ShouldNotBeBlank("ShouldNotBeBlank: Integer value should pass", 42)
+VAR _AssertNotBlank_Pass_Str = PQL.Assert.ShouldNotBeBlank("ShouldNotBeBlank: String value should pass", "Hello")
+VAR _AssertNotBlank_Pass_Zero = PQL.Assert.ShouldNotBeBlank("ShouldNotBeBlank: Zero should pass", 0)
+VAR _AssertNotBlank_Pass_Empty = PQL.Assert.ShouldNotBeBlank("ShouldNotBeBlank: Empty string should pass", "")
+VAR _AssertNotBlank_Fail = PQL.Assert.ShouldNotBeBlank("ShouldNotBeBlank: BLANK should fail", BLANK())
+VAR _AssertNotBlank_Pass_Expr = PQL.Assert.ShouldNotBeBlank("ShouldNotBeBlank: DISTINCTCOUNTNOBLANK expression should pass", DISTINCTCOUNTNOBLANK('TestData'[ID]))
 
 // ============================================
-// PQL.Assert.ShouldBeNull Tests
+// PQL.Assert.ShouldBeBlankOrEmpty Tests
 // ============================================
-VAR _AssertNull_Pass = PQL.Assert.ShouldBeNull("ShouldBeNull: BLANK should pass", BLANK())
-VAR _AssertNull_Fail_Int = PQL.Assert.ShouldBeNull("ShouldBeNull: Integer value should fail", 42)
-VAR _AssertNull_Fail_Str = PQL.Assert.ShouldBeNull("ShouldBeNull: String value should fail", "Hello")
-VAR _AssertNull_Fail_Zero = PQL.Assert.ShouldBeNull("ShouldBeNull: Zero should fail", 0)
+VAR _AssertBlankOrEmpty_Pass_Blank = PQL.Assert.ShouldBeBlankOrEmpty("ShouldBeBlankOrEmpty: BLANK should pass", BLANK())
+VAR _AssertBlankOrEmpty_Pass_Empty = PQL.Assert.ShouldBeBlankOrEmpty("ShouldBeBlankOrEmpty: Empty string should pass", "")
+VAR _AssertBlankOrEmpty_Fail = PQL.Assert.ShouldBeBlankOrEmpty("ShouldBeBlankOrEmpty: String should fail", "Hello")
+
+// ============================================
+// PQL.Assert.ShouldNotBeBlankOrEmpty Tests
+// ============================================
+VAR _AssertNotBlankOrEmpty_Pass = PQL.Assert.ShouldNotBeBlankOrEmpty("ShouldNotBeBlankOrEmpty: String should pass", "Hello")
+VAR _AssertNotBlankOrEmpty_Fail_Blank = PQL.Assert.ShouldNotBeBlankOrEmpty("ShouldNotBeBlankOrEmpty: BLANK should fail", BLANK())
+VAR _AssertNotBlankOrEmpty_Fail_Empty = PQL.Assert.ShouldNotBeBlankOrEmpty("ShouldNotBeBlankOrEmpty: Empty string should fail", "")
+
+// ============================================
+// PQL.Assert.Col.ShouldNotBeBlank Tests
+// ============================================
+VAR _AssertColumnNotBlank_Pass = PQL.Assert.Col.ShouldNotBeBlank("Col.ShouldNotBeBlank: ID has values", 'TestData'[ID])
+VAR _AssertColumnNotBlank_Pass_DateDim = PQL.Assert.Col.ShouldNotBeBlank("Col.ShouldNotBeBlank: DateDim ID has values", 'TestData'[ID])
 
 // ============================================
 // PQL.Assert.ShouldEqual Tests
@@ -68,6 +81,12 @@ VAR _AssertNotEquals_Fail = PQL.Assert.ShouldNotEqual("ShouldNotEqual: 10<>10 sh
 VAR _AssertNotEquals_Fail_Str = PQL.Assert.ShouldNotEqual("ShouldNotEqual: Same strings should fail", "Hello", "Hello")
 
 // ============================================
+// PQL.Assert.ShouldEqualExactly Tests
+// ============================================
+VAR _AssertExact_Pass = PQL.Assert.ShouldEqualExactly("ShouldEqualExactly: Same case should pass", "Hello", "Hello")
+VAR _AssertExact_Fail = PQL.Assert.ShouldEqualExactly("ShouldEqualExactly: Different case should fail", "Hello", "HELLO")
+
+// ============================================
 // PQL.Assert.ShouldBeGreaterThan Tests
 // ============================================
 VAR _AssertGreaterThan_Pass = PQL.Assert.ShouldBeGreaterThan("ShouldBeGreaterThan: 15>10 should pass", 10, 15)
@@ -86,6 +105,20 @@ VAR _AssertLessThan_Pass_Neg = PQL.Assert.ShouldBeLessThan("ShouldBeLessThan: -1
 VAR _AssertLessThan_Pass_Decimal = PQL.Assert.ShouldBeLessThan("ShouldBeLessThan: 3.13<3.14 should pass", 3.14, 3.13)
 
 // ============================================
+// PQL.Assert.ShouldBeGreaterOrEqual Tests
+// ============================================
+VAR _AssertGTE_Pass_Greater = PQL.Assert.ShouldBeGreaterOrEqual("ShouldBeGreaterOrEqual: 15>=10 should pass", 10, 15)
+VAR _AssertGTE_Pass_Equal = PQL.Assert.ShouldBeGreaterOrEqual("ShouldBeGreaterOrEqual: 10>=10 should pass", 10, 10)
+VAR _AssertGTE_Fail = PQL.Assert.ShouldBeGreaterOrEqual("ShouldBeGreaterOrEqual: 5>=10 should fail", 10, 5)
+
+// ============================================
+// PQL.Assert.ShouldBeLessOrEqual Tests
+// ============================================
+VAR _AssertLTE_Pass_Less = PQL.Assert.ShouldBeLessOrEqual("ShouldBeLessOrEqual: 5<=10 should pass", 10, 5)
+VAR _AssertLTE_Pass_Equal = PQL.Assert.ShouldBeLessOrEqual("ShouldBeLessOrEqual: 10<=10 should pass", 10, 10)
+VAR _AssertLTE_Fail = PQL.Assert.ShouldBeLessOrEqual("ShouldBeLessOrEqual: 15<=10 should fail", 10, 15)
+
+// ============================================
 // PQL.Assert.ShouldBeBetween Tests
 // ============================================
 VAR _AssertBetween_Pass_Middle = PQL.Assert.ShouldBeBetween("ShouldBeBetween: 15 in [10,20] should pass", 10, 20, 15)
@@ -96,19 +129,46 @@ VAR _AssertBetween_Fail_Above = PQL.Assert.ShouldBeBetween("ShouldBeBetween: 25 
 VAR _AssertBetween_Pass_Neg = PQL.Assert.ShouldBeBetween("ShouldBeBetween: -5 in [-10,0] should pass", -10, 0, -5)
 
 // ============================================
+// PQL.Assert.ShouldStartWith Tests
+// ============================================
+VAR _AssertStartsWith_Pass = PQL.Assert.ShouldStartWith("ShouldStartWith: 'Hello World' starts with 'Hello'", "Hello", "Hello World")
+VAR _AssertStartsWith_Pass_Case = PQL.Assert.ShouldStartWith("ShouldStartWith: Case-insensitive should pass", "HELLO", "hello world")
+VAR _AssertStartsWith_Fail = PQL.Assert.ShouldStartWith("ShouldStartWith: 'Hello World' starts with 'World' should fail", "World", "Hello World")
+
+// ============================================
+// PQL.Assert.ShouldEndWith Tests
+// ============================================
+VAR _AssertEndsWith_Pass = PQL.Assert.ShouldEndWith("ShouldEndWith: 'Hello World' ends with 'World'", "World", "Hello World")
+VAR _AssertEndsWith_Pass_Case = PQL.Assert.ShouldEndWith("ShouldEndWith: Case-insensitive should pass", "WORLD", "hello world")
+VAR _AssertEndsWith_Fail = PQL.Assert.ShouldEndWith("ShouldEndWith: 'Hello World' ends with 'Hello' should fail", "Hello", "Hello World")
+
+// ============================================
+// PQL.Assert.ShouldContainString Tests
+// ============================================
+VAR _AssertContains_Pass = PQL.Assert.ShouldContainString("ShouldContainString: 'Hello World' contains 'lo Wo'", "lo Wo", "Hello World")
+VAR _AssertContains_Pass_Case = PQL.Assert.ShouldContainString("ShouldContainString: Case-insensitive should pass", "LO WO", "hello world")
+VAR _AssertContains_Fail = PQL.Assert.ShouldContainString("ShouldContainString: 'Hello World' contains 'xyz' should fail", "xyz", "Hello World")
+
+// ============================================
+// PQL.Assert.ShouldMatch Tests
+// ============================================
+VAR _AssertMatch_Pass = PQL.Assert.ShouldMatch("ShouldMatch: 'Hello World' matches 'World'", "World", "Hello World")
+VAR _AssertMatch_Fail = PQL.Assert.ShouldMatch("ShouldMatch: 'Hello World' matches 'xyz' should fail", "xyz", "Hello World")
+
+// ============================================
 // PQL.Assert.Tbl.ShouldHaveMoreRowsThan Tests
 // ============================================
-VAR _AssertRowCount_Pass = PQL.Assert.Tbl.ShouldHaveMoreRowsThan("Table.ShouldHaveMoreRowsThan: Table with 3 rows > 0 should pass", 0, _TestTableWithRows)
-VAR _AssertRowCount_Pass_Exact = PQL.Assert.Tbl.ShouldHaveMoreRowsThan("Table.ShouldHaveMoreRowsThan: Table with 3 rows > 2 should pass", 2, _TestTableWithRows)
-VAR _AssertRowCount_Fail_Equal = PQL.Assert.Tbl.ShouldHaveMoreRowsThan("Table.ShouldHaveMoreRowsThan: Table with 3 rows > 3 should fail", 3, _TestTableWithRows)
-VAR _AssertRowCount_Fail_Empty = PQL.Assert.Tbl.ShouldHaveMoreRowsThan("Table.ShouldHaveMoreRowsThan: Empty table > 0 should fail", 0, _EmptyTable)
+VAR _AssertRowCount_Pass = PQL.Assert.Tbl.ShouldHaveMoreRowsThan("Tbl.ShouldHaveMoreRowsThan: Table with 3 rows > 0 should pass", 0, _TestTableWithRows)
+VAR _AssertRowCount_Pass_Exact = PQL.Assert.Tbl.ShouldHaveMoreRowsThan("Tbl.ShouldHaveMoreRowsThan: Table with 3 rows > 2 should pass", 2, _TestTableWithRows)
+VAR _AssertRowCount_Fail_Equal = PQL.Assert.Tbl.ShouldHaveMoreRowsThan("Tbl.ShouldHaveMoreRowsThan: Table with 3 rows > 3 should fail", 3, _TestTableWithRows)
+VAR _AssertRowCount_Fail_Empty = PQL.Assert.Tbl.ShouldHaveMoreRowsThan("Tbl.ShouldHaveMoreRowsThan: Empty table > 0 should fail", 0, _EmptyTable)
 
 // ============================================
 // PQL.Assert.Tbl.ShouldExist Tests
 // ============================================
-VAR _AssertTableExists_Pass = PQL.Assert.Tbl.ShouldExist("Table.ShouldExist: DataTypes table should exist", "DataTypes")
-VAR _AssertTableExists_Pass_DateDim = PQL.Assert.Tbl.ShouldExist("Table.ShouldExist: DateDim table should exist", "DateDim")
-VAR _AssertTableExists_Fail = PQL.Assert.Tbl.ShouldExist("Table.ShouldExist: NonExistentTable should fail", "NonExistentTable")
+VAR _AssertTableExists_Pass = PQL.Assert.Tbl.ShouldExist("Tbl.ShouldExist: DataTypes table should exist", "DataTypes")
+VAR _AssertTableExists_Pass_DateDim = PQL.Assert.Tbl.ShouldExist("Tbl.ShouldExist: DateDim table should exist", "DateDim")
+VAR _AssertTableExists_Fail = PQL.Assert.Tbl.ShouldExist("Tbl.ShouldExist: NonExistentTable should fail", "NonExistentTable")
 
 // ============================================
 // PQL.Assert.Col.ShouldExist Tests
@@ -141,23 +201,32 @@ VAR _AllTests = UNION(
     _AssertFalse_Expression,
     _AssertFalse_ComplexExpr,
     
-    // PQL.Assert.ShouldNotBeNull
-    _AssertNotNull_Pass_Int,
-    _AssertNotNull_Pass_Str,
-    _AssertNotNull_Pass_Zero,
-    _AssertNotNull_Pass_EmptyStr,
-    _AssertNotNull_Fail,
-    _AssertNotNull_Pass_Expr,
+    // PQL.Assert.ShouldBeBlank
+    _AssertBlank_Pass,
+    _AssertBlank_Fail_Int,
+    _AssertBlank_Fail_Empty,
     
-    // PQL.Assert.Col.ShouldNotBeNull
-    _AssertColumnNotNull_Pass,
-    _AssertColumnNotNull_Pass_DateDim,
+    // PQL.Assert.ShouldNotBeBlank
+    _AssertNotBlank_Pass_Int,
+    _AssertNotBlank_Pass_Str,
+    _AssertNotBlank_Pass_Zero,
+    _AssertNotBlank_Pass_Empty,
+    _AssertNotBlank_Fail,
+    _AssertNotBlank_Pass_Expr,
     
-    // PQL.Assert.ShouldBeNull
-    _AssertNull_Pass,
-    _AssertNull_Fail_Int,
-    _AssertNull_Fail_Str,
-    _AssertNull_Fail_Zero,
+    // PQL.Assert.ShouldBeBlankOrEmpty
+    _AssertBlankOrEmpty_Pass_Blank,
+    _AssertBlankOrEmpty_Pass_Empty,
+    _AssertBlankOrEmpty_Fail,
+    
+    // PQL.Assert.ShouldNotBeBlankOrEmpty
+    _AssertNotBlankOrEmpty_Pass,
+    _AssertNotBlankOrEmpty_Fail_Blank,
+    _AssertNotBlankOrEmpty_Fail_Empty,
+    
+    // PQL.Assert.Col.ShouldNotBeBlank
+    _AssertColumnNotBlank_Pass,
+    _AssertColumnNotBlank_Pass_DateDim,
     
     // PQL.Assert.ShouldEqual
     _AssertEquals_Pass_Int,
@@ -173,6 +242,10 @@ VAR _AllTests = UNION(
     _AssertNotEquals_Fail,
     _AssertNotEquals_Fail_Str,
     
+    // PQL.Assert.ShouldEqualExactly
+    _AssertExact_Pass,
+    _AssertExact_Fail,
+    
     // PQL.Assert.ShouldBeGreaterThan
     _AssertGreaterThan_Pass,
     _AssertGreaterThan_Fail_Less,
@@ -187,6 +260,16 @@ VAR _AllTests = UNION(
     _AssertLessThan_Pass_Neg,
     _AssertLessThan_Pass_Decimal,
     
+    // PQL.Assert.ShouldBeGreaterOrEqual
+    _AssertGTE_Pass_Greater,
+    _AssertGTE_Pass_Equal,
+    _AssertGTE_Fail,
+    
+    // PQL.Assert.ShouldBeLessOrEqual
+    _AssertLTE_Pass_Less,
+    _AssertLTE_Pass_Equal,
+    _AssertLTE_Fail,
+    
     // PQL.Assert.ShouldBeBetween
     _AssertBetween_Pass_Middle,
     _AssertBetween_Pass_Lower,
@@ -194,6 +277,25 @@ VAR _AllTests = UNION(
     _AssertBetween_Fail_Below,
     _AssertBetween_Fail_Above,
     _AssertBetween_Pass_Neg,
+    
+    // PQL.Assert.ShouldStartWith
+    _AssertStartsWith_Pass,
+    _AssertStartsWith_Pass_Case,
+    _AssertStartsWith_Fail,
+    
+    // PQL.Assert.ShouldEndWith
+    _AssertEndsWith_Pass,
+    _AssertEndsWith_Pass_Case,
+    _AssertEndsWith_Fail,
+    
+    // PQL.Assert.ShouldContainString
+    _AssertContains_Pass,
+    _AssertContains_Pass_Case,
+    _AssertContains_Fail,
+    
+    // PQL.Assert.ShouldMatch
+    _AssertMatch_Pass,
+    _AssertMatch_Fail,
     
     // PQL.Assert.Tbl.ShouldHaveMoreRowsThan
     _AssertRowCount_Pass,

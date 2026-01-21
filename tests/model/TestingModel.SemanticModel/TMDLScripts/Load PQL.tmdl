@@ -23,26 +23,50 @@ createOrReplace
 					"Passed", _Passed
 				)
 
-	function 'PQL.Assert.ShouldBeNull' =
+	/// Asserts that a value is BLANK (DAX null).
+	function 'PQL.Assert.ShouldBeBlank' =
 			(testName : STRING, actualValue : VARIANT) =>
 				VAR _Passed = ISBLANK(actualValue)
 				RETURN ROW(
 					"TestName", testName,
-					"Expected", "NULL",
-					"Actual", IF(ISBLANK(actualValue), "NULL", "NOT NULL"),
+					"Expected", "BLANK",
+					"Actual", IF(ISBLANK(actualValue), "BLANK", "NOT BLANK"),
 					"Passed", _Passed
 				)
 
-	/// Asserts that a value is not null/blank. Accepts both simple values and expressions.
-	function 'PQL.Assert.ShouldNotBeNull' =
+	/// Asserts that a value is not BLANK. Accepts both simple values and expressions.
+	function 'PQL.Assert.ShouldNotBeBlank' =
 			(testName : STRING, actualValue : SCALAR VARIANT EXPR) =>
 				VAR _ActualResult = actualValue
 				VAR _Passed = NOT ISBLANK(_ActualResult)
 				RETURN ROW(
 					"TestName", testName,
-					"Expected", "NOT NULL",
-					"Actual", IF(ISBLANK(_ActualResult), "NULL", "NOT NULL"),
+					"Expected", "NOT BLANK",
+					"Actual", IF(ISBLANK(_ActualResult), "BLANK", "NOT BLANK"),
 					"Passed", _Passed
+				)
+
+	/// Asserts that a value is BLANK or an empty string.
+	function 'PQL.Assert.ShouldBeBlankOrEmpty' =
+			(testName : STRING, actualValue : VARIANT) =>
+				VAR _IsBlankOrEmpty = ISBLANK(actualValue) || actualValue = ""
+				RETURN ROW(
+					"TestName", testName,
+					"Expected", "BLANK OR EMPTY",
+					"Actual", IF(ISBLANK(actualValue), "BLANK", IF(actualValue = "", "EMPTY", "HAS VALUE")),
+					"Passed", _IsBlankOrEmpty
+				)
+
+	/// Asserts that a value is not BLANK and not an empty string (has actual content).
+	function 'PQL.Assert.ShouldNotBeBlankOrEmpty' =
+			(testName : STRING, actualValue : SCALAR VARIANT EXPR) =>
+				VAR _ActualResult = actualValue
+				VAR _HasContent = NOT ISBLANK(_ActualResult) && _ActualResult <> ""
+				RETURN ROW(
+					"TestName", testName,
+					"Expected", "NOT BLANK AND NOT EMPTY",
+					"Actual", IF(ISBLANK(_ActualResult), "BLANK", IF(_ActualResult = "", "EMPTY", "HAS VALUE")),
+					"Passed", _HasContent
 				)
 
 	function 'PQL.Assert.ShouldEqual' =
@@ -62,6 +86,17 @@ createOrReplace
 					"TestName", testName,
 					"Expected", "NOT " & FORMAT(notExpected, ""),
 					"Actual", FORMAT(actual, ""),
+					"Passed", _Passed
+				)
+
+	/// Asserts that two strings are exactly equal (case-sensitive comparison).
+	function 'PQL.Assert.ShouldEqualExactly' =
+			(testName : STRING, expected : STRING, actual : STRING) =>
+				VAR _Passed = EXACT(expected, actual)
+				RETURN ROW(
+					"TestName", testName,
+					"Expected", expected,
+					"Actual", actual,
 					"Passed", _Passed
 				)
 
@@ -85,6 +120,28 @@ createOrReplace
 					"Passed", _Passed
 				)
 
+	/// Asserts that a number is greater than or equal to an expected value.
+	function 'PQL.Assert.ShouldBeGreaterOrEqual' =
+			(testName : STRING, threshold : DOUBLE, actual : DOUBLE) =>
+				VAR _Passed = actual >= threshold
+				RETURN ROW(
+					"TestName", testName,
+					"Expected", ">= " & FORMAT(threshold, ""),
+					"Actual", FORMAT(actual, ""),
+					"Passed", _Passed
+				)
+
+	/// Asserts that a number is less than or equal to an expected value.
+	function 'PQL.Assert.ShouldBeLessOrEqual' =
+			(testName : STRING, threshold : DOUBLE, actual : DOUBLE) =>
+				VAR _Passed = actual <= threshold
+				RETURN ROW(
+					"TestName", testName,
+					"Expected", "<= " & FORMAT(threshold, ""),
+					"Actual", FORMAT(actual, ""),
+					"Passed", _Passed
+				)
+
 	function 'PQL.Assert.ShouldBeBetween' =
 			(testName : STRING, lowerBound : DOUBLE, upperBound : DOUBLE, actual : DOUBLE) =>
 				VAR _Passed = actual >= lowerBound && actual <= upperBound
@@ -95,16 +152,91 @@ createOrReplace
 					"Passed", _Passed
 				)
 
+	/// String Assertions - PQL.Assert namespace
+	/// Asserts that a string starts with the specified prefix (case-insensitive).
+	function 'PQL.Assert.ShouldStartWith' =
+			(testName : STRING, prefix : STRING, actual : STRING) =>
+				VAR _Passed = LEFT(UPPER(actual), LEN(prefix)) = UPPER(prefix)
+				RETURN ROW(
+					"TestName", testName,
+					"Expected", "Starts with '" & prefix & "'",
+					"Actual", actual,
+					"Passed", _Passed
+				)
+
+	/// Asserts that a string ends with the specified suffix (case-insensitive).
+	function 'PQL.Assert.ShouldEndWith' =
+			(testName : STRING, suffix : STRING, actual : STRING) =>
+				VAR _Passed = RIGHT(UPPER(actual), LEN(suffix)) = UPPER(suffix)
+				RETURN ROW(
+					"TestName", testName,
+					"Expected", "Ends with '" & suffix & "'",
+					"Actual", actual,
+					"Passed", _Passed
+				)
+
+	/// Asserts that a string contains the specified substring (case-insensitive).
+	function 'PQL.Assert.ShouldContainString' =
+			(testName : STRING, substring : STRING, actual : STRING) =>
+				VAR _Passed = CONTAINSSTRING(actual, substring)
+				RETURN ROW(
+					"TestName", testName,
+					"Expected", "Contains '" & substring & "'",
+					"Actual", actual,
+					"Passed", _Passed
+				)
+
+	/// Asserts that a string matches a pattern (case-insensitive).
+	function 'PQL.Assert.ShouldMatch' =
+			(testName : STRING, pattern : STRING, actual : STRING) =>
+				VAR _Passed = CONTAINSSTRING(actual, pattern)
+				RETURN ROW(
+					"TestName", testName,
+					"Expected", "Matches '" & pattern & "'",
+					"Actual", actual,
+					"Passed", _Passed
+				)
+
 	/// Col Assertions - PQL.Assert.Col namespace
-	/// Asserts that a column contains at least one non-null value. Pass column reference directly.
-	function 'PQL.Assert.Col.ShouldNotBeNull' =
+	/// Asserts that a column contains at least one non-blank value. Pass column reference directly.
+	function 'PQL.Assert.Col.ShouldNotBeBlank' =
 			(testName : STRING, columnRef : ANYREF EXPR) =>
 				VAR _NonBlankCount = DISTINCTCOUNTNOBLANK(columnRef)
 				VAR _Passed = _NonBlankCount > 0
 				RETURN ROW(
 					"TestName", testName,
-					"Expected", "Column has non-null values",
-					"Actual", IF(_Passed, "HAS VALUES (" & FORMAT(_NonBlankCount, "0") & " distinct)", "ALL NULL/BLANK"),
+					"Expected", "Column has non-blank values",
+					"Actual", IF(_Passed, "HAS VALUES (" & FORMAT(_NonBlankCount, "0") & " distinct)", "ALL BLANK"),
+					"Passed", _Passed
+				)
+
+	/// Asserts that all values in a column are BLANK or empty string.
+	function 'PQL.Assert.Col.ShouldBeBlankOrEmpty' =
+			(testName : STRING, columnRef : ANYREF EXPR) =>
+				VAR _NonEmptyCount = COUNTAX(
+					VALUES(columnRef),
+					IF(ISBLANK(columnRef) || FORMAT(columnRef, "") = "", BLANK(), 1)
+				)
+				VAR _Passed = _NonEmptyCount = 0
+				RETURN ROW(
+					"TestName", testName,
+					"Expected", "Column is all BLANK or empty",
+					"Actual", IF(_Passed, "ALL BLANK/EMPTY", "HAS VALUES (" & FORMAT(_NonEmptyCount, "0") & " non-empty)"),
+					"Passed", _Passed
+				)
+
+	/// Asserts that a column contains at least one value that is not BLANK and not empty string.
+	function 'PQL.Assert.Col.ShouldNotBeBlankOrEmpty' =
+			(testName : STRING, columnRef : ANYREF EXPR) =>
+				VAR _NonEmptyCount = COUNTAX(
+					VALUES(columnRef),
+					IF(ISBLANK(columnRef) || FORMAT(columnRef, "") = "", BLANK(), 1)
+				)
+				VAR _Passed = _NonEmptyCount > 0
+				RETURN ROW(
+					"TestName", testName,
+					"Expected", "Column has non-blank, non-empty values",
+					"Actual", IF(_Passed, "HAS VALUES (" & FORMAT(_NonEmptyCount, "0") & " non-empty)", "ALL BLANK/EMPTY"),
 					"Passed", _Passed
 				)
 

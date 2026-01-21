@@ -1,0 +1,5 @@
+DEFINE
+	FUNCTION Tbl.Tests = () =>
+	PQL.Assert.Tbl.ShouldHaveMoreRowsThan("Test Date should have more rows that 1",1,TestData)
+
+EVALUATE Tbl.Tests()

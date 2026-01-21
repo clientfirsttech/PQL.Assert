@@ -1,0 +1,10 @@
+{
+  "version": "1.0.0",
+  "tabOrder": [
+    "Initial Tests",
+    "Example.Tests",
+    "Table.Test",
+    "Retrieve Tests"
+  ],
+  "defaultTab": "Example.Tests"
+}

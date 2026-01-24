@@ -1,0 +1,5 @@
+DEFINE 
+	FUNCTION PQL.Tests.Retrieve = () =>
+		FILTER(INFO.FUNCTIONS("ORIGIN", "2"),OR(RIGHT([FUNCTION_NAME],5)==".Test",RIGHT([FUNCTION_NAME],6) == ".Tests"))
+		
+EVALUATE PQL.Tests.Retrieve()

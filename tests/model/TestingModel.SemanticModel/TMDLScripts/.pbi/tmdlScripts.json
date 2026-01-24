@@ -1,0 +1,9 @@
+{
+  "version": "1.0.0",
+  "tabOrder": [
+    "Load Test Data",
+    "Reset",
+    "Load PQL"
+  ],
+  "defaultTab": "Load PQL"
+}

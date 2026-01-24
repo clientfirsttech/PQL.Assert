@@ -1,0 +1,410 @@
+DEFINE
+
+// ============================================
+// Complete DAX Assertion Library Test Suite
+// Covers ALL functions from functions.tmdl
+// ============================================
+
+// Test data setup
+VAR _TestTableWithRows = DATATABLE("Col1", STRING, "Col2", INTEGER, {{"A", 1}, {"B", 2}, {"C", 3}})
+VAR _EmptyTable = FILTER(_TestTableWithRows, FALSE)
+VAR _TestTableWithDupes = DATATABLE("DupeCol", STRING, {{"A"}, {"A"}, {"B"}})
+
+// ============================================
+// BASIC ASSERTION FUNCTIONS
+// ============================================
+
+// PQL.Assert.ShouldBeTrue
+VAR _ShouldBeTrue_Pass = PQL.Assert.ShouldBeTrue("ShouldBeTrue: TRUE should pass", TRUE)
+VAR _ShouldBeTrue_Fail = PQL.Assert.ShouldBeTrue("ShouldBeTrue: FALSE should fail", FALSE)
+
+// PQL.Assert.ShouldBeFalse  
+VAR _ShouldBeFalse_Pass = PQL.Assert.ShouldBeFalse("ShouldBeFalse: FALSE should pass", FALSE)
+VAR _ShouldBeFalse_Fail = PQL.Assert.ShouldBeFalse("ShouldBeFalse: TRUE should fail", TRUE)
+
+// PQL.Assert.ShouldBeNull
+VAR _ShouldBeNull_Pass = PQL.Assert.ShouldBeNull("ShouldBeNull: BLANK should pass", BLANK())
+VAR _ShouldBeNull_Fail_Value = PQL.Assert.ShouldBeNull("ShouldBeNull: 42 should fail", 42)
+VAR _ShouldBeNull_Fail_Empty = PQL.Assert.ShouldBeNull("ShouldBeNull: Empty string should fail", "")
+
+// PQL.Assert.ShouldNotBeNull
+VAR _ShouldNotBeNull_Pass_Value = PQL.Assert.ShouldNotBeNull("ShouldNotBeNull: 42 should pass", 42)
+VAR _ShouldNotBeNull_Pass_Empty = PQL.Assert.ShouldNotBeNull("ShouldNotBeNull: Empty string should pass", "")
+VAR _ShouldNotBeNull_Fail = PQL.Assert.ShouldNotBeNull("ShouldNotBeNull: BLANK should fail", BLANK())
+
+// PQL.Assert.ShouldBeBlank
+VAR _ShouldBeBlank_Pass = PQL.Assert.ShouldBeBlank("ShouldBeBlank: Empty string should pass", "")
+VAR _ShouldBeBlank_Fail_Value = PQL.Assert.ShouldBeBlank("ShouldBeBlank: 42 should fail", 42)
+VAR _ShouldBeBlank_Fail_Null = PQL.Assert.ShouldBeBlank("ShouldBeBlank: BLANK should fail", BLANK())
+
+// PQL.Assert.ShouldNotBeBlank
+VAR _ShouldNotBeBlank_Pass_Value = PQL.Assert.ShouldNotBeBlank("ShouldNotBeBlank: 42 should pass", 42)
+VAR _ShouldNotBeBlank_Pass_Null = PQL.Assert.ShouldNotBeBlank("ShouldNotBeBlank: _ should pass", "_")
+VAR _ShouldNotBeBlank_Fail = PQL.Assert.ShouldNotBeBlank("ShouldNotBeBlank: Empty string should fail", "")
+
+// PQL.Assert.ShouldBeNullOrBlank
+VAR _ShouldBeNullOrBlank_Pass_Null = PQL.Assert.ShouldBeNullOrBlank("ShouldBeNullOrBlank: BLANK should pass", BLANK())
+VAR _ShouldBeNullOrBlank_Pass_Empty = PQL.Assert.ShouldBeNullOrBlank("ShouldBeNullOrBlank: Empty string should pass", "")
+VAR _ShouldBeNullOrBlank_Fail = PQL.Assert.ShouldBeNullOrBlank("ShouldBeNullOrBlank: 42 should fail", 42)
+
+// PQL.Assert.ShouldNotBeNullOrBlank
+VAR _ShouldNotBeNullOrBlank_Pass = PQL.Assert.ShouldNotBeNullOrBlank("ShouldNotBeNullOrBlank: 42 should pass", 42)
+VAR _ShouldNotBeNullOrBlank_Fail_Null = PQL.Assert.ShouldNotBeNullOrBlank("ShouldNotBeNullOrBlank: BLANK should fail", BLANK())
+VAR _ShouldNotBeNullOrBlank_Fail_Empty = PQL.Assert.ShouldNotBeNullOrBlank("ShouldNotBeNullOrBlank: Empty string should fail", "")
+
+// ============================================
+// EQUALITY ASSERTION FUNCTIONS
+// ============================================
+
+// PQL.Assert.ShouldEqual
+VAR _ShouldEqual_Pass_Int = PQL.Assert.ShouldEqual("ShouldEqual: 10=10 should pass", 10, 10)
+VAR _ShouldEqual_Pass_Str = PQL.Assert.ShouldEqual("ShouldEqual: String equality should pass", "Hello", "Hello")
+VAR _ShouldEqual_Pass_Decimal = PQL.Assert.ShouldEqual("ShouldEqual: Decimal 3.14=3.14 should pass", 3.14, 3.14)
+VAR _ShouldEqual_Pass_Bool = PQL.Assert.ShouldEqual("ShouldEqual: Boolean TRUE=TRUE should pass", TRUE, TRUE)
+VAR _ShouldEqual_Pass_Date = PQL.Assert.ShouldEqual("ShouldEqual: Date equality should pass", DATE(2024,1,1), DATE(2024,1,1))
+VAR _ShouldEqual_Pass_DateTime = PQL.Assert.ShouldEqual("ShouldEqual: DateTime equality should pass", DATE(2024,1,1) + TIME(12,30,45), DATE(2024,1,1) + TIME(12,30,45))
+VAR _ShouldEqual_Pass_Null = PQL.Assert.ShouldEqual("ShouldEqual: NULL=NULL should pass", BLANK(), BLANK())
+VAR _ShouldEqual_Fail_Int = PQL.Assert.ShouldEqual("ShouldEqual: 10=20 should fail", 10, 20)
+VAR _ShouldEqual_Fail_Str = PQL.Assert.ShouldEqual("ShouldEqual: Different strings should fail", "Hello", "World")
+VAR _ShouldEqual_Fail_Bool = PQL.Assert.ShouldEqual("ShouldEqual: TRUE=FALSE should fail", TRUE, FALSE)
+VAR _ShouldEqual_Fail_DateTime = PQL.Assert.ShouldEqual("ShouldEqual: Different DateTimes should fail", DATE(2024,1,1) + TIME(12,30,45), DATE(2024,1,1) + TIME(12,30,46))
+VAR _ShouldEqual_Fail_DateVsDateTime = PQL.Assert.ShouldEqual("ShouldEqual: Date vs DateTime should fail", DATE(2024,1,1), DATE(2024,1,1) + TIME(1,0,0))
+VAR _ShouldEqual_Fail_MixedType = PQL.Assert.ShouldEqual("ShouldEqual: Mixed types 10='10' should fail", 10, "10")
+
+// PQL.Assert.ShouldNotEqual
+VAR _ShouldNotEqual_Pass_Int = PQL.Assert.ShouldNotEqual("ShouldNotEqual: 10<>20 should pass", 10, 20)
+VAR _ShouldNotEqual_Pass_Str = PQL.Assert.ShouldNotEqual("ShouldNotEqual: Different strings should pass", "Hello", "World")
+VAR _ShouldNotEqual_Pass_Bool = PQL.Assert.ShouldNotEqual("ShouldNotEqual: TRUE<>FALSE should pass", TRUE, FALSE)
+VAR _ShouldNotEqual_Pass_DateTime = PQL.Assert.ShouldNotEqual("ShouldNotEqual: Different DateTimes should pass", DATE(2024,1,1) + TIME(12,30,45), DATE(2024,1,1) + TIME(12,30,46))
+VAR _ShouldNotEqual_Pass_DateVsDateTime = PQL.Assert.ShouldNotEqual("ShouldNotEqual: Date<>DateTime should pass", DATE(2024,1,1), DATE(2024,1,1) + TIME(1,0,0))
+VAR _ShouldNotEqual_Pass_MixedType = PQL.Assert.ShouldNotEqual("ShouldNotEqual: Mixed types 10<>'10' should pass", 10, "10")
+VAR _ShouldNotEqual_Fail_Int = PQL.Assert.ShouldNotEqual("ShouldNotEqual: 10<>10 should fail", 10, 10)
+VAR _ShouldNotEqual_Fail_Str = PQL.Assert.ShouldNotEqual("ShouldNotEqual: Same strings should fail", "Hello", "Hello")
+VAR _ShouldNotEqual_Fail_Bool = PQL.Assert.ShouldNotEqual("ShouldNotEqual: TRUE<>TRUE should fail", TRUE, TRUE)
+VAR _ShouldNotEqual_Fail_DateTime = PQL.Assert.ShouldNotEqual("ShouldNotEqual: Same DateTimes should fail", DATE(2024,1,1) + TIME(12,30,45), DATE(2024,1,1) + TIME(12,30,45))
+
+// PQL.Assert.ShouldEqualExactly
+VAR _ShouldEqualExactly_Pass = PQL.Assert.ShouldEqualExactly("ShouldEqualExactly: Case match should pass", "Hello", "Hello")
+VAR _ShouldEqualExactly_Pass_Empty = PQL.Assert.ShouldEqualExactly("ShouldEqualExactly: Empty strings should pass", "", "")
+VAR _ShouldEqualExactly_Pass_DateTime = PQL.Assert.ShouldEqualExactly("ShouldEqualExactly: Exact DateTimes should pass", DATE(2024,1,1) + TIME(12,30,45), DATE(2024,1,1) + TIME(12,30,45))
+VAR _ShouldEqualExactly_Fail_Case = PQL.Assert.ShouldEqualExactly("ShouldEqualExactly: Case mismatch should fail", "Hello", "HELLO")
+VAR _ShouldEqualExactly_Fail_Content = PQL.Assert.ShouldEqualExactly("ShouldEqualExactly: Different content should fail", "Hello", "World")
+VAR _ShouldEqualExactly_Fail_DateTimePrecision = PQL.Assert.ShouldEqualExactly("ShouldEqualExactly: DateTime precision should fail", DATE(2024,1,1) + TIME(12,30,45), DATE(2024,1,1) + TIME(12,30,46))
+
+// ============================================
+// NUMERIC COMPARISON FUNCTIONS
+// ============================================
+
+// PQL.Assert.ShouldBeGreaterThan
+VAR _ShouldBeGreaterThan_Pass = PQL.Assert.ShouldBeGreaterThan("ShouldBeGreaterThan: 15>10 should pass", 10, 15)
+VAR _ShouldBeGreaterThan_Fail = PQL.Assert.ShouldBeGreaterThan("ShouldBeGreaterThan: 10>15 should fail", 15, 10)
+
+// PQL.Assert.ShouldBeLessThan
+VAR _ShouldBeLessThan_Pass = PQL.Assert.ShouldBeLessThan("ShouldBeLessThan: 5<10 should pass", 10, 5)
+VAR _ShouldBeLessThan_Fail = PQL.Assert.ShouldBeLessThan("ShouldBeLessThan: 15<10 should fail", 10, 15)
+
+// PQL.Assert.ShouldBeGreaterOrEqual
+VAR _ShouldBeGreaterOrEqual_Pass_Greater = PQL.Assert.ShouldBeGreaterOrEqual("ShouldBeGreaterOrEqual: 15>=10 should pass", 10, 15)
+VAR _ShouldBeGreaterOrEqual_Pass_Equal = PQL.Assert.ShouldBeGreaterOrEqual("ShouldBeGreaterOrEqual: 10>=10 should pass", 10, 10)
+VAR _ShouldBeGreaterOrEqual_Fail = PQL.Assert.ShouldBeGreaterOrEqual("ShouldBeGreaterOrEqual: 5>=10 should fail", 10, 5)
+
+// PQL.Assert.ShouldBeLessOrEqual
+VAR _ShouldBeLessOrEqual_Pass_Less = PQL.Assert.ShouldBeLessOrEqual("ShouldBeLessOrEqual: 5<=10 should pass", 10, 5)
+VAR _ShouldBeLessOrEqual_Pass_Equal = PQL.Assert.ShouldBeLessOrEqual("ShouldBeLessOrEqual: 10<=10 should pass", 10, 10)
+VAR _ShouldBeLessOrEqual_Fail = PQL.Assert.ShouldBeLessOrEqual("ShouldBeLessOrEqual: 15<=10 should fail", 10, 15)
+
+// PQL.Assert.ShouldBeBetween
+VAR _ShouldBeBetween_Pass = PQL.Assert.ShouldBeBetween("ShouldBeBetween: 15 in [10,20] should pass", 10, 20, 15)
+VAR _ShouldBeBetween_Fail_Low = PQL.Assert.ShouldBeBetween("ShouldBeBetween: 5 in [10,20] should fail", 10, 20, 5)
+VAR _ShouldBeBetween_Fail_High = PQL.Assert.ShouldBeBetween("ShouldBeBetween: 25 in [10,20] should fail", 10, 20, 25)
+
+// ============================================
+// STRING ASSERTION FUNCTIONS
+// ============================================
+
+// PQL.Assert.ShouldStartWith
+VAR _ShouldStartWith_Pass = PQL.Assert.ShouldStartWith("ShouldStartWith: 'Hello World' starts with 'Hello'", "Hello", "Hello World")
+VAR _ShouldStartWith_Fail = PQL.Assert.ShouldStartWith("ShouldStartWith: 'Hello World' starts with 'World' should fail", "World", "Hello World")
+
+// PQL.Assert.ShouldEndWith
+VAR _ShouldEndWith_Pass = PQL.Assert.ShouldEndWith("ShouldEndWith: 'Hello World' ends with 'World'", "World", "Hello World")
+VAR _ShouldEndWith_Fail = PQL.Assert.ShouldEndWith("ShouldEndWith: 'Hello World' ends with 'Hello' should fail", "Hello", "Hello World")
+
+// PQL.Assert.ShouldContainString
+VAR _ShouldContainString_Pass = PQL.Assert.ShouldContainString("ShouldContainString: 'Hello World' contains 'lo Wo'", "lo Wo", "Hello World")
+VAR _ShouldContainString_Fail = PQL.Assert.ShouldContainString("ShouldContainString: 'Hello World' contains 'xyz' should fail", "xyz", "Hello World")
+
+// PQL.Assert.ShouldMatch
+VAR _ShouldMatch_Pass = PQL.Assert.ShouldMatch("ShouldMatch: 'Hello World' matches 'World'", "World", "Hello World")
+VAR _ShouldMatch_Fail = PQL.Assert.ShouldMatch("ShouldMatch: 'Hello World' matches 'xyz' should fail", "xyz", "Hello World")
+
+// ============================================
+// COLUMN ASSERTION FUNCTIONS
+// ============================================
+
+// PQL.Assert.Col.ShouldBeNull
+VAR _Col_ShouldBeNull_Fail = PQL.Assert.Col.ShouldBeNull("Col.ShouldBeNull: ID column should fail (has values)", 'TestData'[ID])
+
+// PQL.Assert.Col.ShouldNotBeNull
+VAR _Col_ShouldNotBeNull_Pass = PQL.Assert.Col.ShouldNotBeNull("Col.ShouldNotBeNull: ID column should pass", 'TestData'[ID])
+
+// PQL.Assert.Col.ShouldBeBlank
+VAR _Col_ShouldBeBlank_Fail = PQL.Assert.Col.ShouldBeBlank("Col.ShouldBeBlank: ID column should fail (has values)", 'TestData'[ID])
+
+// PQL.Assert.Col.ShouldNotBeBlank
+VAR _Col_ShouldNotBeBlank_Pass = PQL.Assert.Col.ShouldNotBeBlank("Col.ShouldNotBeBlank: ID column should pass", 'TestData'[ID])
+
+// PQL.Assert.Col.ShouldBeNullOrBlank
+VAR _Col_ShouldBeNullOrBlank_Fail = PQL.Assert.Col.ShouldBeNullOrBlank("Col.ShouldBeNullOrBlank: ID column should fail (has values)", 'TestData'[ID])
+
+// PQL.Assert.Col.ShouldNotBeNullOrBlank
+VAR _Col_ShouldNotBeNullOrBlank_Pass = PQL.Assert.Col.ShouldNotBeNullOrBlank("Col.ShouldNotBeNullOrBlank: ID column should pass", 'TestData'[ID])
+
+// PQL.Assert.Col.ShouldBeDistinct
+VAR _Col_ShouldBeDistinct_Pass = PQL.Assert.Col.ShouldBeDistinct("Col.ShouldBeDistinct: ID column should be distinct", 'TestData'[ID])
+
+// PQL.Assert.Col.ShouldExist
+VAR _Col_ShouldExist_Pass = PQL.Assert.Col.ShouldExist("Col.ShouldExist: TestData[ID] should exist", "TestData", "ID")
+VAR _Col_ShouldExist_Fail = PQL.Assert.Col.ShouldExist("Col.ShouldExist: FakeTable[Col] should fail", "FakeTable", "Col")
+
+// ============================================
+// TABLE ASSERTION FUNCTIONS
+// ============================================
+
+// PQL.Assert.Tbl.ShouldHaveRows
+VAR _Tbl_ShouldHaveRows_Pass = PQL.Assert.Tbl.ShouldHaveRows("Tbl.ShouldHaveRows: Test table should have rows", _TestTableWithRows)
+VAR _Tbl_ShouldHaveRows_Fail = PQL.Assert.Tbl.ShouldHaveRows("Tbl.ShouldHaveRows: Empty table should fail", _EmptyTable)
+
+// PQL.Assert.Tbl.ShouldHaveRowCount
+VAR _Tbl_ShouldHaveRowCount_Pass = PQL.Assert.Tbl.ShouldHaveRowCount("Tbl.ShouldHaveRowCount: Test table should have 3 rows", _TestTableWithRows, 3)
+VAR _Tbl_ShouldHaveRowCount_Fail = PQL.Assert.Tbl.ShouldHaveRowCount("Tbl.ShouldHaveRowCount: Test table should fail for 5 rows", _TestTableWithRows, 5)
+
+// PQL.Assert.Tbl.ShouldHaveMoreRowsThan
+VAR _Tbl_ShouldHaveMoreRowsThan_Pass = PQL.Assert.Tbl.ShouldHaveMoreRowsThan("Tbl.ShouldHaveMoreRowsThan: Test table > 2 should pass", 2, _TestTableWithRows)
+VAR _Tbl_ShouldHaveMoreRowsThan_Fail = PQL.Assert.Tbl.ShouldHaveMoreRowsThan("Tbl.ShouldHaveMoreRowsThan: Test table > 3 should fail", 3, _TestTableWithRows)
+
+// PQL.Assert.Tbl.ShouldExist
+VAR _Tbl_ShouldExist_Pass = PQL.Assert.Tbl.ShouldExist("Tbl.ShouldExist: TestData table should exist", "TestData")
+VAR _Tbl_ShouldExist_Fail = PQL.Assert.Tbl.ShouldExist("Tbl.ShouldExist: FakeTable should fail", "FakeTable")
+
+// ============================================
+// RELATIONSHIP ASSERTION FUNCTIONS
+// ============================================
+
+// PQL.Assert.Relationship.ShouldExist
+VAR _Rel_ShouldExist_Pass = PQL.Assert.Relationship.ShouldExist("Relationship.ShouldExist: Valid relationship should pass", "TestData", "ID", "TestData-Fact", "ID")
+VAR _Rel_ShouldExist_Fail = PQL.Assert.Relationship.ShouldExist("Relationship.ShouldExist: Invalid relationship should fail", "FakeFrom", "Col", "FakeTo", "Col")
+
+// ============================================
+// Combine All Test Results
+// ============================================
+VAR _AllTests = UNION(
+    // Basic Assertions
+    _ShouldBeTrue_Pass,
+    _ShouldBeTrue_Fail,
+    _ShouldBeFalse_Pass,
+    _ShouldBeFalse_Fail,
+    _ShouldBeNull_Pass,
+    _ShouldBeNull_Fail_Value,
+    _ShouldBeNull_Fail_Empty,
+    _ShouldNotBeNull_Pass_Value,
+    _ShouldNotBeNull_Pass_Empty,
+    _ShouldNotBeNull_Fail,
+    _ShouldBeBlank_Pass,
+    _ShouldBeBlank_Fail_Value,
+    _ShouldBeBlank_Fail_Null,
+    _ShouldNotBeBlank_Pass_Value,
+    _ShouldNotBeBlank_Pass_Null,
+    _ShouldNotBeBlank_Fail,
+    _ShouldBeNullOrBlank_Pass_Null,
+    _ShouldBeNullOrBlank_Pass_Empty,
+    _ShouldBeNullOrBlank_Fail,
+    _ShouldNotBeNullOrBlank_Pass,
+    _ShouldNotBeNullOrBlank_Fail_Null,
+    _ShouldNotBeNullOrBlank_Fail_Empty,
+    
+    // Equality Assertions
+    _ShouldEqual_Pass_Int,
+    _ShouldEqual_Pass_Str,
+    _ShouldEqual_Pass_Decimal,
+    _ShouldEqual_Pass_Bool,
+    _ShouldEqual_Pass_Date,
+    _ShouldEqual_Pass_DateTime,
+    _ShouldEqual_Pass_Null,
+    _ShouldEqual_Fail_Int,
+    _ShouldEqual_Fail_Str,
+    _ShouldEqual_Fail_Bool,
+    _ShouldEqual_Fail_DateTime,
+    _ShouldEqual_Fail_DateVsDateTime,
+    _ShouldEqual_Fail_MixedType,
+    _ShouldNotEqual_Pass_Int,
+    _ShouldNotEqual_Pass_Str,
+    _ShouldNotEqual_Pass_Bool,
+    _ShouldNotEqual_Pass_DateTime,
+    _ShouldNotEqual_Pass_DateVsDateTime,
+    _ShouldNotEqual_Pass_MixedType,
+    _ShouldNotEqual_Fail_Int,
+    _ShouldNotEqual_Fail_Str,
+    _ShouldNotEqual_Fail_Bool,
+    _ShouldNotEqual_Fail_DateTime,
+    _ShouldEqualExactly_Pass,
+    _ShouldEqualExactly_Pass_Empty,
+    _ShouldEqualExactly_Pass_DateTime,
+    _ShouldEqualExactly_Fail_Case,
+    _ShouldEqualExactly_Fail_Content,
+    _ShouldEqualExactly_Fail_DateTimePrecision,
+    
+    // Numeric Comparisons
+    _ShouldBeGreaterThan_Pass,
+    _ShouldBeGreaterThan_Fail,
+    _ShouldBeLessThan_Pass,
+    _ShouldBeLessThan_Fail,
+    _ShouldBeGreaterOrEqual_Pass_Greater,
+    _ShouldBeGreaterOrEqual_Pass_Equal,
+    _ShouldBeGreaterOrEqual_Fail,
+    _ShouldBeLessOrEqual_Pass_Less,
+    _ShouldBeLessOrEqual_Pass_Equal,
+    _ShouldBeLessOrEqual_Fail,
+    _ShouldBeBetween_Pass,
+    _ShouldBeBetween_Fail_Low,
+    _ShouldBeBetween_Fail_High,
+    
+    // String Assertions
+    _ShouldStartWith_Pass,
+    _ShouldStartWith_Fail,
+    _ShouldEndWith_Pass,
+    _ShouldEndWith_Fail,
+    _ShouldContainString_Pass,
+    _ShouldContainString_Fail,
+    _ShouldMatch_Pass,
+    _ShouldMatch_Fail,
+    
+    // Column Assertions
+    _Col_ShouldBeNull_Fail,
+    _Col_ShouldNotBeNull_Pass,
+    _Col_ShouldBeBlank_Fail,
+    _Col_ShouldNotBeBlank_Pass,
+    _Col_ShouldBeNullOrBlank_Fail,
+    _Col_ShouldNotBeNullOrBlank_Pass,
+    _Col_ShouldBeDistinct_Pass,
+    _Col_ShouldExist_Pass,
+    _Col_ShouldExist_Fail,
+    
+    // Table Assertions
+    _Tbl_ShouldHaveRows_Pass,
+    _Tbl_ShouldHaveRows_Fail,
+    _Tbl_ShouldHaveRowCount_Pass,
+    _Tbl_ShouldHaveRowCount_Fail,
+    _Tbl_ShouldHaveMoreRowsThan_Pass,
+    _Tbl_ShouldHaveMoreRowsThan_Fail,
+    _Tbl_ShouldExist_Pass,
+    _Tbl_ShouldExist_Fail,
+    
+    // Relationship Assertions
+    _Rel_ShouldExist_Pass,
+    _Rel_ShouldExist_Fail
+)
+
+// ============================================
+// TEST VALIDATION LAYER
+// Checks if test names match actual results
+// ============================================
+VAR _ValidationResults = 
+    ADDCOLUMNS(
+        _AllTests,
+        "ExpectedToPass", 
+            CONTAINSSTRING([TestName], "should pass"),
+        "ExpectedToFail", 
+            CONTAINSSTRING([TestName], "should fail"),
+        "HasExpectation",
+            CONTAINSSTRING([TestName], "should pass") || CONTAINSSTRING([TestName], "should fail"),
+        "ValidationStatus",
+            SWITCH(
+                TRUE(),
+                // Test says "should pass" and Passed = TRUE
+                CONTAINSSTRING([TestName], "should pass") && [Passed] = TRUE, "✅ CORRECT",
+                
+                // Test says "should fail" and Passed = FALSE  
+                CONTAINSSTRING([TestName], "should fail") && [Passed] = FALSE, "✅ CORRECT",
+                
+                // Test says "should pass" but Passed = FALSE
+                CONTAINSSTRING([TestName], "should pass") && [Passed] = FALSE, "❌ MISMATCH: Expected PASS but got FAIL",
+                
+                // Test says "should fail" but Passed = TRUE
+                CONTAINSSTRING([TestName], "should fail") && [Passed] = TRUE, "❌ MISMATCH: Expected FAIL but got PASS",
+                
+                // Test doesn't specify expectation clearly
+                "⚠️ NO CLEAR EXPECTATION"
+            )
+    )
+
+VAR _MismatchCount = 
+    COUNTROWS(
+        FILTER(
+            _ValidationResults,
+            CONTAINSSTRING([ValidationStatus], "MISMATCH")
+        )
+    )
+
+VAR _TotalTestsWithExpectations = 
+    COUNTROWS(
+        FILTER(
+            _ValidationResults,
+            [HasExpectation] = TRUE
+        )
+    )
+
+VAR _CorrectCount = 
+    COUNTROWS(
+        FILTER(
+            _ValidationResults,
+            [ValidationStatus] = "✅ CORRECT"
+        )
+    )
+
+VAR _Summary = 
+    ROW(
+        "TestName", "=== VALIDATION SUMMARY ===",
+        "Expected", "Total: " & _TotalTestsWithExpectations,
+        "Actual", "Correct: " & _CorrectCount & " | Mismatches: " & _MismatchCount,
+        "Passed", IF(_MismatchCount = 0, TRUE, FALSE),
+        "ExpectedToPass", BLANK(),
+        "ExpectedToFail", BLANK(),
+        "HasExpectation", BLANK(),
+        "ValidationStatus", 
+            IF(_MismatchCount = 0, 
+                "✅ ALL TESTS MATCH EXPECTATIONS!", 
+                "❌ " & _MismatchCount & " MISMATCHES FOUND"
+            )
+    )
+
+// Show only mismatches and summary for quick review
+VAR _MismatchesOnly = 
+    FILTER(
+        _ValidationResults,
+        CONTAINSSTRING([ValidationStatus], "MISMATCH")
+    )
+
+VAR _QuickReport = 
+    UNION(
+        _Summary,
+        _MismatchesOnly
+    )
+
+// Combine summary with detailed results  
+VAR _DetailedReport = 
+    UNION(
+        _Summary,
+        _ValidationResults
+    )
+
+// Output validation results - switch between _QuickReport and _DetailedReport
+EVALUATE _QuickReport
+ORDER BY 
+    IF([TestName] = "=== VALIDATION SUMMARY ===", 0, 1),
+    [ValidationStatus] DESC,
+    [TestName]
+
+// Uncomment the line below to see all test results with validation status
+// EVALUATE _DetailedReport
+// ORDER BY [ValidationStatus] DESC, [TestName]

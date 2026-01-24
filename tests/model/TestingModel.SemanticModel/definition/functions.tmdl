@@ -1,0 +1,412 @@
+/// DAX Assertion Library Functions
+/// Publisher: PQL (Power Query Lint)
+/// These functions provide a standardized way to write unit tests for DAX models
+/// Basic Assertions - PQL.Assert namespace
+function 'PQL.Assert.ShouldBeTrue' =
+		(testName : STRING, actualCondition : BOOLEAN) =>
+			VAR _Passed = actualCondition = TRUE
+			RETURN ROW(
+				"TestName", testName,
+				"Expected", "TRUE",
+				"Actual", IF(actualCondition, "TRUE", "FALSE"),
+				"Passed", _Passed
+			)
+	lineageTag: 3ce54178-cc96-4e85-9959-4d0e00bff029
+
+function 'PQL.Assert.ShouldBeFalse' =
+		(testName : STRING, actualCondition : BOOLEAN) =>
+			VAR _Passed = actualCondition = FALSE
+			RETURN ROW(
+				"TestName", testName,
+				"Expected", "FALSE",
+				"Actual", IF(actualCondition, "TRUE", "FALSE"),
+				"Passed", _Passed
+			)
+	lineageTag: 2c8ce1b1-942a-4a6b-b28f-16a50e7ae47e
+
+function 'PQL.Assert.ShouldBeNull' =
+		(testName : STRING, actualValue : VARIANT) =>
+			VAR _Passed = ISBLANK(actualValue)
+			RETURN ROW(
+				"TestName", testName,
+				"Expected", "NULL",
+				"Actual", IF(ISBLANK(actualValue), "NULL", "NOT NULL"),
+				"Passed", _Passed
+			)
+	lineageTag: ea7e9b88-1fb9-4c80-a5c3-754ea8a77577
+
+/// Asserts that a value is not null/blank. Accepts both simple values and expressions.
+function 'PQL.Assert.ShouldNotBeNull' =
+		(testName : STRING, actualValue : SCALAR VARIANT EXPR) =>
+			VAR _ActualResult = actualValue
+			VAR _Passed = NOT ISBLANK(_ActualResult)
+			RETURN ROW(
+				"TestName", testName,
+				"Expected", "NOT NULL",
+				"Actual", IF(ISBLANK(_ActualResult), "NULL", "NOT NULL"),
+				"Passed", _Passed
+			)
+	lineageTag: 0eb2de66-87ad-4624-bb72-8d891322cbf3
+
+function 'PQL.Assert.ShouldEqual' =
+		(testName : STRING, expected : VARIANT, actual : VARIANT) =>
+			VAR _Passed = expected = actual
+			RETURN ROW(
+				"TestName", testName,
+				"Expected", FORMAT(expected, ""),
+				"Actual", FORMAT(actual, ""),
+				"Passed", _Passed
+			)
+	lineageTag: 40e27022-3ec8-4de3-93e8-dd1df9292ea0
+
+function 'PQL.Assert.ShouldNotEqual' =
+		(testName : STRING, notExpected : VARIANT, actual : VARIANT) =>
+			VAR _Passed = notExpected <> actual
+			RETURN ROW(
+				"TestName", testName,
+				"Expected", "NOT " & FORMAT(notExpected, ""),
+				"Actual", FORMAT(actual, ""),
+				"Passed", _Passed
+			)
+	lineageTag: 3d8d5d65-a650-4391-9a8c-f9205713e23f
+
+function 'PQL.Assert.ShouldBeGreaterThan' =
+		(testName : STRING, threshold : DOUBLE, actual : DOUBLE) =>
+			VAR _Passed = actual > threshold
+			RETURN ROW(
+				"TestName", testName,
+				"Expected", "> " & FORMAT(threshold, ""),
+				"Actual", FORMAT(actual, ""),
+				"Passed", _Passed
+			)
+	lineageTag: 00ee45ee-13fe-4e3a-80fc-78ef9057ee6d
+
+function 'PQL.Assert.ShouldBeLessThan' =
+		(testName : STRING, threshold : DOUBLE, actual : DOUBLE) =>
+			VAR _Passed = actual < threshold
+			RETURN ROW(
+				"TestName", testName,
+				"Expected", "< " & FORMAT(threshold, ""),
+				"Actual", FORMAT(actual, ""),
+				"Passed", _Passed
+			)
+	lineageTag: 432fbc25-68ee-4ab5-9897-ce7a7b3b7aa5
+
+function 'PQL.Assert.ShouldBeBetween' =
+		(testName : STRING, lowerBound : DOUBLE, upperBound : DOUBLE, actual : DOUBLE) =>
+			VAR _Passed = actual >= lowerBound && actual <= upperBound
+			RETURN ROW(
+				"TestName", testName,
+				"Expected", FORMAT(lowerBound, "") & " <= value <= " & FORMAT(upperBound, ""),
+				"Actual", FORMAT(actual, ""),
+				"Passed", _Passed
+			)
+	lineageTag: 45d53983-d7d1-4fd8-ba13-5e583372e2d9
+
+/// Col Assertions - PQL.Assert.Col namespace
+/// Asserts that a column contains at least one non-null value. Pass column reference directly.
+function 'PQL.Assert.Col.ShouldNotBeNull' =
+		(testName : STRING, columnRef : ANYREF EXPR) =>
+			VAR _NonBlankCount = DISTINCTCOUNTNOBLANK(columnRef)
+			VAR _Passed = _NonBlankCount > 0
+			RETURN ROW(
+				"TestName", testName,
+				"Expected", "Column has non-null values",
+				"Actual", IF(_Passed, "HAS VALUES (" & FORMAT(_NonBlankCount, "0") & " distinct)", "ALL NULL/BLANK"),
+				"Passed", _Passed
+			)
+	lineageTag: 1a310e29-119c-4b0e-abc2-49cb9bd24179
+
+/// Asserts that all values in a column are unique (no duplicates).
+function 'PQL.Assert.Col.ShouldBeDistinct' =
+		(testName : STRING, columnRef : ANYREF EXPR) =>
+			VAR _DistinctCount = DISTINCTCOUNT(columnRef)
+			VAR _TotalCount = COUNTROWS(VALUES(columnRef))
+			VAR _Passed = _DistinctCount = _TotalCount
+			RETURN ROW(
+				"TestName", testName,
+				"Expected", "All values distinct",
+				"Actual", IF(_Passed, "ALL DISTINCT (" & FORMAT(_TotalCount, "0") & " rows)", "DUPLICATES FOUND (" & FORMAT(_DistinctCount, "0") & " distinct of " & FORMAT(_TotalCount, "0") & " rows)"),
+				"Passed", _Passed
+			)
+	lineageTag: fc1a7e28-04d8-43f8-a7ae-87302ec6c751
+
+function 'PQL.Assert.Col.ShouldExist' =
+		(testName : STRING, tableName : STRING, columnName : STRING) =>
+			VAR _Columns = INFO.VIEW.COLUMNS()
+			VAR _Found = COUNTROWS(FILTER(_Columns, [Table] = tableName && [Name] = columnName)) > 0
+			RETURN ROW(
+				"TestName", testName,
+				"Expected", "Column '" & tableName & "[" & columnName & "]' exists",
+				"Actual", IF(_Found, "EXISTS", "NOT FOUND"),
+				"Passed", _Found
+			)
+	lineageTag: efdd7722-a107-47bf-adbf-42b11a69f5de
+
+/// Table Assertions - PQL.Assert.Table namespace
+/// Asserts that a table has at least one row.
+function 'PQL.Assert.Tbl.ShouldHaveRows' =
+		(testName : STRING, tableRef : TABLE EXPR) =>
+			VAR _RowCount = COUNTROWS(tableRef)
+			VAR _Passed = _RowCount > 0
+			RETURN ROW(
+				"TestName", testName,
+				"Expected", "Table has rows",
+				"Actual", IF(_Passed, "HAS ROWS (" & FORMAT(_RowCount, "0") & ")", "EMPTY (0 rows)"),
+				"Passed", _Passed
+			)
+	lineageTag: 53d98ba8-6822-423e-a09f-f3f5da91f41d
+
+/// Asserts that a table has exactly the expected number of rows.
+function 'PQL.Assert.Tbl.ShouldHaveRowCount' =
+		(testName : STRING, tableRef : TABLE EXPR, expectedRowCount : INT64) =>
+			VAR _RowCount = COUNTROWS(tableRef)
+			VAR _Passed = _RowCount = expectedRowCount
+			RETURN ROW(
+				"TestName", testName,
+				"Expected", FORMAT(expectedRowCount, "0") & " rows",
+				"Actual", FORMAT(_RowCount, "0") & " rows",
+				"Passed", _Passed
+			)
+	lineageTag: b08ed823-9185-4b99-a99d-d32286747686
+
+function 'PQL.Assert.Tbl.ShouldHaveMoreRowsThan' =
+		(testName : STRING, threshold : INT64, tableToCheck : TABLE) =>
+			VAR _RowCount = COUNTROWS(tableToCheck)
+			VAR _Passed = _RowCount > threshold
+			RETURN ROW(
+				"TestName", testName,
+				"Expected", "> " & FORMAT(threshold, "0"),
+				"Actual", FORMAT(_RowCount, "0"),
+				"Passed", _Passed
+			)
+	lineageTag: 2a8495a9-f55e-4f4a-8b77-a4a38e419ce3
+
+function 'PQL.Assert.Tbl.ShouldExist' =
+		(testName : STRING, tableName : STRING) =>
+			VAR _Tables = INFO.VIEW.TABLES()
+			VAR _Found = COUNTROWS(FILTER(_Tables, [Name] = tableName)) > 0
+			RETURN ROW(
+				"TestName", testName,
+				"Expected", "Table '" & tableName & "' exists",
+				"Actual", IF(_Found, "EXISTS", "NOT FOUND"),
+				"Passed", _Found
+			)
+	lineageTag: e4590987-c347-4cfc-9cf7-3620e1bcfe62
+
+/// Relationship Assertions - PQL.Assert.Relationship namespace
+function 'PQL.Assert.Relationship.ShouldExist' =
+		(testName : STRING, fromTable : STRING, fromColumn : STRING, toTable : STRING, toColumn : STRING) =>
+			VAR _Relationships = INFO.VIEW.RELATIONSHIPS()
+			VAR _Found = COUNTROWS(FILTER(_Relationships,
+				[FromTable] = fromTable && [FromColumn] = fromColumn &&
+				[ToTable] = toTable && [ToColumn] = toColumn)) > 0
+			RETURN ROW(
+				"TestName", testName,
+				"Expected", "Relationship '" & fromTable & "[" & fromColumn & "] -> " & toTable & "[" & toColumn & "]' exists",
+				"Actual", IF(_Found, "EXISTS", "NOT FOUND"),
+				"Passed", _Found
+			)
+	lineageTag: 4645f053-4961-4b5c-817d-f813425b8fe1
+
+function 'Example.Tests' =
+		() =>
+			UNION (
+				PQL.Assert.ShouldNotBeNull("ShouldNotBeNull: DISTINCTCOUNTNOBLANK expression should pass", DISTINCTCOUNTNOBLANK('TestData'[ID])),
+				PQL.Assert.Col.ShouldNotBeNull("Col.ShouldNotBeNull: ID has values", 'TestData'[ID]),
+				PQL.Assert.Col.ShouldNotBeNull("Col.ShouldNotBeNull: ID has values", 'TestData'[ID])
+			)
+	lineageTag: 136f26fc-5b73-4b6f-935c-1734dffaaa93
+
+function 'PQL.Tests.Retrieve' =
+		() =>
+				FILTER(INFO.FUNCTIONS("ORIGIN", "2"),OR(RIGHT([FUNCTION_NAME],5)==".Test",RIGHT([FUNCTION_NAME],6) == ".Tests"))
+	lineageTag: 2f575a6b-d824-4284-ba6e-3b4524b55103
+
+function 'Tbl.Tests' =
+		() =>
+			PQL.Assert.Tbl.ShouldHaveMoreRowsThan("Test Date should have more rows that 1",1,TestData)
+	isHidden
+	lineageTag: e2e2da41-4a50-4481-91c9-fe412b1bde45
+
+/// Asserts that a value is BLANK (DAX null).
+function 'PQL.Assert.ShouldBeBlank' =
+		(testName : STRING, actualValue : VARIANT) =>
+			VAR _Passed = ISBLANK(actualValue)
+			RETURN ROW(
+				"TestName", testName,
+				"Expected", "BLANK",
+				"Actual", IF(ISBLANK(actualValue), "BLANK", "NOT BLANK"),
+				"Passed", _Passed
+			)
+	lineageTag: ab1cb437-450c-4a3c-9a46-ee2b93d069e8
+
+/// Asserts that a value is not BLANK. Accepts both simple values and expressions.
+function 'PQL.Assert.ShouldNotBeBlank' =
+		(testName : STRING, actualValue : SCALAR VARIANT EXPR) =>
+			VAR _ActualResult = actualValue
+			VAR _Passed = NOT ISBLANK(_ActualResult)
+			RETURN ROW(
+				"TestName", testName,
+				"Expected", "NOT BLANK",
+				"Actual", IF(ISBLANK(_ActualResult), "BLANK", "NOT BLANK"),
+				"Passed", _Passed
+			)
+	lineageTag: e91392fd-5781-49c6-8373-dc10495e0155
+
+/// Asserts that a value is BLANK or an empty string.
+function 'PQL.Assert.ShouldBeBlankOrEmpty' =
+		(testName : STRING, actualValue : VARIANT) =>
+			VAR _IsBlankOrEmpty = ISBLANK(actualValue) || actualValue = ""
+			RETURN ROW(
+				"TestName", testName,
+				"Expected", "BLANK OR EMPTY",
+				"Actual", IF(ISBLANK(actualValue), "BLANK", IF(actualValue = "", "EMPTY", "HAS VALUE")),
+				"Passed", _IsBlankOrEmpty
+			)
+	lineageTag: f747ca9d-31d1-497c-8c84-99f9b0fbc7db
+
+/// Asserts that a value is not BLANK and not an empty string (has actual content).
+function 'PQL.Assert.ShouldNotBeBlankOrEmpty' =
+		(testName : STRING, actualValue : SCALAR VARIANT EXPR) =>
+			VAR _ActualResult = actualValue
+			VAR _HasContent = NOT ISBLANK(_ActualResult) && _ActualResult <> ""
+			RETURN ROW(
+				"TestName", testName,
+				"Expected", "NOT BLANK AND NOT EMPTY",
+				"Actual", IF(ISBLANK(_ActualResult), "BLANK", IF(_ActualResult = "", "EMPTY", "HAS VALUE")),
+				"Passed", _HasContent
+			)
+	lineageTag: c3b280a3-fa23-40b5-801e-efe83fd13439
+
+/// Asserts that two strings are exactly equal (case-sensitive comparison).
+function 'PQL.Assert.ShouldEqualExactly' =
+		(testName : STRING, expected : STRING, actual : STRING) =>
+			VAR _Passed = EXACT(expected, actual)
+			RETURN ROW(
+				"TestName", testName,
+				"Expected", expected,
+				"Actual", actual,
+				"Passed", _Passed
+			)
+	lineageTag: 09a197ff-bd44-49d1-906c-89a18921a104
+
+/// Asserts that a number is greater than or equal to an expected value.
+function 'PQL.Assert.ShouldBeGreaterOrEqual' =
+		(testName : STRING, threshold : DOUBLE, actual : DOUBLE) =>
+			VAR _Passed = actual >= threshold
+			RETURN ROW(
+				"TestName", testName,
+				"Expected", ">= " & FORMAT(threshold, ""),
+				"Actual", FORMAT(actual, ""),
+				"Passed", _Passed
+			)
+	lineageTag: 6b3bab03-930a-4ad9-af9a-8f946b451e70
+
+/// Asserts that a number is less than or equal to an expected value.
+function 'PQL.Assert.ShouldBeLessOrEqual' =
+		(testName : STRING, threshold : DOUBLE, actual : DOUBLE) =>
+			VAR _Passed = actual <= threshold
+			RETURN ROW(
+				"TestName", testName,
+				"Expected", "<= " & FORMAT(threshold, ""),
+				"Actual", FORMAT(actual, ""),
+				"Passed", _Passed
+			)
+	lineageTag: 59402d43-0c2b-4a04-b06e-260963e27328
+
+/// String Assertions - PQL.Assert namespace
+/// Asserts that a string starts with the specified prefix (case-insensitive).
+function 'PQL.Assert.ShouldStartWith' =
+		(testName : STRING, prefix : STRING, actual : STRING) =>
+			VAR _Passed = LEFT(UPPER(actual), LEN(prefix)) = UPPER(prefix)
+			RETURN ROW(
+				"TestName", testName,
+				"Expected", "Starts with '" & prefix & "'",
+				"Actual", actual,
+				"Passed", _Passed
+			)
+	lineageTag: d71a7b70-323f-40c3-b5a1-15f4d483bdee
+
+/// Asserts that a string ends with the specified suffix (case-insensitive).
+function 'PQL.Assert.ShouldEndWith' =
+		(testName : STRING, suffix : STRING, actual : STRING) =>
+			VAR _Passed = RIGHT(UPPER(actual), LEN(suffix)) = UPPER(suffix)
+			RETURN ROW(
+				"TestName", testName,
+				"Expected", "Ends with '" & suffix & "'",
+				"Actual", actual,
+				"Passed", _Passed
+			)
+	lineageTag: 2faadcd1-c81e-4802-9bf6-36d73ff352c9
+
+/// Asserts that a string contains the specified substring (case-insensitive).
+function 'PQL.Assert.ShouldContainString' =
+		(testName : STRING, substring : STRING, actual : STRING) =>
+			VAR _Passed = CONTAINSSTRING(actual, substring)
+			RETURN ROW(
+				"TestName", testName,
+				"Expected", "Contains '" & substring & "'",
+				"Actual", actual,
+				"Passed", _Passed
+			)
+	lineageTag: d430907c-6fc3-4fc4-85a0-28986198fa36
+
+/// Asserts that a string matches a pattern (case-insensitive).
+function 'PQL.Assert.ShouldMatch' =
+		(testName : STRING, pattern : STRING, actual : STRING) =>
+			VAR _Passed = CONTAINSSTRING(actual, pattern)
+			RETURN ROW(
+				"TestName", testName,
+				"Expected", "Matches '" & pattern & "'",
+				"Actual", actual,
+				"Passed", _Passed
+			)
+	lineageTag: 0baf26aa-5051-4a7e-9447-9650871fa77b
+
+/// Col Assertions - PQL.Assert.Col namespace
+/// Asserts that a column contains at least one non-blank value. Pass column reference directly.
+function 'PQL.Assert.Col.ShouldNotBeBlank' =
+		(testName : STRING, columnRef : ANYREF EXPR) =>
+			VAR _NonBlankCount = DISTINCTCOUNTNOBLANK(columnRef)
+			VAR _Passed = _NonBlankCount > 0
+			RETURN ROW(
+				"TestName", testName,
+				"Expected", "Column has non-blank values",
+				"Actual", IF(_Passed, "HAS VALUES (" & FORMAT(_NonBlankCount, "0") & " distinct)", "ALL BLANK"),
+				"Passed", _Passed
+			)
+	lineageTag: 3740cdac-6c3f-4dd8-9ea5-118c2f74958f
+
+/// Asserts that all values in a column are BLANK or empty string.
+function 'PQL.Assert.Col.ShouldBeBlankOrEmpty' =
+		(testName : STRING, columnRef : ANYREF EXPR) =>
+			VAR _NonEmptyCount = COUNTAX(
+				VALUES(columnRef),
+				IF(ISBLANK(columnRef) || FORMAT(columnRef, "") = "", BLANK(), 1)
+			)
+			VAR _Passed = _NonEmptyCount = 0
+			RETURN ROW(
+				"TestName", testName,
+				"Expected", "Column is all BLANK or empty",
+				"Actual", IF(_Passed, "ALL BLANK/EMPTY", "HAS VALUES (" & FORMAT(_NonEmptyCount, "0") & " non-empty)"),
+				"Passed", _Passed
+			)
+	lineageTag: fd2ab6fa-692b-4416-b2bc-6186932e6bb7
+
+/// Asserts that a column contains at least one value that is not BLANK and not empty string.
+function 'PQL.Assert.Col.ShouldNotBeBlankOrEmpty' =
+		(testName : STRING, columnRef : ANYREF EXPR) =>
+			VAR _NonEmptyCount = COUNTAX(
+				VALUES(columnRef),
+				IF(ISBLANK(columnRef) || FORMAT(columnRef, "") = "", BLANK(), 1)
+			)
+			VAR _Passed = _NonEmptyCount > 0
+			RETURN ROW(
+				"TestName", testName,
+				"Expected", "Column has non-blank, non-empty values",
+				"Actual", IF(_Passed, "HAS VALUES (" & FORMAT(_NonEmptyCount, "0") & " non-empty)", "ALL BLANK/EMPTY"),
+				"Passed", _Passed
+			)
+	lineageTag: 3dc9c6f8-7562-4ee6-baca-546e2e2977a6
+

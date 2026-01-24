@@ -1,11 +1,12 @@
 {
   "version": "1.0.0",
   "tabOrder": [
-    "Initial Tests",
+    "Complete Function Tests",
     "Example.Tests",
     "Table.Test",
     "Retrieve Tests",
-    "Query 1"
+    "Query 1",
+    "Measure.Tests"
   ],
-  "defaultTab": "Query 1"
+  "defaultTab": "Complete Function Tests"
 }

@@ -48,7 +48,7 @@ function 'PQL.Assert.ShouldNotBeNull' =
 /// Asserts that a value is BLANK (empty string "").
 function 'PQL.Assert.ShouldBeBlank' =
 		(testName : STRING, actualValue : VARIANT) =>
-		    VAR _Passed = actualValue = ""
+		    VAR _Passed = NOT ISBLANK(actualValue) && actualValue = ""
 		    RETURN ROW(
 		        "TestName", testName,
 		        "Expected", "BLANK (empty string)",
@@ -60,7 +60,7 @@ function 'PQL.Assert.ShouldBeBlank' =
 function 'PQL.Assert.ShouldNotBeBlank' =
 		(testName : STRING, actualValue : SCALAR VARIANT EXPR) =>
 		    VAR _ActualResult = actualValue
-		    VAR _Passed = _ActualResult <> ""
+		    VAR _Passed = ISBLANK(_ActualResult) || _ActualResult <> ""
 		    RETURN ROW(
 		        "TestName", testName,
 		        "Expected", "NOT BLANK (not empty string)",
@@ -247,17 +247,16 @@ function 'PQL.Assert.Col.ShouldNotBeNull' =
 /// Asserts that all values in a column are BLANK (empty string "").
 function 'PQL.Assert.Col.ShouldBeBlank' =
 		(testName : STRING, columnRef : ANYREF EXPR) =>
-		    VAR _NonBlankCount = COUNTAX(
+		    VAR _BlankCount = COUNTAX(
 		        VALUES(columnRef),
-		        IF(FORMAT(columnRef, "") = "" && NOT ISBLANK(columnRef), BLANK(), 1)
+		        IF(FORMAT(columnRef, "") = "" && NOT ISBLANK(columnRef), 1, BLANK())
 		    )
 		    VAR _TotalCount = COUNTROWS(VALUES(columnRef))
-		    VAR _BlankCount = _TotalCount - _NonBlankCount
 		    VAR _Passed = _BlankCount = _TotalCount
 		    RETURN ROW(
 		        "TestName", testName,
 		        "Expected", "Column is all BLANK (empty string)",
-		        "Actual", IF(_Passed, "ALL BLANK", "HAS NON-BLANK VALUES (" & FORMAT(_NonBlankCount, "0") & " non-blank)"),
+		        "Actual", IF(_Passed, "ALL BLANK", "HAS NON-BLANK VALUES (" & FORMAT(_TotalCount - _BlankCount, "0") & " non-blank)"),
 		        "Passed", _Passed
 		    )
 
@@ -390,4 +389,9 @@ function 'PQL.Assert.Relationship.ShouldExist' =
 		        "Actual", IF(_Found, "EXISTS", "NOT FOUND"),
 		        "Passed", _Found
 		    )
+
+/// Test Discovery Functions - PQL.Tests namespace
+function 'PQL.Tests.Retrieve' =
+		() =>
+		    FILTER(INFO.FUNCTIONS("ORIGIN", "2"), OR(RIGHT([FUNCTION_NAME],5) = ".Test", RIGHT([FUNCTION_NAME],6) = ".Tests"))
 

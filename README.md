@@ -60,7 +60,7 @@ src/
 tests/
 └── model/TestingModel.SemanticModel/
     └── DAXQueries/
-        ├── Complete Function Tests.dax    # Comprehensive test suite
+        ├── Complete Function Tests.dax    # Comprehensive test suite - validates assert functions run appropriately and indicate pass or failure consistently
         ├── Measure.Tests.dax             # Advanced measure testing
         └── [other test files]
 ```

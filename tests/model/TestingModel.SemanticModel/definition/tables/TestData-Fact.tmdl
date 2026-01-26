@@ -1,0 +1,97 @@
+table TestData-Fact
+	lineageTag: 9eca8f14-b5f4-4598-accb-95d0d61a4308
+
+	column ID
+		dataType: int64
+		formatString: 0
+		lineageTag: 70de7d88-c05f-4e64-ac83-fb6f873a4fb4
+		summarizeBy: none
+		sourceColumn: ID
+
+		annotation SummarizationSetBy = Automatic
+
+	column Name
+		dataType: string
+		lineageTag: 7e0e46ea-9c85-41a5-b711-813fc8a5dcd6
+		summarizeBy: none
+		sourceColumn: Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column Value
+		dataType: double
+		lineageTag: 65668e87-a3d9-40da-b337-9c13ecb64295
+		summarizeBy: sum
+		sourceColumn: Value
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Category
+		dataType: string
+		lineageTag: 90523877-256a-4738-87db-9b5207a9758c
+		summarizeBy: none
+		sourceColumn: Category
+
+		annotation SummarizationSetBy = Automatic
+
+	column IsActive
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 59366d6c-8eb1-4431-82a4-e6079edd1de6
+		summarizeBy: none
+		sourceColumn: IsActive
+
+		annotation SummarizationSetBy = Automatic
+
+	column CreatedDate
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 630707dd-787e-49ac-9711-52b9d686aaaf
+		summarizeBy: none
+		sourceColumn: CreatedDate
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column NullableField
+		dataType: string
+		lineageTag: a63bf5f2-eb00-4c73-8b8e-573cc3ecaf88
+		summarizeBy: none
+		sourceColumn: NullableField
+
+		annotation SummarizationSetBy = Automatic
+
+	partition TestData-Fact = m
+		mode: import
+		source = ```
+				let
+				    Source = #table(
+				        {"ID", "Name", "Value", "Category", "IsActive", "CreatedDate", "NullableField"},
+				        {
+				            {1, "Alpha", 100.5, "A", true, #date(2024, 1, 15), "Has Value"},
+				            {2, "Beta", 200.75, "B", false, #date(2024, 2, 20), null},
+				            {3, "Gamma", 150.25, "A", true, #date(2024, 3, 10), "Another Value"},
+				            {4, "Delta", 300.0, "C", true, #date(2024, 4, 5), null},
+				            {5, "Epsilon", 50.0, "B", false, #date(2024, 5, 25), "Third Value"}
+				        }
+				    ),
+				    #"Changed Type" = Table.TransformColumnTypes(Source,{
+				        {"ID", Int64.Type}, 
+				        {"Name", type text}, 
+				        {"Value", type number}, 
+				        {"Category", type text}, 
+				        {"IsActive", type logical}, 
+				        {"CreatedDate", type date}, 
+				        {"NullableField", type text}
+				    })
+				in
+				    #"Changed Type"
+				```
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

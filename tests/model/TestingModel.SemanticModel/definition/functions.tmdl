@@ -11,7 +11,7 @@ function 'PQL.Assert.ShouldBeTrue' =
 				"Actual", IF(actualCondition, "TRUE", "FALSE"),
 				"Passed", _Passed
 			)
-	lineageTag: f96c6ba2-2c77-4e4b-8d53-7b7aec9bf7d3
+	lineageTag: 2b17b534-c064-47a4-b443-05e59bdeae8e
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
@@ -26,7 +26,7 @@ function 'PQL.Assert.ShouldBeFalse' =
 				"Actual", IF(actualCondition, "TRUE", "FALSE"),
 				"Passed", _Passed
 			)
-	lineageTag: 474eb686-a329-4e53-a83d-096ccd92453f
+	lineageTag: 04919670-faad-4937-8a6c-911f802cd855
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
@@ -42,7 +42,7 @@ function 'PQL.Assert.ShouldBeNull' =
 				"Actual", IF(ISBLANK(actualValue), "NULL", IF(actualValue = "", "BLANK (empty string)", "HAS VALUE")),
 				"Passed", _Passed
 			)
-	lineageTag: 896b85e4-97b5-4c9c-9d16-e1129adbf687
+	lineageTag: 9d323be5-467d-4f57-939d-c9e40b284f09
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
@@ -59,7 +59,7 @@ function 'PQL.Assert.ShouldNotBeNull' =
 				"Actual", IF(ISBLANK(_ActualResult), "NULL", IF(_ActualResult = "", "BLANK (empty string)", "HAS VALUE")),
 				"Passed", _Passed
 			)
-	lineageTag: 2ea0988e-090b-4886-b8ee-6ea1d5ee7f22
+	lineageTag: 3c53ffba-8b87-4381-854d-ed8ee86a5594
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
@@ -75,7 +75,7 @@ function 'PQL.Assert.ShouldBeBlank' =
 				"Actual", IF(ISBLANK(actualValue), "NULL", IF(actualValue = "", "BLANK (empty string)", "HAS VALUE")),
 				"Passed", _Passed
 			)
-	lineageTag: 6ec622c3-260f-47ea-bcd4-7cfa950d48b1
+	lineageTag: bb1c5348-5a6c-40fb-81e1-301daf761ed1
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
@@ -92,7 +92,7 @@ function 'PQL.Assert.ShouldNotBeBlank' =
 				"Actual", IF(ISBLANK(_ActualResult), "NULL", IF(_ActualResult = "", "BLANK (empty string)", "HAS VALUE")),
 				"Passed", _Passed
 			)
-	lineageTag: 8e9f4f4e-8412-48db-91ff-113718e8b692
+	lineageTag: c255407e-edaf-4a62-bbba-2e693d09bca5
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
@@ -108,7 +108,11 @@ function 'PQL.Assert.ShouldBeNullOrBlank' =
 				"Actual", IF(ISBLANK(actualValue), "NULL", IF(actualValue = "", "BLANK (empty string)", "HAS VALUE")),
 				"Passed", _Passed
 			)
-	lineageTag: c2d1090b-a9af-4f0e-a24b-e76c6ab7a750
+	lineageTag: d9d1aa9b-fe20-476c-b996-af29eb1da179
+
+	annotation DAXLIB_PackageId = PQL.Assert
+
+	annotation DAXLIB_PackageVersion = 0.1.0
 
 /// Asserts that a value is not NULL and not BLANK (has actual content).
 function 'PQL.Assert.ShouldNotBeNullOrBlank' =
@@ -121,7 +125,7 @@ function 'PQL.Assert.ShouldNotBeNullOrBlank' =
 				"Actual", IF(ISBLANK(_ActualResult), "NULL", IF(_ActualResult = "", "BLANK (empty string)", "HAS VALUE")),
 				"Passed", _Passed
 			)
-	lineageTag: 34e43f0c-0f33-4822-ae03-b25c8a46c8c4
+	lineageTag: cbf87044-29b3-4047-a95e-94aa4cafa4cd
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
@@ -136,7 +140,7 @@ function 'PQL.Assert.ShouldEqual' =
 				"Actual", FORMAT(actual, ""),
 				"Passed", _Passed
 			)
-	lineageTag: ef38f02f-12ab-4c59-afa6-03512d011a91
+	lineageTag: 0a233078-fc41-4473-9161-aa825dce1825
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
@@ -151,7 +155,7 @@ function 'PQL.Assert.ShouldNotEqual' =
 				"Actual", FORMAT(actual, ""),
 				"Passed", _Passed
 			)
-	lineageTag: 97dbbd9c-8b9f-4b09-8bef-b80bcd5c833d
+	lineageTag: 2952a4cf-adcd-457e-9206-dcf8f09bd22f
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
@@ -167,7 +171,7 @@ function 'PQL.Assert.ShouldEqualExactly' =
 				"Actual", actual,
 				"Passed", _Passed
 			)
-	lineageTag: 04a07b43-ffbe-4ed0-af6e-0ca032d78d6b
+	lineageTag: a6f5c784-78ea-4d2e-8626-f52108dddcd1
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
@@ -182,7 +186,7 @@ function 'PQL.Assert.ShouldBeGreaterThan' =
 				"Actual", FORMAT(actual, ""),
 				"Passed", _Passed
 			)
-	lineageTag: 27206905-9d12-4389-a5e6-80c2e757cc31
+	lineageTag: b2f8d0ed-481d-4a92-9695-a85ddcb06381
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
@@ -197,7 +201,7 @@ function 'PQL.Assert.ShouldBeLessThan' =
 				"Actual", FORMAT(actual, ""),
 				"Passed", _Passed
 			)
-	lineageTag: 8fbbf093-e26b-4791-aad3-49e20ce9d1dd
+	lineageTag: 6171f3d2-3b19-412a-ba95-c533dbe43384
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
@@ -213,7 +217,7 @@ function 'PQL.Assert.ShouldBeGreaterOrEqual' =
 				"Actual", FORMAT(actual, ""),
 				"Passed", _Passed
 			)
-	lineageTag: 4877eb02-27d2-47fe-b731-5c2dfdad941c
+	lineageTag: fa1eabd1-2c90-43d7-9977-5c45bb1a0aeb
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
@@ -229,7 +233,7 @@ function 'PQL.Assert.ShouldBeLessOrEqual' =
 				"Actual", FORMAT(actual, ""),
 				"Passed", _Passed
 			)
-	lineageTag: 02eb9c44-45d6-4733-9041-8ee8f7e53736
+	lineageTag: 8588a9c4-1fa4-4864-a755-b445431fa5e7
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
@@ -244,7 +248,7 @@ function 'PQL.Assert.ShouldBeBetween' =
 				"Actual", FORMAT(actual, ""),
 				"Passed", _Passed
 			)
-	lineageTag: 85cab486-00cb-4d06-b521-ff549681dc97
+	lineageTag: 46cf34d0-ee97-444d-9390-19a9b01ac6d7
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
@@ -261,7 +265,7 @@ function 'PQL.Assert.ShouldStartWith' =
 				"Actual", actual,
 				"Passed", _Passed
 			)
-	lineageTag: 7806bc91-4f9f-4bd3-bd2a-cae61b6c9507
+	lineageTag: fc6bbd37-0acb-41f4-b76c-8bf71d76a933
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
@@ -277,7 +281,7 @@ function 'PQL.Assert.ShouldEndWith' =
 				"Actual", actual,
 				"Passed", _Passed
 			)
-	lineageTag: aabfdf2e-e16b-4ae2-9363-9df47234b5f3
+	lineageTag: ee64fde3-ffed-498c-909f-ea9178292f8f
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
@@ -293,7 +297,7 @@ function 'PQL.Assert.ShouldContainString' =
 				"Actual", actual,
 				"Passed", _Passed
 			)
-	lineageTag: ad9551a7-3bd7-4902-b9ec-82de094e6f66
+	lineageTag: 6cdb717b-fe4c-4b26-ad09-8da5392d9214
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
@@ -309,7 +313,7 @@ function 'PQL.Assert.ShouldMatch' =
 				"Actual", actual,
 				"Passed", _Passed
 			)
-	lineageTag: f8549541-c7d4-4722-a7db-d5bc0bf9d1e6
+	lineageTag: bf1e2dfc-c6dd-439c-9e35-78cee80904cf
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
@@ -327,7 +331,7 @@ function 'PQL.Assert.Col.ShouldBeNull' =
 				"Actual", IF(_Passed, "ALL NULL", "HAS NON-NULL VALUES (" & FORMAT(_NonNullCount, "0") & " distinct)"),
 				"Passed", _Passed
 			)
-	lineageTag: 76293389-e55f-47b7-8437-54062e90549b
+	lineageTag: e23377c2-357c-4a69-a71b-a83634d70f5a
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
@@ -344,7 +348,7 @@ function 'PQL.Assert.Col.ShouldNotBeNull' =
 				"Actual", IF(_Passed, "HAS VALUES (" & FORMAT(_NonNullCount, "0") & " distinct)", "ALL NULL"),
 				"Passed", _Passed
 			)
-	lineageTag: 59cb3ba3-0e0d-4ea3-b0f6-ea0964d632a4
+	lineageTag: 5b52ad79-9353-43a4-8dca-3f00a929e2a9
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
@@ -365,7 +369,7 @@ function 'PQL.Assert.Col.ShouldBeBlank' =
 				"Actual", IF(_Passed, "ALL BLANK", "HAS NON-BLANK VALUES (" & FORMAT(_TotalCount - _BlankCount, "0") & " non-blank)"),
 				"Passed", _Passed
 			)
-	lineageTag: 7dff2184-64a2-4594-a4b1-8a70d72c84f0
+	lineageTag: ca02256a-21c6-40c5-88e4-6538223d1555
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
@@ -385,7 +389,7 @@ function 'PQL.Assert.Col.ShouldNotBeBlank' =
 				"Actual", IF(_Passed, "HAS VALUES (" & FORMAT(_NonBlankCount, "0") & " non-blank)", "ALL BLANK"),
 				"Passed", _Passed
 			)
-	lineageTag: 086c5cd3-0a6b-4b93-938f-d2d978841182
+	lineageTag: dd7c3af9-c9f3-4e25-b38d-0ddfa41fccc7
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
@@ -405,7 +409,7 @@ function 'PQL.Assert.Col.ShouldBeNullOrBlank' =
 				"Actual", IF(_Passed, "ALL NULL/BLANK", "HAS VALUES (" & FORMAT(_NonEmptyCount, "0") & " non-empty)"),
 				"Passed", _Passed
 			)
-	lineageTag: e78ef812-2adf-4320-a396-5e4d35c9f98a
+	lineageTag: 1e579278-1f19-46db-9b2e-a83d6583704a
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
@@ -425,7 +429,7 @@ function 'PQL.Assert.Col.ShouldNotBeNullOrBlank' =
 				"Actual", IF(_Passed, "HAS VALUES (" & FORMAT(_NonEmptyCount, "0") & " non-empty)", "ALL NULL/BLANK"),
 				"Passed", _Passed
 			)
-	lineageTag: 3ca58483-b1fd-4b66-94bf-437a556eb504
+	lineageTag: 0c2c5e5d-55c6-43ef-bc0a-ea941202e200
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
@@ -443,7 +447,7 @@ function 'PQL.Assert.Col.ShouldBeDistinct' =
 				"Actual", IF(_Passed, "ALL DISTINCT (" & FORMAT(_TotalCount, "0") & " rows)", "DUPLICATES FOUND (" & FORMAT(_DistinctCount, "0") & " distinct of " & FORMAT(_TotalCount, "0") & " rows)"),
 				"Passed", _Passed
 			)
-	lineageTag: c9c9848a-fb72-4407-829a-05818c00e757
+	lineageTag: a9bac1aa-3fbd-421c-a5ea-29e7f5b00dd8
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
@@ -459,7 +463,7 @@ function 'PQL.Assert.Col.ShouldExist' =
 				"Actual", IF(_Found, "EXISTS", "NOT FOUND"),
 				"Passed", _Found
 			)
-	lineageTag: 3559d81f-8813-4dbf-9673-458ef2521d71
+	lineageTag: c114ed82-8827-42d3-9266-27060b9dc642
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
@@ -477,7 +481,7 @@ function 'PQL.Assert.Tbl.ShouldHaveRows' =
 				"Actual", IF(_Passed, "HAS ROWS (" & FORMAT(_RowCount, "0") & ")", "EMPTY (0 rows)"),
 				"Passed", _Passed
 			)
-	lineageTag: 825d027c-90b3-4d9f-bce7-084db59b6333
+	lineageTag: a662c65a-d24c-4301-b287-109247184992
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
@@ -494,7 +498,7 @@ function 'PQL.Assert.Tbl.ShouldHaveRowCount' =
 				"Actual", FORMAT(_RowCount, "0") & " rows",
 				"Passed", _Passed
 			)
-	lineageTag: 1d4d1d05-c85d-44aa-84f9-95703cadff98
+	lineageTag: 8e2f1733-4f65-4f5a-b791-f4ba362cab49
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
@@ -510,7 +514,7 @@ function 'PQL.Assert.Tbl.ShouldHaveMoreRowsThan' =
 				"Actual", FORMAT(_RowCount, "0"),
 				"Passed", _Passed
 			)
-	lineageTag: 6cd2f844-4f6a-4d5a-b457-cb5a59a78738
+	lineageTag: b4524b56-3307-4768-a7de-aacca665ca49
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
@@ -526,7 +530,7 @@ function 'PQL.Assert.Tbl.ShouldExist' =
 				"Actual", IF(_Found, "EXISTS", "NOT FOUND"),
 				"Passed", _Found
 			)
-	lineageTag: 420a1e4d-a587-4390-9b35-a0dc1844193f
+	lineageTag: 4ef014c1-f95e-434c-a5f3-21019816595f
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
@@ -545,7 +549,7 @@ function 'PQL.Assert.Relationship.ShouldExist' =
 				"Actual", IF(_Found, "EXISTS", "NOT FOUND"),
 				"Passed", _Found
 			)
-	lineageTag: 5df9952b-c41e-48ec-b005-0ba081482ac4
+	lineageTag: 2eda02c1-7c38-4bb6-a72e-938ae6c71582
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
@@ -555,7 +559,7 @@ function 'PQL.Assert.Relationship.ShouldExist' =
 function 'PQL.Assert.RetrieveTests' =
 		() =>
 			FILTER(INFO.FUNCTIONS("ORIGIN", "2"), OR(RIGHT([FUNCTION_NAME],5) = ".Test", RIGHT([FUNCTION_NAME],6) = ".Tests"))
-	lineageTag: 8eeb2953-4388-49bd-bb1c-6a4bbcb81d87
+	lineageTag: 864e7cff-10e4-4697-a8ec-6ae4454cda9d
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
@@ -568,10 +572,10 @@ function 'Example.Tests' =
 				PQL.Assert.Col.ShouldNotBeNull("Col.ShouldNotBeNull: ID has values", 'TestData'[ID]),
 				PQL.Assert.Col.ShouldNotBeNull("Col.ShouldNotBeNull: NullableField should have values", 'TestData'[NullableField])
 			)
-	lineageTag: 568bbe52-ca89-4b10-90cd-d68ba69f2b5d
+	lineageTag: 93b20ae2-c4e1-4824-95c9-61f012a2e137
 
 function 'Tbl.Tests' =
 		() =>
 			PQL.Assert.Tbl.ShouldHaveMoreRowsThan("Test Date should have more rows that 1",1,TestData)
-	lineageTag: 91e0acc3-2fa3-4f95-ad7e-47bef6d2b176
+	lineageTag: fc38c159-69cf-416c-a266-4818f95a26e8
 

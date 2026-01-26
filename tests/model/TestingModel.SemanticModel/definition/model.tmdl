@@ -8,10 +8,13 @@ model Model
 
 annotation PBI_ProTooling = ["TMDLView_Desktop","DaxQueryView_Desktop","DevMode"]
 
-annotation __PBI_TimeIntelligenceEnabled = 0
+annotation PBI_QueryOrder = ["TestData","TestData-Fact"]
 
 ref table TestData
 ref table TestData-Fact
+ref table DateTableTemplate_dd134a0d-dab9-4a75-9226-590cf5a9a1ee
+ref table LocalDateTable_17ce7050-4f98-45da-a82b-200d19f39223
+ref table LocalDateTable_a54a7c29-b72a-43ab-91d9-98883b3951c0
 
 ref cultureInfo en-US
 

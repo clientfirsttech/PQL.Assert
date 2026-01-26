@@ -4,3 +4,13 @@ relationship ccd2cce7-cbf3-0b73-4c1b-b6768c561482
 	fromColumn: TestData.ID
 	toColumn: TestData-Fact.ID
 
+relationship 0e93a9b3-ebd0-4101-82b7-9af2065edd8a
+	joinOnDateBehavior: datePartOnly
+	fromColumn: TestData.CreatedDate
+	toColumn: LocalDateTable_17ce7050-4f98-45da-a82b-200d19f39223.Date
+
+relationship 555ba403-1d55-49e2-a968-3611498e67de
+	joinOnDateBehavior: datePartOnly
+	fromColumn: TestData-Fact.CreatedDate
+	toColumn: LocalDateTable_a54a7c29-b72a-43ab-91d9-98883b3951c0.Date
+

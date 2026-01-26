@@ -482,3 +482,4 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+tests/model/TestingModel.SemanticModel/.pbi/cache.abf

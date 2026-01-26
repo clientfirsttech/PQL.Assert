@@ -52,6 +52,11 @@ table TestData-Fact
 		summarizeBy: none
 		sourceColumn: CreatedDate
 
+		variation Variation
+			isDefault
+			relationship: 555ba403-1d55-49e2-a968-3611498e67de
+			defaultHierarchy: LocalDateTable_a54a7c29-b72a-43ab-91d9-98883b3951c0.'Date Hierarchy'
+
 		annotation SummarizationSetBy = Automatic
 
 		annotation UnderlyingDateTimeDataType = Date

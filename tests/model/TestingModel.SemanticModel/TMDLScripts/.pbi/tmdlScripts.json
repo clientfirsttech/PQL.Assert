@@ -3,7 +3,8 @@
   "tabOrder": [
     "Load Test Data",
     "Reset",
-    "Load PQL"
+    "Load PQL",
+    "Script 1"
   ],
-  "defaultTab": "Load PQL"
+  "defaultTab": "Script 1"
 }

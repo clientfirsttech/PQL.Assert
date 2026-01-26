@@ -8,9 +8,10 @@ model Model
 
 annotation PBI_ProTooling = ["TMDLView_Desktop","DaxQueryView_Desktop","DevMode"]
 
-annotation PBI_QueryOrder = ["TestData"]
+annotation __PBI_TimeIntelligenceEnabled = 0
 
 ref table TestData
+ref table TestData-Fact
 
 ref cultureInfo en-US
 

@@ -1,0 +1,6 @@
+relationship ccd2cce7-cbf3-0b73-4c1b-b6768c561482
+	crossFilteringBehavior: bothDirections
+	fromCardinality: one
+	fromColumn: TestData.ID
+	toColumn: TestData-Fact.ID
+

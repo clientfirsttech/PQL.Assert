@@ -1,0 +1,1154 @@
+createOrReplace
+
+	model Model
+		culture: en-US
+		defaultPowerBIDataSourceVersion: powerBI_V3
+		sourceQueryCulture: en-US
+		dataAccessOptions
+			legacyRedirects
+			returnErrorValuesAsNull
+
+		table TestData
+			lineageTag: f0000001-test-data-0001-000000000001
+
+			column ID
+				dataType: int64
+				formatString: 0
+				lineageTag: f0000001-test-data-0002-000000000001
+				summarizeBy: none
+				sourceColumn: ID
+
+				annotation SummarizationSetBy = Automatic
+
+			column Name
+				dataType: string
+				lineageTag: f0000001-test-data-0003-000000000001
+				summarizeBy: none
+				sourceColumn: Name
+
+				annotation SummarizationSetBy = Automatic
+
+			column Value
+				dataType: double
+				lineageTag: f0000001-test-data-0004-000000000001
+				summarizeBy: sum
+				sourceColumn: Value
+
+				annotation SummarizationSetBy = Automatic
+
+				annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+			column Category
+				dataType: string
+				lineageTag: f0000001-test-data-0005-000000000001
+				summarizeBy: none
+				sourceColumn: Category
+
+				annotation SummarizationSetBy = Automatic
+
+			column IsActive
+				dataType: boolean
+				formatString: """TRUE"";""TRUE"";""FALSE"""
+				lineageTag: f0000001-test-data-0006-000000000001
+				summarizeBy: none
+				sourceColumn: IsActive
+
+				annotation SummarizationSetBy = Automatic
+
+			column CreatedDate
+				dataType: dateTime
+				formatString: Long Date
+				lineageTag: f0000001-test-data-0007-000000000001
+				summarizeBy: none
+				sourceColumn: CreatedDate
+
+				variation Variation
+					isDefault
+					relationship: 0e93a9b3-ebd0-4101-82b7-9af2065edd8a
+					defaultHierarchy: LocalDateTable_17ce7050-4f98-45da-a82b-200d19f39223.'Date Hierarchy'
+
+				annotation SummarizationSetBy = Automatic
+
+				annotation UnderlyingDateTimeDataType = Date
+
+			column NullableField
+				dataType: string
+				lineageTag: f0000001-test-data-0008-000000000001
+				summarizeBy: none
+				sourceColumn: NullableField
+
+				annotation SummarizationSetBy = Automatic
+
+			partition TestData = m
+				mode: import
+				source = ```
+						let
+						    Source = #table(
+						        {"ID", "Name", "Value", "Category", "IsActive", "CreatedDate", "NullableField"},
+						        {
+						            {1, "Alpha", 100.5, "A", true, #date(2024, 1, 15), "Has Value"},
+						            {2, "Beta", 200.75, "B", false, #date(2024, 2, 20), null},
+						            {3, "Gamma", 150.25, "A", true, #date(2024, 3, 10), "Another Value"},
+						            {4, "Delta", 300.0, "C", true, #date(2024, 4, 5), null},
+						            {5, "Epsilon", 50.0, "B", false, #date(2024, 5, 25), "Third Value"}
+						        }
+						    ),
+						    #"Changed Type" = Table.TransformColumnTypes(Source,{
+						        {"ID", Int64.Type}, 
+						        {"Name", type text}, 
+						        {"Value", type number}, 
+						        {"Category", type text}, 
+						        {"IsActive", type logical}, 
+						        {"CreatedDate", type date}, 
+						        {"NullableField", type text}
+						    })
+						in
+						    #"Changed Type"
+						```
+
+			annotation PBI_ResultType = Table
+
+			annotation PBI_NavigationStepName = Navigation
+
+		table TestData-Fact
+			lineageTag: 9eca8f14-b5f4-4598-accb-95d0d61a4308
+
+			column ID
+				dataType: int64
+				formatString: 0
+				lineageTag: 70de7d88-c05f-4e64-ac83-fb6f873a4fb4
+				summarizeBy: none
+				sourceColumn: ID
+
+				annotation SummarizationSetBy = Automatic
+
+			column Name
+				dataType: string
+				lineageTag: 7e0e46ea-9c85-41a5-b711-813fc8a5dcd6
+				summarizeBy: none
+				sourceColumn: Name
+
+				annotation SummarizationSetBy = Automatic
+
+			column Value
+				dataType: double
+				lineageTag: 65668e87-a3d9-40da-b337-9c13ecb64295
+				summarizeBy: sum
+				sourceColumn: Value
+
+				annotation SummarizationSetBy = Automatic
+
+				annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+			column Category
+				dataType: string
+				lineageTag: 90523877-256a-4738-87db-9b5207a9758c
+				summarizeBy: none
+				sourceColumn: Category
+
+				annotation SummarizationSetBy = Automatic
+
+			column IsActive
+				dataType: boolean
+				formatString: """TRUE"";""TRUE"";""FALSE"""
+				lineageTag: 59366d6c-8eb1-4431-82a4-e6079edd1de6
+				summarizeBy: none
+				sourceColumn: IsActive
+
+				annotation SummarizationSetBy = Automatic
+
+			column CreatedDate
+				dataType: dateTime
+				formatString: Long Date
+				lineageTag: 630707dd-787e-49ac-9711-52b9d686aaaf
+				summarizeBy: none
+				sourceColumn: CreatedDate
+
+				variation Variation
+					isDefault
+					relationship: 555ba403-1d55-49e2-a968-3611498e67de
+					defaultHierarchy: LocalDateTable_a54a7c29-b72a-43ab-91d9-98883b3951c0.'Date Hierarchy'
+
+				annotation SummarizationSetBy = Automatic
+
+				annotation UnderlyingDateTimeDataType = Date
+
+			column NullableField
+				dataType: string
+				lineageTag: a63bf5f2-eb00-4c73-8b8e-573cc3ecaf88
+				summarizeBy: none
+				sourceColumn: NullableField
+
+				annotation SummarizationSetBy = Automatic
+
+			partition TestData-Fact = m
+				mode: import
+				source = ```
+						let
+						    Source = #table(
+						        {"ID", "Name", "Value", "Category", "IsActive", "CreatedDate", "NullableField"},
+						        {
+						            {1, "Alpha", 100.5, "A", true, #date(2024, 1, 15), "Has Value"},
+						            {2, "Beta", 200.75, "B", false, #date(2024, 2, 20), null},
+						            {3, "Gamma", 150.25, "A", true, #date(2024, 3, 10), "Another Value"},
+						            {4, "Delta", 300.0, "C", true, #date(2024, 4, 5), null},
+						            {5, "Epsilon", 50.0, "B", false, #date(2024, 5, 25), "Third Value"}
+						        }
+						    ),
+						    #"Changed Type" = Table.TransformColumnTypes(Source,{
+						        {"ID", Int64.Type}, 
+						        {"Name", type text}, 
+						        {"Value", type number}, 
+						        {"Category", type text}, 
+						        {"IsActive", type logical}, 
+						        {"CreatedDate", type date}, 
+						        {"NullableField", type text}
+						    })
+						in
+						    #"Changed Type"
+						```
+
+			annotation PBI_NavigationStepName = Navigation
+
+			annotation PBI_ResultType = Table
+
+		table DateTableTemplate_dd134a0d-dab9-4a75-9226-590cf5a9a1ee
+			isHidden
+			isPrivate
+			lineageTag: 84a4b040-a668-4415-a6b6-a0157cf987bf
+
+			column Date
+				dataType: dateTime
+				isHidden
+				formatString: General Date
+				lineageTag: d9556d94-6680-463c-8fca-c3ef2d0967fe
+				dataCategory: PaddedDateTableDates
+				summarizeBy: none
+				isNameInferred
+				sourceColumn: [Date]
+
+				annotation SummarizationSetBy = User
+
+			column Year = YEAR([Date])
+				dataType: int64
+				isHidden
+				formatString: 0
+				lineageTag: 7d127339-119c-4658-b2f2-7fada65d6f07
+				dataCategory: Years
+				summarizeBy: none
+
+				annotation SummarizationSetBy = User
+
+				annotation TemplateId = Year
+
+			column MonthNo = MONTH([Date])
+				dataType: int64
+				isHidden
+				formatString: 0
+				lineageTag: 6a1f058f-2011-4dd3-b43c-a3da02eaaee0
+				dataCategory: MonthOfYear
+				summarizeBy: none
+
+				annotation SummarizationSetBy = User
+
+				annotation TemplateId = MonthNumber
+
+			column Month = FORMAT([Date], "MMMM")
+				dataType: string
+				isHidden
+				lineageTag: ed830afb-5355-4d9e-9679-ec3c4c1d82d0
+				dataCategory: Months
+				summarizeBy: none
+				sortByColumn: MonthNo
+
+				annotation SummarizationSetBy = User
+
+				annotation TemplateId = Month
+
+			column QuarterNo = INT(([MonthNo] + 2) / 3)
+				dataType: int64
+				isHidden
+				formatString: 0
+				lineageTag: 88081d0f-e45c-4878-a2ee-4eafba6b547f
+				dataCategory: QuarterOfYear
+				summarizeBy: none
+
+				annotation SummarizationSetBy = User
+
+				annotation TemplateId = QuarterNumber
+
+			column Quarter = "Qtr " & [QuarterNo]
+				dataType: string
+				isHidden
+				lineageTag: ea5b783a-b28f-4eb1-82c6-9e700cb6a6e9
+				dataCategory: Quarters
+				summarizeBy: none
+				sortByColumn: QuarterNo
+
+				annotation SummarizationSetBy = User
+
+				annotation TemplateId = Quarter
+
+			column Day = DAY([Date])
+				dataType: int64
+				isHidden
+				formatString: 0
+				lineageTag: 54b31c4e-ef54-438a-acb5-bd9cac754d9b
+				dataCategory: DayOfMonth
+				summarizeBy: none
+
+				annotation SummarizationSetBy = User
+
+				annotation TemplateId = Day
+
+			hierarchy 'Date Hierarchy'
+				lineageTag: 82b76e10-129a-4475-b803-2daec9e92b4f
+
+				level Year
+					lineageTag: d1325a86-480f-4989-b6b9-a5ed521674a6
+					column: Year
+
+				level Quarter
+					lineageTag: 5e2f35ef-e1d3-4793-911e-31ebc95214f3
+					column: Quarter
+
+				level Month
+					lineageTag: 5984e495-2a99-4e57-9eb7-1b5c5cb24a7f
+					column: Month
+
+				level Day
+					lineageTag: c2d8c86d-3976-4ff6-8d75-e4523ae96078
+					column: Day
+
+				annotation TemplateId = DateHierarchy
+
+			partition DateTableTemplate_dd134a0d-dab9-4a75-9226-590cf5a9a1ee = calculated
+				mode: import
+				source = Calendar(Date(2015,1,1), Date(2015,1,1))
+
+			annotation __PBI_TemplateDateTable = true
+
+			annotation DefaultItem = DateHierarchy
+
+		table LocalDateTable_17ce7050-4f98-45da-a82b-200d19f39223
+			isHidden
+			showAsVariationsOnly
+			lineageTag: cbfac3fa-8474-49da-8a7d-e86a74f9a060
+
+			column Date
+				dataType: dateTime
+				isHidden
+				formatString: General Date
+				lineageTag: 615c63bc-1a29-4f2b-ad55-eaa66fb9c742
+				dataCategory: PaddedDateTableDates
+				summarizeBy: none
+				isNameInferred
+				sourceColumn: [Date]
+
+				annotation SummarizationSetBy = User
+
+			column Year = YEAR([Date])
+				dataType: int64
+				isHidden
+				formatString: 0
+				lineageTag: 29d417fa-24c4-4613-bc37-7c5bd8d5f7c3
+				dataCategory: Years
+				summarizeBy: none
+
+				annotation SummarizationSetBy = User
+
+				annotation TemplateId = Year
+
+			column MonthNo = MONTH([Date])
+				dataType: int64
+				isHidden
+				formatString: 0
+				lineageTag: 7be8e467-b7af-4bf6-8abc-8d9a8576333d
+				dataCategory: MonthOfYear
+				summarizeBy: none
+
+				annotation SummarizationSetBy = User
+
+				annotation TemplateId = MonthNumber
+
+			column Month = FORMAT([Date], "MMMM")
+				dataType: string
+				isHidden
+				lineageTag: 1b89f76b-cd51-4749-8f69-a388d3d0b785
+				dataCategory: Months
+				summarizeBy: none
+				sortByColumn: MonthNo
+
+				annotation SummarizationSetBy = User
+
+				annotation TemplateId = Month
+
+			column QuarterNo = INT(([MonthNo] + 2) / 3)
+				dataType: int64
+				isHidden
+				formatString: 0
+				lineageTag: 0b16278c-cf04-4c22-9946-7fcd34446835
+				dataCategory: QuarterOfYear
+				summarizeBy: none
+
+				annotation SummarizationSetBy = User
+
+				annotation TemplateId = QuarterNumber
+
+			column Quarter = "Qtr " & [QuarterNo]
+				dataType: string
+				isHidden
+				lineageTag: 7e03f6f1-d4d5-4fa1-bca4-f5373d301606
+				dataCategory: Quarters
+				summarizeBy: none
+				sortByColumn: QuarterNo
+
+				annotation SummarizationSetBy = User
+
+				annotation TemplateId = Quarter
+
+			column Day = DAY([Date])
+				dataType: int64
+				isHidden
+				formatString: 0
+				lineageTag: 6826d795-51a7-4c8b-a6ad-1462a312b179
+				dataCategory: DayOfMonth
+				summarizeBy: none
+
+				annotation SummarizationSetBy = User
+
+				annotation TemplateId = Day
+
+			hierarchy 'Date Hierarchy'
+				lineageTag: 2741465b-5081-4903-999d-7d424a210909
+
+				level Year
+					lineageTag: 2dd68855-4c07-4358-9af3-daa433010c7c
+					column: Year
+
+				level Quarter
+					lineageTag: 661b2034-d01a-4f02-a35f-1645c5815ef4
+					column: Quarter
+
+				level Month
+					lineageTag: 8ec2866d-2d53-4e7b-a132-13b8ba762885
+					column: Month
+
+				level Day
+					lineageTag: dac31d64-ee50-49de-a5db-da2e6b18dfdb
+					column: Day
+
+				annotation TemplateId = DateHierarchy
+
+			partition LocalDateTable_17ce7050-4f98-45da-a82b-200d19f39223 = calculated
+				mode: import
+				source = Calendar(Date(Year(MIN('TestData'[CreatedDate])), 1, 1), Date(Year(MAX('TestData'[CreatedDate])), 12, 31))
+
+			annotation __PBI_LocalDateTable = true
+
+		table LocalDateTable_a54a7c29-b72a-43ab-91d9-98883b3951c0
+			isHidden
+			showAsVariationsOnly
+			lineageTag: d0a9c66e-b0ab-4f62-8ab2-295f42c49090
+
+			column Date
+				dataType: dateTime
+				isHidden
+				formatString: General Date
+				lineageTag: 5643bc45-58b0-4dfb-84c5-557ec67c041d
+				dataCategory: PaddedDateTableDates
+				summarizeBy: none
+				isNameInferred
+				sourceColumn: [Date]
+
+				annotation SummarizationSetBy = User
+
+			column Year = YEAR([Date])
+				dataType: int64
+				isHidden
+				formatString: 0
+				lineageTag: 94565edb-f405-4887-ae98-093fb87effae
+				dataCategory: Years
+				summarizeBy: none
+
+				annotation SummarizationSetBy = User
+
+				annotation TemplateId = Year
+
+			column MonthNo = MONTH([Date])
+				dataType: int64
+				isHidden
+				formatString: 0
+				lineageTag: 107cf83e-6b60-4052-92c0-8eb03b67b412
+				dataCategory: MonthOfYear
+				summarizeBy: none
+
+				annotation SummarizationSetBy = User
+
+				annotation TemplateId = MonthNumber
+
+			column Month = FORMAT([Date], "MMMM")
+				dataType: string
+				isHidden
+				lineageTag: 49c77b3f-5d88-42d6-b18a-06780b018106
+				dataCategory: Months
+				summarizeBy: none
+				sortByColumn: MonthNo
+
+				annotation SummarizationSetBy = User
+
+				annotation TemplateId = Month
+
+			column QuarterNo = INT(([MonthNo] + 2) / 3)
+				dataType: int64
+				isHidden
+				formatString: 0
+				lineageTag: 6c2b1e9a-7e85-4ffe-9697-dcb1bbab71ec
+				dataCategory: QuarterOfYear
+				summarizeBy: none
+
+				annotation SummarizationSetBy = User
+
+				annotation TemplateId = QuarterNumber
+
+			column Quarter = "Qtr " & [QuarterNo]
+				dataType: string
+				isHidden
+				lineageTag: c6b671cb-b312-44d7-8b9e-84f0dce493c0
+				dataCategory: Quarters
+				summarizeBy: none
+				sortByColumn: QuarterNo
+
+				annotation SummarizationSetBy = User
+
+				annotation TemplateId = Quarter
+
+			column Day = DAY([Date])
+				dataType: int64
+				isHidden
+				formatString: 0
+				lineageTag: 36f7fecb-973c-494d-8f1f-91dfcd026ff9
+				dataCategory: DayOfMonth
+				summarizeBy: none
+
+				annotation SummarizationSetBy = User
+
+				annotation TemplateId = Day
+
+			hierarchy 'Date Hierarchy'
+				lineageTag: 66062a6b-08a3-459b-be61-f54a1a4b509c
+
+				level Year
+					lineageTag: 75cf64a2-eff3-4da4-8124-c40d007b9acc
+					column: Year
+
+				level Quarter
+					lineageTag: 715e5f90-f811-4300-832e-567d13cac388
+					column: Quarter
+
+				level Month
+					lineageTag: 09efc9e3-1bef-4b53-abf3-964a227250de
+					column: Month
+
+				level Day
+					lineageTag: 4aea95d8-ab15-491b-94b7-d92120f1c3b0
+					column: Day
+
+				annotation TemplateId = DateHierarchy
+
+			partition LocalDateTable_a54a7c29-b72a-43ab-91d9-98883b3951c0 = calculated
+				mode: import
+				source = Calendar(Date(Year(MIN('TestData-Fact'[CreatedDate])), 1, 1), Date(Year(MAX('TestData-Fact'[CreatedDate])), 12, 31))
+
+			annotation __PBI_LocalDateTable = true
+
+		relationship 0e93a9b3-ebd0-4101-82b7-9af2065edd8a
+			joinOnDateBehavior: datePartOnly
+			fromColumn: TestData.CreatedDate
+			toColumn: LocalDateTable_17ce7050-4f98-45da-a82b-200d19f39223.Date
+
+		relationship 555ba403-1d55-49e2-a968-3611498e67de
+			joinOnDateBehavior: datePartOnly
+			fromColumn: TestData-Fact.CreatedDate
+			toColumn: LocalDateTable_a54a7c29-b72a-43ab-91d9-98883b3951c0.Date
+
+		relationship ccd2cce7-cbf3-0b73-4c1b-b6768c561482
+			crossFilteringBehavior: bothDirections
+			fromCardinality: one
+			fromColumn: TestData.ID
+			toColumn: TestData-Fact.ID
+
+		cultureInfo en-US
+
+			linguisticMetadata = {"Version":"1.0.0","Language":"en-US"}
+				contentType: json
+
+		/// DAX Assertion Library Functions
+		/// Publisher: PQL (Power Query Lint)
+		/// These functions provide a standardized way to write unit tests for DAX models
+		/// Basic Assertions - PQL.Assert namespace
+		function 'PQL.Assert.ShouldBeTrue' =
+				(testName : STRING, actualCondition : BOOLEAN) =>
+					VAR _Passed = actualCondition = TRUE
+					RETURN ROW(
+						"TestName", testName,
+						"Expected", "TRUE",
+						"Actual", IF(actualCondition, "TRUE", "FALSE"),
+						"Passed", _Passed
+					)
+			lineageTag: f994bb96-3b2a-4655-9263-f44db4a8f9eb
+
+			annotation DAXLIB_PackageId = PQL.Assert
+
+			annotation DAXLIB_PackageVersion = 0.1.0
+
+		function 'PQL.Assert.ShouldBeFalse' =
+				(testName : STRING, actualCondition : BOOLEAN) =>
+					VAR _Passed = actualCondition = FALSE
+					RETURN ROW(
+						"TestName", testName,
+						"Expected", "FALSE",
+						"Actual", IF(actualCondition, "TRUE", "FALSE"),
+						"Passed", _Passed
+					)
+			lineageTag: 9e9cc9f7-1328-4f21-8dfe-79b57eafd137
+
+			annotation DAXLIB_PackageId = PQL.Assert
+
+			annotation DAXLIB_PackageVersion = 0.1.0
+
+		/// Asserts that a value is NULL (DAX BLANK()).
+		function 'PQL.Assert.ShouldBeNull' =
+				(testName : STRING, actualValue : VARIANT) =>
+					VAR _Passed = ISBLANK(actualValue)
+					RETURN ROW(
+						"TestName", testName,
+						"Expected", "NULL",
+						"Actual", IF(ISBLANK(actualValue), "NULL", IF(actualValue = "", "BLANK (empty string)", "HAS VALUE")),
+						"Passed", _Passed
+					)
+			lineageTag: 5bc22d63-3ee6-4d61-b961-d11829e80bd0
+
+			annotation DAXLIB_PackageId = PQL.Assert
+
+			annotation DAXLIB_PackageVersion = 0.1.0
+
+		/// Asserts that a value is not NULL (not DAX BLANK()). Accepts both simple values and expressions.
+		function 'PQL.Assert.ShouldNotBeNull' =
+				(testName : STRING, actualValue : SCALAR VARIANT EXPR) =>
+					VAR _ActualResult = actualValue
+					VAR _Passed = NOT ISBLANK(_ActualResult)
+					RETURN ROW(
+						"TestName", testName,
+						"Expected", "NOT NULL",
+						"Actual", IF(ISBLANK(_ActualResult), "NULL", IF(_ActualResult = "", "BLANK (empty string)", "HAS VALUE")),
+						"Passed", _Passed
+					)
+			lineageTag: 73bd6451-7dc8-423b-be7c-3a64eb87acc1
+
+			annotation DAXLIB_PackageId = PQL.Assert
+
+			annotation DAXLIB_PackageVersion = 0.1.0
+
+		/// Asserts that a value is BLANK (empty string "").
+		function 'PQL.Assert.ShouldBeBlank' =
+				(testName : STRING, actualValue : VARIANT) =>
+					VAR _Passed = NOT ISBLANK(actualValue) && actualValue = ""
+					RETURN ROW(
+						"TestName", testName,
+						"Expected", "BLANK (empty string)",
+						"Actual", IF(ISBLANK(actualValue), "NULL", IF(actualValue = "", "BLANK (empty string)", "HAS VALUE")),
+						"Passed", _Passed
+					)
+			lineageTag: f42470f5-a583-4448-91dd-20465830451e
+
+			annotation DAXLIB_PackageId = PQL.Assert
+
+			annotation DAXLIB_PackageVersion = 0.1.0
+
+		/// Asserts that a value is not BLANK (not empty string "").
+		function 'PQL.Assert.ShouldNotBeBlank' =
+				(testName : STRING, actualValue : SCALAR VARIANT EXPR) =>
+					VAR _ActualResult = actualValue
+					VAR _Passed = ISBLANK(_ActualResult) || _ActualResult <> ""
+					RETURN ROW(
+						"TestName", testName,
+						"Expected", "NOT BLANK (not empty string)",
+						"Actual", IF(ISBLANK(_ActualResult), "NULL", IF(_ActualResult = "", "BLANK (empty string)", "HAS VALUE")),
+						"Passed", _Passed
+					)
+			lineageTag: c0fdc5dd-a4e7-4555-b2e6-e54c5760d934
+
+			annotation DAXLIB_PackageId = PQL.Assert
+
+			annotation DAXLIB_PackageVersion = 0.1.0
+
+		/// Asserts that a value is NULL or BLANK (BLANK() or empty string "").
+		function 'PQL.Assert.ShouldBeNullOrBlank' =
+				(testName : STRING, actualValue : VARIANT) =>
+					VAR _Passed = ISBLANK(actualValue) || actualValue = ""
+					RETURN ROW(
+						"TestName", testName,
+						"Expected", "NULL OR BLANK",
+						"Actual", IF(ISBLANK(actualValue), "NULL", IF(actualValue = "", "BLANK (empty string)", "HAS VALUE")),
+						"Passed", _Passed
+					)
+			lineageTag: 08509c94-fc6a-4b74-8a62-0bdf331eb788
+
+		/// Asserts that a value is not NULL and not BLANK (has actual content).
+		function 'PQL.Assert.ShouldNotBeNullOrBlank' =
+				(testName : STRING, actualValue : SCALAR VARIANT EXPR) =>
+					VAR _ActualResult = actualValue
+					VAR _Passed = NOT ISBLANK(_ActualResult) && _ActualResult <> ""
+					RETURN ROW(
+						"TestName", testName,
+						"Expected", "NOT NULL AND NOT BLANK",
+						"Actual", IF(ISBLANK(_ActualResult), "NULL", IF(_ActualResult = "", "BLANK (empty string)", "HAS VALUE")),
+						"Passed", _Passed
+					)
+			lineageTag: abb96baf-0b9f-4641-82a1-32e6e33fb506
+
+			annotation DAXLIB_PackageId = PQL.Assert
+
+			annotation DAXLIB_PackageVersion = 0.1.0
+
+		function 'PQL.Assert.ShouldEqual' =
+				(testName : STRING, expected : VARIANT, actual : VARIANT) =>
+					VAR _Passed = expected = actual
+					RETURN ROW(
+						"TestName", testName,
+						"Expected", FORMAT(expected, ""),
+						"Actual", FORMAT(actual, ""),
+						"Passed", _Passed
+					)
+			lineageTag: 24b7411e-64d2-49eb-86e5-c33008fc3eda
+
+			annotation DAXLIB_PackageId = PQL.Assert
+
+			annotation DAXLIB_PackageVersion = 0.1.0
+
+		function 'PQL.Assert.ShouldNotEqual' =
+				(testName : STRING, notExpected : VARIANT, actual : VARIANT) =>
+					VAR _Passed = notExpected <> actual
+					RETURN ROW(
+						"TestName", testName,
+						"Expected", "NOT " & FORMAT(notExpected, ""),
+						"Actual", FORMAT(actual, ""),
+						"Passed", _Passed
+					)
+			lineageTag: c4974b50-822d-495c-8a9b-49b3e153bbae
+
+			annotation DAXLIB_PackageId = PQL.Assert
+
+			annotation DAXLIB_PackageVersion = 0.1.0
+
+		/// Asserts that two strings are exactly equal (case-sensitive comparison).
+		function 'PQL.Assert.ShouldEqualExactly' =
+				(testName : STRING, expected : STRING, actual : STRING) =>
+					VAR _Passed = EXACT(expected, actual)
+					RETURN ROW(
+						"TestName", testName,
+						"Expected", expected,
+						"Actual", actual,
+						"Passed", _Passed
+					)
+			lineageTag: 0604a503-e435-4ef3-bea4-57351edda15b
+
+			annotation DAXLIB_PackageId = PQL.Assert
+
+			annotation DAXLIB_PackageVersion = 0.1.0
+
+		function 'PQL.Assert.ShouldBeGreaterThan' =
+				(testName : STRING, threshold : DOUBLE, actual : DOUBLE) =>
+					VAR _Passed = actual > threshold
+					RETURN ROW(
+						"TestName", testName,
+						"Expected", "> " & FORMAT(threshold, ""),
+						"Actual", FORMAT(actual, ""),
+						"Passed", _Passed
+					)
+			lineageTag: 1598e381-fc2f-4381-8f87-f535110f9081
+
+			annotation DAXLIB_PackageId = PQL.Assert
+
+			annotation DAXLIB_PackageVersion = 0.1.0
+
+		function 'PQL.Assert.ShouldBeLessThan' =
+				(testName : STRING, threshold : DOUBLE, actual : DOUBLE) =>
+					VAR _Passed = actual < threshold
+					RETURN ROW(
+						"TestName", testName,
+						"Expected", "< " & FORMAT(threshold, ""),
+						"Actual", FORMAT(actual, ""),
+						"Passed", _Passed
+					)
+			lineageTag: d63b0e6f-a6fd-4c83-a3aa-b450465022a1
+
+			annotation DAXLIB_PackageId = PQL.Assert
+
+			annotation DAXLIB_PackageVersion = 0.1.0
+
+		/// Asserts that a number is greater than or equal to an expected value.
+		function 'PQL.Assert.ShouldBeGreaterOrEqual' =
+				(testName : STRING, threshold : DOUBLE, actual : DOUBLE) =>
+					VAR _Passed = actual >= threshold
+					RETURN ROW(
+						"TestName", testName,
+						"Expected", ">= " & FORMAT(threshold, ""),
+						"Actual", FORMAT(actual, ""),
+						"Passed", _Passed
+					)
+			lineageTag: 0866e945-2e6c-4c41-ae9a-29d0ed154eb8
+
+			annotation DAXLIB_PackageId = PQL.Assert
+
+			annotation DAXLIB_PackageVersion = 0.1.0
+
+		/// Asserts that a number is less than or equal to an expected value.
+		function 'PQL.Assert.ShouldBeLessOrEqual' =
+				(testName : STRING, threshold : DOUBLE, actual : DOUBLE) =>
+					VAR _Passed = actual <= threshold
+					RETURN ROW(
+						"TestName", testName,
+						"Expected", "<= " & FORMAT(threshold, ""),
+						"Actual", FORMAT(actual, ""),
+						"Passed", _Passed
+					)
+			lineageTag: bcad415d-5f64-4a44-9536-a650b28d72d4
+
+			annotation DAXLIB_PackageId = PQL.Assert
+
+			annotation DAXLIB_PackageVersion = 0.1.0
+
+		function 'PQL.Assert.ShouldBeBetween' =
+				(testName : STRING, lowerBound : DOUBLE, upperBound : DOUBLE, actual : DOUBLE) =>
+					VAR _Passed = actual >= lowerBound && actual <= upperBound
+					RETURN ROW(
+						"TestName", testName,
+						"Expected", FORMAT(lowerBound, "") & " <= value <= " & FORMAT(upperBound, ""),
+						"Actual", FORMAT(actual, ""),
+						"Passed", _Passed
+					)
+			lineageTag: 684e3438-27c4-4d5e-9552-7e99ffe993ce
+
+			annotation DAXLIB_PackageId = PQL.Assert
+
+			annotation DAXLIB_PackageVersion = 0.1.0
+
+		/// String Assertions - PQL.Assert namespace
+		/// Asserts that a string starts with the specified prefix (case-insensitive).
+		function 'PQL.Assert.ShouldStartWith' =
+				(testName : STRING, prefix : STRING, actual : STRING) =>
+					VAR _Passed = LEFT(UPPER(actual), LEN(prefix)) = UPPER(prefix)
+					RETURN ROW(
+						"TestName", testName,
+						"Expected", "Starts with '" & prefix & "'",
+						"Actual", actual,
+						"Passed", _Passed
+					)
+			lineageTag: e88dfbe0-5376-4f4d-a8a0-d3789cb61d6f
+
+			annotation DAXLIB_PackageId = PQL.Assert
+
+			annotation DAXLIB_PackageVersion = 0.1.0
+
+		/// Asserts that a string ends with the specified suffix (case-insensitive).
+		function 'PQL.Assert.ShouldEndWith' =
+				(testName : STRING, suffix : STRING, actual : STRING) =>
+					VAR _Passed = RIGHT(UPPER(actual), LEN(suffix)) = UPPER(suffix)
+					RETURN ROW(
+						"TestName", testName,
+						"Expected", "Ends with '" & suffix & "'",
+						"Actual", actual,
+						"Passed", _Passed
+					)
+			lineageTag: 1d107b0d-1b87-41aa-ade5-9eb1577e507d
+
+			annotation DAXLIB_PackageId = PQL.Assert
+
+			annotation DAXLIB_PackageVersion = 0.1.0
+
+		/// Asserts that a string contains the specified substring (case-insensitive).
+		function 'PQL.Assert.ShouldContainString' =
+				(testName : STRING, substring : STRING, actual : STRING) =>
+					VAR _Passed = CONTAINSSTRING(actual, substring)
+					RETURN ROW(
+						"TestName", testName,
+						"Expected", "Contains '" & substring & "'",
+						"Actual", actual,
+						"Passed", _Passed
+					)
+			lineageTag: cfe89df4-e852-4015-87f5-0728a5804957
+
+			annotation DAXLIB_PackageId = PQL.Assert
+
+			annotation DAXLIB_PackageVersion = 0.1.0
+
+		/// Asserts that a string matches a pattern (case-insensitive).
+		function 'PQL.Assert.ShouldMatch' =
+				(testName : STRING, pattern : STRING, actual : STRING) =>
+					VAR _Passed = CONTAINSSTRING(actual, pattern)
+					RETURN ROW(
+						"TestName", testName,
+						"Expected", "Matches '" & pattern & "'",
+						"Actual", actual,
+						"Passed", _Passed
+					)
+			lineageTag: ff50bc71-042c-454b-8873-a17e5944f2c1
+
+			annotation DAXLIB_PackageId = PQL.Assert
+
+			annotation DAXLIB_PackageVersion = 0.1.0
+
+		/// Col Assertions - PQL.Assert.Col namespace
+		/// Asserts that all values in a column are NULL (DAX BLANK()).
+		function 'PQL.Assert.Col.ShouldBeNull' =
+				(testName : STRING, columnRef : ANYREF EXPR) =>
+					VAR _NonNullCount = DISTINCTCOUNTNOBLANK(columnRef)
+					VAR _Passed = _NonNullCount = 0
+					RETURN ROW(
+						"TestName", testName,
+						"Expected", "Column is all NULL",
+						"Actual", IF(_Passed, "ALL NULL", "HAS NON-NULL VALUES (" & FORMAT(_NonNullCount, "0") & " distinct)"),
+						"Passed", _Passed
+					)
+			lineageTag: 65d07bbe-e8e7-4538-a7a3-17035e3f8eba
+
+			annotation DAXLIB_PackageId = PQL.Assert
+
+			annotation DAXLIB_PackageVersion = 0.1.0
+
+		/// Asserts that a column contains at least one non-NULL value (not DAX BLANK()).
+		function 'PQL.Assert.Col.ShouldNotBeNull' =
+				(testName : STRING, columnRef : ANYREF EXPR) =>
+					VAR _NonNullCount = DISTINCTCOUNTNOBLANK(columnRef)
+					VAR _Passed = _NonNullCount > 0
+					RETURN ROW(
+						"TestName", testName,
+						"Expected", "Column has non-NULL values",
+						"Actual", IF(_Passed, "HAS VALUES (" & FORMAT(_NonNullCount, "0") & " distinct)", "ALL NULL"),
+						"Passed", _Passed
+					)
+			lineageTag: 44ae25e6-a422-4fd4-ac9f-f078e3336107
+
+			annotation DAXLIB_PackageId = PQL.Assert
+
+			annotation DAXLIB_PackageVersion = 0.1.0
+
+		/// Asserts that all values in a column are BLANK (empty string "").
+		function 'PQL.Assert.Col.ShouldBeBlank' =
+				(testName : STRING, columnRef : ANYREF EXPR) =>
+					VAR _BlankCount = COUNTAX(
+						VALUES(columnRef),
+						IF(FORMAT(columnRef, "") = "" && NOT ISBLANK(columnRef), 1, BLANK())
+					)
+					VAR _TotalCount = COUNTROWS(VALUES(columnRef))
+					VAR _Passed = _BlankCount = _TotalCount
+					RETURN ROW(
+						"TestName", testName,
+						"Expected", "Column is all BLANK (empty string)",
+						"Actual", IF(_Passed, "ALL BLANK", "HAS NON-BLANK VALUES (" & FORMAT(_TotalCount - _BlankCount, "0") & " non-blank)"),
+						"Passed", _Passed
+					)
+			lineageTag: 4f3a2fb4-364e-4bde-aaea-c6685dbdebd3
+
+			annotation DAXLIB_PackageId = PQL.Assert
+
+			annotation DAXLIB_PackageVersion = 0.1.0
+
+		/// Asserts that a column contains at least one non-BLANK value (not empty string "").
+		function 'PQL.Assert.Col.ShouldNotBeBlank' =
+				(testName : STRING, columnRef : ANYREF EXPR) =>
+					VAR _NonBlankCount = COUNTAX(
+						VALUES(columnRef),
+						IF(FORMAT(columnRef, "") <> "", 1, BLANK())
+					)
+					VAR _Passed = _NonBlankCount > 0
+					RETURN ROW(
+						"TestName", testName,
+						"Expected", "Column has non-BLANK values (not empty string)",
+						"Actual", IF(_Passed, "HAS VALUES (" & FORMAT(_NonBlankCount, "0") & " non-blank)", "ALL BLANK"),
+						"Passed", _Passed
+					)
+			lineageTag: 8aeef305-c2a5-479f-a3a5-4f0b5d977eff
+
+			annotation DAXLIB_PackageId = PQL.Assert
+
+			annotation DAXLIB_PackageVersion = 0.1.0
+
+		/// Asserts that all values in a column are NULL or BLANK (BLANK() or empty string "").
+		function 'PQL.Assert.Col.ShouldBeNullOrBlank' =
+				(testName : STRING, columnRef : ANYREF EXPR) =>
+					VAR _NonEmptyCount = COUNTAX(
+						VALUES(columnRef),
+						IF(ISBLANK(columnRef) || FORMAT(columnRef, "") = "", BLANK(), 1)
+					)
+					VAR _Passed = _NonEmptyCount = 0
+					RETURN ROW(
+						"TestName", testName,
+						"Expected", "Column is all NULL or BLANK",
+						"Actual", IF(_Passed, "ALL NULL/BLANK", "HAS VALUES (" & FORMAT(_NonEmptyCount, "0") & " non-empty)"),
+						"Passed", _Passed
+					)
+			lineageTag: 3d800a75-ddfc-49a1-b21f-93648db03f34
+
+			annotation DAXLIB_PackageId = PQL.Assert
+
+			annotation DAXLIB_PackageVersion = 0.1.0
+
+		/// Asserts that a column contains at least one value that is not NULL and not BLANK.
+		function 'PQL.Assert.Col.ShouldNotBeNullOrBlank' =
+				(testName : STRING, columnRef : ANYREF EXPR) =>
+					VAR _NonEmptyCount = COUNTAX(
+						VALUES(columnRef),
+						IF(ISBLANK(columnRef) || FORMAT(columnRef, "") = "", BLANK(), 1)
+					)
+					VAR _Passed = _NonEmptyCount > 0
+					RETURN ROW(
+						"TestName", testName,
+						"Expected", "Column has non-NULL, non-BLANK values",
+						"Actual", IF(_Passed, "HAS VALUES (" & FORMAT(_NonEmptyCount, "0") & " non-empty)", "ALL NULL/BLANK"),
+						"Passed", _Passed
+					)
+			lineageTag: d927b838-d726-4ecf-9472-f4367628a625
+
+			annotation DAXLIB_PackageId = PQL.Assert
+
+			annotation DAXLIB_PackageVersion = 0.1.0
+
+		/// Asserts that all values in a column are unique (no duplicates).
+		function 'PQL.Assert.Col.ShouldBeDistinct' =
+				(testName : STRING, columnRef : ANYREF EXPR) =>
+					VAR _DistinctCount = DISTINCTCOUNT(columnRef)
+					VAR _TotalCount = COUNTROWS(VALUES(columnRef))
+					VAR _Passed = _DistinctCount = _TotalCount
+					RETURN ROW(
+						"TestName", testName,
+						"Expected", "All values distinct",
+						"Actual", IF(_Passed, "ALL DISTINCT (" & FORMAT(_TotalCount, "0") & " rows)", "DUPLICATES FOUND (" & FORMAT(_DistinctCount, "0") & " distinct of " & FORMAT(_TotalCount, "0") & " rows)"),
+						"Passed", _Passed
+					)
+			lineageTag: 3a173e69-049e-45ae-bda2-bffb5f098a8c
+
+			annotation DAXLIB_PackageId = PQL.Assert
+
+			annotation DAXLIB_PackageVersion = 0.1.0
+
+		function 'PQL.Assert.Col.ShouldExist' =
+				(testName : STRING, tableName : STRING, columnName : STRING) =>
+					VAR _Columns = INFO.VIEW.COLUMNS()
+					VAR _Found = COUNTROWS(FILTER(_Columns, [Table] = tableName && [Name] = columnName)) > 0
+					RETURN ROW(
+						"TestName", testName,
+						"Expected", "Column '" & tableName & "[" & columnName & "]' exists",
+						"Actual", IF(_Found, "EXISTS", "NOT FOUND"),
+						"Passed", _Found
+					)
+			lineageTag: 351cbfc0-7c0c-45e8-9a47-bccee0bde5f9
+
+			annotation DAXLIB_PackageId = PQL.Assert
+
+			annotation DAXLIB_PackageVersion = 0.1.0
+
+		/// Table Assertions - PQL.Assert.Table namespace
+		/// Asserts that a table has at least one row.
+		function 'PQL.Assert.Tbl.ShouldHaveRows' =
+				(testName : STRING, tableRef : TABLE EXPR) =>
+					VAR _RowCount = COUNTROWS(tableRef)
+					VAR _Passed = _RowCount > 0
+					RETURN ROW(
+						"TestName", testName,
+						"Expected", "Table has rows",
+						"Actual", IF(_Passed, "HAS ROWS (" & FORMAT(_RowCount, "0") & ")", "EMPTY (0 rows)"),
+						"Passed", _Passed
+					)
+			lineageTag: d3ba7977-e5e3-449b-9cb7-a1ffd0224ef8
+
+			annotation DAXLIB_PackageId = PQL.Assert
+
+			annotation DAXLIB_PackageVersion = 0.1.0
+
+		/// Asserts that a table has exactly the expected number of rows.
+		function 'PQL.Assert.Tbl.ShouldHaveRowCount' =
+				(testName : STRING, tableRef : TABLE EXPR, expectedRowCount : INT64) =>
+					VAR _RowCount = COUNTROWS(tableRef)
+					VAR _Passed = _RowCount = expectedRowCount
+					RETURN ROW(
+						"TestName", testName,
+						"Expected", FORMAT(expectedRowCount, "0") & " rows",
+						"Actual", FORMAT(_RowCount, "0") & " rows",
+						"Passed", _Passed
+					)
+			lineageTag: 120611e2-5cd8-473d-b9ba-ae5d988dcaf6
+
+			annotation DAXLIB_PackageId = PQL.Assert
+
+			annotation DAXLIB_PackageVersion = 0.1.0
+
+		function 'PQL.Assert.Tbl.ShouldHaveMoreRowsThan' =
+				(testName : STRING, threshold : INT64, tableToCheck : TABLE) =>
+					VAR _RowCount = COUNTROWS(tableToCheck)
+					VAR _Passed = _RowCount > threshold
+					RETURN ROW(
+						"TestName", testName,
+						"Expected", "> " & FORMAT(threshold, "0"),
+						"Actual", FORMAT(_RowCount, "0"),
+						"Passed", _Passed
+					)
+			lineageTag: 6603aaa5-5a17-4654-8379-288aaf365361
+
+			annotation DAXLIB_PackageId = PQL.Assert
+
+			annotation DAXLIB_PackageVersion = 0.1.0
+
+		function 'PQL.Assert.Tbl.ShouldExist' =
+				(testName : STRING, tableName : STRING) =>
+					VAR _Tables = INFO.VIEW.TABLES()
+					VAR _Found = COUNTROWS(FILTER(_Tables, [Name] = tableName)) > 0
+					RETURN ROW(
+						"TestName", testName,
+						"Expected", "Table '" & tableName & "' exists",
+						"Actual", IF(_Found, "EXISTS", "NOT FOUND"),
+						"Passed", _Found
+					)
+			lineageTag: e4e76f45-f05f-4f67-acc2-edddf0f9be46
+
+			annotation DAXLIB_PackageId = PQL.Assert
+
+			annotation DAXLIB_PackageVersion = 0.1.0
+
+		/// Relationship Assertions - PQL.Assert.Relationship namespace
+		function 'PQL.Assert.Relationship.ShouldExist' =
+				(testName : STRING, fromTable : STRING, fromColumn : STRING, toTable : STRING, toColumn : STRING) =>
+					VAR _Relationships = INFO.VIEW.RELATIONSHIPS()
+					VAR _Found = COUNTROWS(FILTER(_Relationships,
+						[FromTable] = fromTable && [FromColumn] = fromColumn &&
+						[ToTable] = toTable && [ToColumn] = toColumn)) > 0
+					RETURN ROW(
+						"TestName", testName,
+						"Expected", "Relationship '" & fromTable & "[" & fromColumn & "] -> " & toTable & "[" & toColumn & "]' exists",
+						"Actual", IF(_Found, "EXISTS", "NOT FOUND"),
+						"Passed", _Found
+					)
+			lineageTag: 96f7a188-e652-45cb-92b7-17654e983b7f
+
+			annotation DAXLIB_PackageId = PQL.Assert
+
+			annotation DAXLIB_PackageVersion = 0.1.0
+
+		/// Test Discovery Functions - PQL.Assert namespace
+		function 'PQL.Assert.RetrieveTests' =
+				() =>
+					FILTER(INFO.FUNCTIONS("ORIGIN", "2"), OR(RIGHT([FUNCTION_NAME],5) = ".Test", RIGHT([FUNCTION_NAME],6) = ".Tests"))
+			lineageTag: 52eb877e-9e96-4061-8d51-899c1b5b98b4
+
+			annotation DAXLIB_PackageId = PQL.Assert
+
+			annotation DAXLIB_PackageVersion = 0.1.0
+
+		annotation PBI_ProTooling = ["TMDLView_Desktop","DaxQueryView_Desktop"]
+
+		annotation PBI_QueryOrder = ["TestData","TestData-Fact"]
+
+		annotation __PBI_TimeIntelligenceEnabled = 1
+

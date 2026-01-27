@@ -96,7 +96,7 @@ EVALUATE PQL.Assert.ShouldEqual("Test 1: 2+2 should equal 4", 4, 2+2)
 - Health checks and data drift detection
 - Continuous monitoring
 
-**ALL**
+**GLOBAL**
 - Tests that apply across all environments
 - Universal validation rules
 
@@ -127,12 +127,12 @@ Follow the pattern: `[name].[environment].test(s)`
 
 **Format Guidelines:**
 - `[name]` - Keep to 15-20 characters for tab readability
-- `[environment]` - DEV, TEST, PROD, or ALL
+- `[environment]` - DEV, TEST, PROD, or GLOBAL
 - Use `.tests` for multiple assertions, `.test` for single assertion
 
 **Examples:**
 - `DataQuality.DEV.Tests` - Data quality tests for development
-- `Schema.ALL.Tests` - Schema validation for all environments
+- `Schema.GLOBAL.Tests` - Schema validation for all environments
 - `Revenue.PROD.Tests` - Revenue calculation health checks for production
 - `Customers.TEST.Tests` - Customer data validation for testing environment
 
@@ -152,10 +152,10 @@ DEFINE
 EVALUATE BusinessLogic.DEV.Tests()
 ```
 
-#### Testing Content (All Environments)
+#### Testing Content (Global Environments)
 ```dax
 DEFINE
-	FUNCTION DataContent.ALL.Tests = () =>
+	FUNCTION DataContent.GLOBAL.Tests = () =>
 	UNION (
 		PQL.Assert.Tbl.ShouldHaveRows("Fact table has data", 'Sales'),
 		PQL.Assert.Col.ShouldNotBeNull("Customer ID not null", 'Customers'[CustomerID]),
@@ -163,20 +163,20 @@ DEFINE
 		PQL.Assert.Col.ShouldNotBeNull("Order date not null", 'Orders'[OrderDate])
 	)
 
-EVALUATE DataContent.ALL.Tests()
+EVALUATE DataContent.GLOBAL.Tests()
 ```
 
-#### Testing Schema (All Environments)
+#### Testing Schema (Global Environments)
 ```dax
 DEFINE
-	FUNCTION Schema.ALL.Tests = () =>
+	FUNCTION Schema.GLOBAL.Tests = () =>
 	UNION (
 		PQL.Assert.Tbl.ShouldExist("Sales table exists", "Sales"),
 		PQL.Assert.Col.ShouldExist("Customer ID column exists", "Customers", "CustomerID"),
 		PQL.Assert.Relationship.ShouldExist("Sales-Customer relationship", "Sales", "CustomerID", "Customers", "CustomerID")
 	)
 
-EVALUATE Schema.ALL.Tests()
+EVALUATE Schema.GLOBAL.Tests()
 ```
 
 #### Advanced Measure Testing (DEV Environment)
@@ -212,8 +212,8 @@ EVALUATE FILTER(PQL.Assert.RetrieveTests(), CONTAINSSTRING([FUNCTION_NAME], ".DE
 // Find PROD environment tests
 EVALUATE FILTER(PQL.Assert.RetrieveTests(), CONTAINSSTRING([FUNCTION_NAME], ".PROD."))
 
-// Find tests for all environments
-EVALUATE FILTER(PQL.Assert.RetrieveTests(), CONTAINSSTRING([FUNCTION_NAME], ".ALL."))
+// Find tests for global environments
+EVALUATE FILTER(PQL.Assert.RetrieveTests(), CONTAINSSTRING([FUNCTION_NAME], ".GLOBAL."))
 ```
 
 This returns a table of all functions ending with `.test` or `.tests`, making it easy to identify and run your test suites by environment.
@@ -234,8 +234,8 @@ DEFINE
 	// Run all production health checks
 	FUNCTION PROD.HealthChecks = () =>
 	UNION (
-		DataContent.ALL.Tests(),
-		Schema.ALL.Tests()
+		DataContent.GLOBAL.Tests(),
+		Schema.GLOBAL.Tests()
 	)
 
 EVALUATE DEV.AllTests()
@@ -281,8 +281,8 @@ EVALUATE _Validation
 
 ```dax
 DEFINE
-	// Content validation for all environments
-	FUNCTION DataQuality.ALL.Tests = () =>
+	// Content validation for global environments
+	FUNCTION DataQuality.GLOBAL.Tests = () =>
 	UNION (
 		// Null checks
 		PQL.Assert.Col.ShouldNotBeNull("Data Quality: Customer ID should not be null", 'Customers'[CustomerID]),
@@ -303,15 +303,15 @@ DEFINE
 		PQL.Assert.ShouldBeGreaterThan("Business Logic: Growth rate positive", 0, [Growth Rate])
 	)
 	
-	// Schema validation for all environments
-	FUNCTION Schema.ALL.Tests = () =>
+	// Schema validation for global environments
+	FUNCTION Schema.GLOBAL.Tests = () =>
 	UNION (
 		PQL.Assert.Tbl.ShouldExist("Schema: Customers table exists", "Customers"),
 		PQL.Assert.Col.ShouldExist("Schema: CustomerID column exists", "Customers", "CustomerID")
 	)
 
 // Run environment-specific test suites
-EVALUATE DataQuality.ALL.Tests()
+EVALUATE DataQuality.GLOBAL.Tests()
 EVALUATE BusinessLogic.DEV.Tests()
 
 // Discover all available test functions

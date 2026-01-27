@@ -600,7 +600,7 @@ createOrReplace
 
 			annotation DAXLIB_PackageId = PQL.Assert
 
-			annotation DAXLIB_PackageVersion = 0.1.0
+			annotation DAXLIB_PackageVersion = 0.1.1
 
 		function 'PQL.Assert.ShouldBeFalse' =
 				(testName : STRING, actualCondition : BOOLEAN) =>
@@ -615,7 +615,7 @@ createOrReplace
 
 			annotation DAXLIB_PackageId = PQL.Assert
 
-			annotation DAXLIB_PackageVersion = 0.1.0
+			annotation DAXLIB_PackageVersion = 0.1.1
 
 		/// Asserts that a value is NULL (DAX BLANK()).
 		function 'PQL.Assert.ShouldBeNull' =
@@ -631,7 +631,7 @@ createOrReplace
 
 			annotation DAXLIB_PackageId = PQL.Assert
 
-			annotation DAXLIB_PackageVersion = 0.1.0
+			annotation DAXLIB_PackageVersion = 0.1.1
 
 		/// Asserts that a value is not NULL (not DAX BLANK()). Accepts both simple values and expressions.
 		function 'PQL.Assert.ShouldNotBeNull' =
@@ -648,7 +648,7 @@ createOrReplace
 
 			annotation DAXLIB_PackageId = PQL.Assert
 
-			annotation DAXLIB_PackageVersion = 0.1.0
+			annotation DAXLIB_PackageVersion = 0.1.1
 
 		/// Asserts that a value is BLANK (empty string "").
 		function 'PQL.Assert.ShouldBeBlank' =
@@ -664,7 +664,7 @@ createOrReplace
 
 			annotation DAXLIB_PackageId = PQL.Assert
 
-			annotation DAXLIB_PackageVersion = 0.1.0
+			annotation DAXLIB_PackageVersion = 0.1.1
 
 		/// Asserts that a value is not BLANK (not empty string "").
 		function 'PQL.Assert.ShouldNotBeBlank' =
@@ -681,7 +681,7 @@ createOrReplace
 
 			annotation DAXLIB_PackageId = PQL.Assert
 
-			annotation DAXLIB_PackageVersion = 0.1.0
+			annotation DAXLIB_PackageVersion = 0.1.1
 
 		/// Asserts that a value is NULL or BLANK (BLANK() or empty string "").
 		function 'PQL.Assert.ShouldBeNullOrBlank' =
@@ -710,7 +710,7 @@ createOrReplace
 
 			annotation DAXLIB_PackageId = PQL.Assert
 
-			annotation DAXLIB_PackageVersion = 0.1.0
+			annotation DAXLIB_PackageVersion = 0.1.1
 
 		function 'PQL.Assert.ShouldEqual' =
 				(testName : STRING, expected : VARIANT, actual : VARIANT) =>
@@ -725,7 +725,7 @@ createOrReplace
 
 			annotation DAXLIB_PackageId = PQL.Assert
 
-			annotation DAXLIB_PackageVersion = 0.1.0
+			annotation DAXLIB_PackageVersion = 0.1.1
 
 		function 'PQL.Assert.ShouldNotEqual' =
 				(testName : STRING, notExpected : VARIANT, actual : VARIANT) =>
@@ -740,7 +740,7 @@ createOrReplace
 
 			annotation DAXLIB_PackageId = PQL.Assert
 
-			annotation DAXLIB_PackageVersion = 0.1.0
+			annotation DAXLIB_PackageVersion = 0.1.1
 
 		/// Asserts that two strings are exactly equal (case-sensitive comparison).
 		function 'PQL.Assert.ShouldEqualExactly' =
@@ -756,7 +756,7 @@ createOrReplace
 
 			annotation DAXLIB_PackageId = PQL.Assert
 
-			annotation DAXLIB_PackageVersion = 0.1.0
+			annotation DAXLIB_PackageVersion = 0.1.1
 
 		function 'PQL.Assert.ShouldBeGreaterThan' =
 				(testName : STRING, threshold : DOUBLE, actual : DOUBLE) =>
@@ -771,7 +771,7 @@ createOrReplace
 
 			annotation DAXLIB_PackageId = PQL.Assert
 
-			annotation DAXLIB_PackageVersion = 0.1.0
+			annotation DAXLIB_PackageVersion = 0.1.1
 
 		function 'PQL.Assert.ShouldBeLessThan' =
 				(testName : STRING, threshold : DOUBLE, actual : DOUBLE) =>
@@ -786,7 +786,7 @@ createOrReplace
 
 			annotation DAXLIB_PackageId = PQL.Assert
 
-			annotation DAXLIB_PackageVersion = 0.1.0
+			annotation DAXLIB_PackageVersion = 0.1.1
 
 		/// Asserts that a number is greater than or equal to an expected value.
 		function 'PQL.Assert.ShouldBeGreaterOrEqual' =
@@ -802,7 +802,7 @@ createOrReplace
 
 			annotation DAXLIB_PackageId = PQL.Assert
 
-			annotation DAXLIB_PackageVersion = 0.1.0
+			annotation DAXLIB_PackageVersion = 0.1.1
 
 		/// Asserts that a number is less than or equal to an expected value.
 		function 'PQL.Assert.ShouldBeLessOrEqual' =
@@ -818,7 +818,7 @@ createOrReplace
 
 			annotation DAXLIB_PackageId = PQL.Assert
 
-			annotation DAXLIB_PackageVersion = 0.1.0
+			annotation DAXLIB_PackageVersion = 0.1.1
 
 		function 'PQL.Assert.ShouldBeBetween' =
 				(testName : STRING, lowerBound : DOUBLE, upperBound : DOUBLE, actual : DOUBLE) =>
@@ -833,7 +833,7 @@ createOrReplace
 
 			annotation DAXLIB_PackageId = PQL.Assert
 
-			annotation DAXLIB_PackageVersion = 0.1.0
+			annotation DAXLIB_PackageVersion = 0.1.1
 
 		/// String Assertions - PQL.Assert namespace
 		/// Asserts that a string starts with the specified prefix (case-insensitive).
@@ -850,7 +850,7 @@ createOrReplace
 
 			annotation DAXLIB_PackageId = PQL.Assert
 
-			annotation DAXLIB_PackageVersion = 0.1.0
+			annotation DAXLIB_PackageVersion = 0.1.1
 
 		/// Asserts that a string ends with the specified suffix (case-insensitive).
 		function 'PQL.Assert.ShouldEndWith' =
@@ -866,7 +866,7 @@ createOrReplace
 
 			annotation DAXLIB_PackageId = PQL.Assert
 
-			annotation DAXLIB_PackageVersion = 0.1.0
+			annotation DAXLIB_PackageVersion = 0.1.1
 
 		/// Asserts that a string contains the specified substring (case-insensitive).
 		function 'PQL.Assert.ShouldContainString' =
@@ -882,7 +882,7 @@ createOrReplace
 
 			annotation DAXLIB_PackageId = PQL.Assert
 
-			annotation DAXLIB_PackageVersion = 0.1.0
+			annotation DAXLIB_PackageVersion = 0.1.1
 
 		/// Asserts that a string matches a pattern (case-insensitive).
 		function 'PQL.Assert.ShouldMatch' =
@@ -898,7 +898,7 @@ createOrReplace
 
 			annotation DAXLIB_PackageId = PQL.Assert
 
-			annotation DAXLIB_PackageVersion = 0.1.0
+			annotation DAXLIB_PackageVersion = 0.1.1
 
 		/// Col Assertions - PQL.Assert.Col namespace
 		/// Asserts that all values in a column are NULL (DAX BLANK()).
@@ -916,7 +916,7 @@ createOrReplace
 
 			annotation DAXLIB_PackageId = PQL.Assert
 
-			annotation DAXLIB_PackageVersion = 0.1.0
+			annotation DAXLIB_PackageVersion = 0.1.1
 
 		/// Asserts that a column contains at least one non-NULL value (not DAX BLANK()).
 		function 'PQL.Assert.Col.ShouldNotBeNull' =
@@ -933,7 +933,7 @@ createOrReplace
 
 			annotation DAXLIB_PackageId = PQL.Assert
 
-			annotation DAXLIB_PackageVersion = 0.1.0
+			annotation DAXLIB_PackageVersion = 0.1.1
 
 		/// Asserts that all values in a column are BLANK (empty string "").
 		function 'PQL.Assert.Col.ShouldBeBlank' =
@@ -954,7 +954,7 @@ createOrReplace
 
 			annotation DAXLIB_PackageId = PQL.Assert
 
-			annotation DAXLIB_PackageVersion = 0.1.0
+			annotation DAXLIB_PackageVersion = 0.1.1
 
 		/// Asserts that a column contains at least one non-BLANK value (not empty string "").
 		function 'PQL.Assert.Col.ShouldNotBeBlank' =
@@ -974,7 +974,7 @@ createOrReplace
 
 			annotation DAXLIB_PackageId = PQL.Assert
 
-			annotation DAXLIB_PackageVersion = 0.1.0
+			annotation DAXLIB_PackageVersion = 0.1.1
 
 		/// Asserts that all values in a column are NULL or BLANK (BLANK() or empty string "").
 		function 'PQL.Assert.Col.ShouldBeNullOrBlank' =
@@ -994,7 +994,7 @@ createOrReplace
 
 			annotation DAXLIB_PackageId = PQL.Assert
 
-			annotation DAXLIB_PackageVersion = 0.1.0
+			annotation DAXLIB_PackageVersion = 0.1.1
 
 		/// Asserts that a column contains at least one value that is not NULL and not BLANK.
 		function 'PQL.Assert.Col.ShouldNotBeNullOrBlank' =
@@ -1014,7 +1014,7 @@ createOrReplace
 
 			annotation DAXLIB_PackageId = PQL.Assert
 
-			annotation DAXLIB_PackageVersion = 0.1.0
+			annotation DAXLIB_PackageVersion = 0.1.1
 
 		/// Asserts that all values in a column are unique (no duplicates).
 		function 'PQL.Assert.Col.ShouldBeDistinct' =
@@ -1032,7 +1032,7 @@ createOrReplace
 
 			annotation DAXLIB_PackageId = PQL.Assert
 
-			annotation DAXLIB_PackageVersion = 0.1.0
+			annotation DAXLIB_PackageVersion = 0.1.1
 
 		function 'PQL.Assert.Col.ShouldExist' =
 				(testName : STRING, tableName : STRING, columnName : STRING) =>
@@ -1048,7 +1048,7 @@ createOrReplace
 
 			annotation DAXLIB_PackageId = PQL.Assert
 
-			annotation DAXLIB_PackageVersion = 0.1.0
+			annotation DAXLIB_PackageVersion = 0.1.1
 
 		/// Table Assertions - PQL.Assert.Table namespace
 		/// Asserts that a table has at least one row.
@@ -1066,7 +1066,7 @@ createOrReplace
 
 			annotation DAXLIB_PackageId = PQL.Assert
 
-			annotation DAXLIB_PackageVersion = 0.1.0
+			annotation DAXLIB_PackageVersion = 0.1.1
 
 		/// Asserts that a table has exactly the expected number of rows.
 		function 'PQL.Assert.Tbl.ShouldHaveRowCount' =
@@ -1083,7 +1083,7 @@ createOrReplace
 
 			annotation DAXLIB_PackageId = PQL.Assert
 
-			annotation DAXLIB_PackageVersion = 0.1.0
+			annotation DAXLIB_PackageVersion = 0.1.1
 
 		function 'PQL.Assert.Tbl.ShouldHaveMoreRowsThan' =
 				(testName : STRING, threshold : INT64, tableToCheck : TABLE) =>
@@ -1099,7 +1099,7 @@ createOrReplace
 
 			annotation DAXLIB_PackageId = PQL.Assert
 
-			annotation DAXLIB_PackageVersion = 0.1.0
+			annotation DAXLIB_PackageVersion = 0.1.1
 
 		function 'PQL.Assert.Tbl.ShouldExist' =
 				(testName : STRING, tableName : STRING) =>
@@ -1115,7 +1115,7 @@ createOrReplace
 
 			annotation DAXLIB_PackageId = PQL.Assert
 
-			annotation DAXLIB_PackageVersion = 0.1.0
+			annotation DAXLIB_PackageVersion = 0.1.1
 
 		/// Relationship Assertions - PQL.Assert.Relationship namespace
 		function 'PQL.Assert.Relationship.ShouldExist' =
@@ -1134,7 +1134,7 @@ createOrReplace
 
 			annotation DAXLIB_PackageId = PQL.Assert
 
-			annotation DAXLIB_PackageVersion = 0.1.0
+			annotation DAXLIB_PackageVersion = 0.1.1
 
 		/// Test Discovery Functions - PQL.Assert namespace
 		function 'PQL.Assert.RetrieveTests' =
@@ -1144,7 +1144,7 @@ createOrReplace
 
 			annotation DAXLIB_PackageId = PQL.Assert
 
-			annotation DAXLIB_PackageVersion = 0.1.0
+			annotation DAXLIB_PackageVersion = 0.1.1
 
 		annotation PBI_ProTooling = ["TMDLView_Desktop","DaxQueryView_Desktop"]
 

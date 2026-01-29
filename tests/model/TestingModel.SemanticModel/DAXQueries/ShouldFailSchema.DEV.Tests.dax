@@ -1,0 +1,5 @@
+DEFINE
+	FUNCTION ShouldFailSchema.DEV.Tests = () =>
+	DATATABLE("Test",TEXT,{{"HI"}})
+
+EVALUATE ShouldFailSchema.DEV.Tests()

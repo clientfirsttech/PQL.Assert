@@ -75,7 +75,8 @@ EVALUATE PQL.Assert.ShouldEqual("Test 1: 2+2 should equal 4", 4, 2+2)
 
 ### Test Discovery
 
-- `PQL.Assert.RetrieveTests()` - Returns all test functions (ending with .test or .tests)
+- `PQL.Assert.RetrieveTests()` - Returns all test functions (ending with .Test or .Tests)
+- `PQL.Assert.RetrieveTestsByEnvironment(environment)` - Returns tests filtered by environment (e.g., "DEV", "TEST", "PROD") matching `.{ENV}.` or `.ANY.` in function names. Case-insensitive. Returns all tests if environment is blank.
 
 ## 🏗️ Workspace Governance & Environments
 
@@ -200,23 +201,36 @@ EVALUATE Measures.DEV.Tests()
 
 ### Discovering Tests
 
-Use the test discovery function to find all available test functions:
+Use the test discovery functions to find all available test functions:
 
 ```dax
 // Find all test functions
 EVALUATE PQL.Assert.RetrieveTests()
 
-// Find DEV environment tests
+// Find tests by environment (recommended approach)
+EVALUATE PQL.Assert.RetrieveTestsByEnvironment("DEV")   // Returns .DEV. and .ANY. tests
+EVALUATE PQL.Assert.RetrieveTestsByEnvironment("TEST")  // Returns .TEST. and .ANY. tests
+EVALUATE PQL.Assert.RetrieveTestsByEnvironment("PROD")  // Returns .PROD. and .ANY. tests
+
+// Case-insensitive - these are equivalent
+EVALUATE PQL.Assert.RetrieveTestsByEnvironment("dev")
+EVALUATE PQL.Assert.RetrieveTestsByEnvironment("Dev")
+EVALUATE PQL.Assert.RetrieveTestsByEnvironment("DEV")
+
+// Custom environments are supported
+EVALUATE PQL.Assert.RetrieveTestsByEnvironment("UAT")      // Returns .UAT. and .ANY. tests
+EVALUATE PQL.Assert.RetrieveTestsByEnvironment("STAGING")  // Returns .STAGING. and .ANY. tests
+
+// Blank returns all tests (same as RetrieveTests)
+EVALUATE PQL.Assert.RetrieveTestsByEnvironment("")
+
+// Manual filtering (alternative approach)
 EVALUATE FILTER(PQL.Assert.RetrieveTests(), CONTAINSSTRING([FUNCTION_NAME], ".DEV."))
-
-// Find PROD environment tests
 EVALUATE FILTER(PQL.Assert.RetrieveTests(), CONTAINSSTRING([FUNCTION_NAME], ".PROD."))
-
-// Find tests for any environment
 EVALUATE FILTER(PQL.Assert.RetrieveTests(), CONTAINSSTRING([FUNCTION_NAME], ".ANY."))
 ```
 
-This returns a table of all functions ending with `.test` or `.tests`, making it easy to identify and run your test suites by environment.
+This returns a table of all functions ending with `.Test` or `.Tests`, making it easy to identify and run your test suites by environment.
 
 ### Running All Tests
 

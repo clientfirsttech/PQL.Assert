@@ -1,0 +1,39 @@
+table Calendar
+	lineageTag: a1f424bc-1c2c-4348-a0f9-f91c7cb0acf8
+
+	column 'Date ID'
+		dataType: int64
+		formatString: 0
+		lineageTag: 86bd71a0-fb51-4ac2-a7a6-a411063ef338
+		summarizeBy: none
+		sourceColumn: Date ID
+
+		annotation SummarizationSetBy = Automatic
+
+	column Date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 4796ad7b-eec7-4e49-9a35-6ea3047ad49f
+		summarizeBy: none
+		sourceColumn: Date
+
+		variation Variation
+			isDefault
+			relationship: 059c25e1-8c3b-48ef-ba86-ceda4b644a32
+			defaultHierarchy: LocalDateTable_7bc6f273-e8e4-4cb5-b3b7-85cdcead9c39.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	partition Calendar = m
+		mode: import
+		source =
+				let
+				    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i45WMlTSUTLUN9Q3MjAyU4rViVYyAgsYIQSMwQLGUIFYAA==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [#"Date ID" = _t, Date = _t]),
+				    #"Changed Type" = Table.TransformColumnTypes(Source,{{"Date ID", Int64.Type}, {"Date", type date}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+

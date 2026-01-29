@@ -69,6 +69,24 @@ tests/
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
+## ⚡ Power Automate Integration
+
+The `examples/` folder contains a Power Automate solution (`PQLAssertviaPowerAutomate_1_0_0_1.zip`) that enables automated test execution against your semantic models.
+
+### Importing the Solution
+
+1. **Download** the solution ZIP file from `examples/PQLAssertviaPowerAutomate_1_0_0_1.zip`
+2. **Navigate** to [Power Automate](https://make.powerautomate.com) or [Power Apps](https://make.powerapps.com)
+3. **Import** the solution following Microsoft's guide: [Import solutions](https://learn.microsoft.com/en-us/power-apps/maker/data-platform/import-update-export-solutions)
+4. **Set environment variables** when prompted during import:
+   - **Workspace GUID**: The unique identifier of your Power BI workspace (found in the workspace URL)
+   - **Semantic Model ID**: The unique identifier of your semantic model (found in the dataset URL or settings)
+
+### Finding Your IDs
+
+- **Workspace GUID**: Navigate to your workspace in Power BI Service. The URL will contain: `https://app.powerbi.com/groups/{workspace-guid}/...`
+- **Semantic Model ID**: Open your semantic model settings or view the URL when accessing the dataset: `https://app.powerbi.com/groups/{workspace-guid}/datasets/{semantic-model-id}/...`
+
 ## 🆘 Support
 
 - **Documentation**: [src/README.md](src/README.md)

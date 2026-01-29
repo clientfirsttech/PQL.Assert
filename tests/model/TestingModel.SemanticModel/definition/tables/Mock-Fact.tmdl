@@ -1,0 +1,40 @@
+table Mock-Fact
+	lineageTag: 720117e7-cd86-45ba-a1c0-e54f596d7e86
+
+	column 'Date ID'
+		dataType: int64
+		formatString: 0
+		lineageTag: 9d80be96-7a87-496b-b1e8-5725403ce94e
+		summarizeBy: none
+		sourceColumn: Date ID
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Sales Region'
+		dataType: string
+		lineageTag: ac295bfa-b25f-4df9-8f59-ec940d743e79
+		summarizeBy: none
+		sourceColumn: Sales Region
+
+		annotation SummarizationSetBy = Automatic
+
+	column Total
+		dataType: int64
+		formatString: 0
+		lineageTag: 83d51f3f-ec0d-4a63-85fb-b1c40a72beea
+		summarizeBy: sum
+		sourceColumn: Total
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Mock-Fact = m
+		mode: import
+		source =
+				let
+				    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i45WMlTSUXJNLC4BUkZKsToQgfBUsIAxWMAIocJEKTYWAA==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [#"Date ID" = _t, #"Sales Region" = _t, Total = _t]),
+				    #"Changed Type" = Table.TransformColumnTypes(Source,{{"Date ID", Int64.Type}, {"Sales Region", type text}, {"Total", Int64.Type}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+

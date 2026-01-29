@@ -2,11 +2,13 @@
   "version": "1.0.0",
   "tabOrder": [
     "Complete Function Tests",
-    "Example.Tests",
-    "Table.Test",
+    "Example.ANY.Tests",
+    "Table.DEV.Test",
+    "ShouldFail.TEST.Tests",
+    "ShouldFailSchema.DEV.Tests",
+    "Example.Myenv.Tests",
     "Retrieve Tests",
-    "Query 1",
-    "Measure.Tests"
+    "Example.prod.tests"
   ],
   "defaultTab": "Complete Function Tests"
 }

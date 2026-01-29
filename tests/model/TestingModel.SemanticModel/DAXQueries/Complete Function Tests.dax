@@ -196,6 +196,21 @@ VAR _Rel_ShouldExist_Pass = PQL.Assert.Relationship.ShouldExist("Relationship.Sh
 VAR _Rel_ShouldExist_Fail = PQL.Assert.Relationship.ShouldExist("Relationship.ShouldExist: Invalid relationship should fail", "FakeFrom", "Col", "FakeTo", "Col")
 
 // ============================================
+// TEST DISCOVERY FUNCTIONS
+// ============================================
+
+// PQL.Assert.RetrieveTests
+VAR _RetrieveTests_Pass = PQL.Assert.Tbl.ShouldHaveRows("RetrieveTests: Should return tests should pass", PQL.Assert.RetrieveTests())
+
+// PQL.Assert.RetrieveTestsByEnvironment
+VAR _RetrieveTestsByEnv_DEV = PQL.Assert.Tbl.ShouldHaveRowCount("RetrieveTestsByEnvironment: DEV should return table should pass", PQL.Assert.RetrieveTestsByEnvironment("DEV"),3)
+VAR _RetrieveTestsByEnv_TEST = PQL.Assert.Tbl.ShouldHaveRowCount("RetrieveTestsByEnvironment: TEST should return table should pass", PQL.Assert.RetrieveTestsByEnvironment("TEST"),2)
+VAR _RetrieveTestsByEnv_PROD = PQL.Assert.Tbl.ShouldHaveRowCount("RetrieveTestsByEnvironment: PROD should return table should pass", PQL.Assert.RetrieveTestsByEnvironment("PROD"),2)
+VAR _RetrieveTestsByEnv_CUSTOM = PQL.Assert.Tbl.ShouldHaveRowCount("RetrieveTestsByEnvironment: CUSTOM env should return table should pass", PQL.Assert.RetrieveTestsByEnvironment("MYENv"),2)
+VAR _RetrieveTestsByEnv_Blank = PQL.Assert.Tbl.ShouldHaveRowCount("RetrieveTestsByEnvironment: Blank should return all tests should pass", PQL.Assert.RetrieveTestsByEnvironment(""),1)
+VAR _RetrieveTestsByEnv_LowerCase = PQL.Assert.Tbl.ShouldHaveRowCount("RetrieveTestsByEnvironment: lowercase dev should return table should pass", PQL.Assert.RetrieveTestsByEnvironment("dev"),3)
+
+// ============================================
 // Combine All Test Results
 // ============================================
 VAR _AllTests = UNION(
@@ -302,7 +317,16 @@ VAR _AllTests = UNION(
     
     // Relationship Assertions
     _Rel_ShouldExist_Pass,
-    _Rel_ShouldExist_Fail
+    _Rel_ShouldExist_Fail,
+    
+    // Test Discovery Functions
+    _RetrieveTests_Pass,
+    _RetrieveTestsByEnv_DEV,
+    _RetrieveTestsByEnv_TEST,
+    _RetrieveTestsByEnv_PROD,
+    _RetrieveTestsByEnv_CUSTOM,
+    _RetrieveTestsByEnv_Blank,
+    _RetrieveTestsByEnv_LowerCase
 )
 
 // ============================================

@@ -1,1 +1,0 @@
-EVALUATE PQL.Assert.Col.ShouldNotBeBlankOrEmpty("Col.ShouldNotBeNull: Nullable should have values", 'TestData'[NullableField])

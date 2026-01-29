@@ -14,3 +14,12 @@ relationship 555ba403-1d55-49e2-a968-3611498e67de
 	fromColumn: TestData-Fact.CreatedDate
 	toColumn: LocalDateTable_a54a7c29-b72a-43ab-91d9-98883b3951c0.Date
 
+relationship 059c25e1-8c3b-48ef-ba86-ceda4b644a32
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Calendar.Date
+	toColumn: LocalDateTable_7bc6f273-e8e4-4cb5-b3b7-85cdcead9c39.Date
+
+relationship AutoDetected_2e6d8900-40a2-46fb-a485-1a97c23db76a
+	fromColumn: Mock-Fact.'Date ID'
+	toColumn: Calendar.'Date ID'
+

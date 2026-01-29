@@ -1,0 +1,5 @@
+DEFINE
+	FUNCTION ShouldFail.TEST.Tests = () =>
+	PQL.Assert.ShouldBeLessThan("Failed Test",4,4)
+
+EVALUATE ShouldFail.TEST.Tests()

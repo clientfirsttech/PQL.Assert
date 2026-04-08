@@ -151,8 +151,12 @@ PQL.Assert provides two pairs of test discovery functions. The **V1 functions** 
 
 #### V2 — Full metadata (not for Power Automate)
 
-- `PQL.Assert.RetrieveTestsV2()` - Returns all test functions with full metadata columns (`[Name]`, `[Description]`, `[PQLAssert_ImpersonatedUserName]`). Uses `INFO.USERDEFINEDFUNCTIONS` and `INFO.ANNOTATIONS`. **Not compatible with Power Automate.**
+- `PQL.Assert.RetrieveTestsV2()` - Returns all test functions with full metadata columns (`[Name]`, `[Description]`, `[PQLAssert_ImpersonatedUserName]`, `[PQLAssert_RoleName]`). Uses `INFO.USERDEFINEDFUNCTIONS` and `INFO.ANNOTATIONS`. **Not compatible with Power Automate.**
 - `PQL.Assert.RetrieveTestsByEnvironmentV2(environment)` - Returns tests filtered by environment with full metadata. Case-insensitive. Returns all tests if environment is blank. **Not compatible with Power Automate.**
+
+**RLS Testing Notes:**
+- `PQLAssert_ImpersonatedUserName` - Used for Service/XMLA endpoint testing with `EffectiveUserName=` connection string property
+- `PQLAssert_RoleName` - Used for local Power BI Desktop testing with `Roles=` connection string property (MSOLAP only)
 
 ### Best Practice Validations
 
@@ -356,7 +360,7 @@ EVALUATE PQL.Assert.RetrieveTestsByEnvironment("DEV")   // Returns .DEV. and .AN
 EVALUATE PQL.Assert.RetrieveTestsByEnvironment("TEST")  // Returns .TEST. and .ANY. tests
 EVALUATE PQL.Assert.RetrieveTestsByEnvironment("PROD")  // Returns .PROD. and .ANY. tests
 
-// V2 — Full metadata: [Name], [Description], [PQLAssert_ImpersonatedUserName]
+// V2 — Full metadata: [Name], [Description], [PQLAssert_ImpersonatedUserName], [PQLAssert_RoleName]
 // NOT compatible with Power Automate
 EVALUATE PQL.Assert.RetrieveTestsV2()
 EVALUATE PQL.Assert.RetrieveTestsByEnvironmentV2("DEV")

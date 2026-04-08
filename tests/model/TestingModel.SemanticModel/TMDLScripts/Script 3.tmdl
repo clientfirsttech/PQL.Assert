@@ -55,5 +55,5 @@ createOrReplace
 
 		annotation DAXLIB_PackageId = PQL.Assert
 
-		annotation DAXLIB_PackageVersion = 0.3.0
+		annotation DAXLIB_PackageVersion = 0.3.1
 

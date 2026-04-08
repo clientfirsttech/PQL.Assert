@@ -3,7 +3,6 @@ createOrReplace
 	/// Publisher: PQL (Power Query Lint)
 	/// These functions test metadata visibility to verify OLS is properly configured.
 	/// Use with "View as" role context in Power BI Desktop to validate security settings.
-
 	/// Asserts that a table is hidden from metadata (OLS metadataPermission = none).
 	/// Use this when a role should NOT have access to view or query a table.
 	function 'PQL.Assert.OLS.TableShouldBeHidden' =

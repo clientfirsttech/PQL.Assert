@@ -1,0 +1,136 @@
+DEFINE
+
+// ============================================
+// Direct Lake Residency Test Suite
+// Tests for PQL.Assert.DirectLake.Col and PQL.Assert.DirectLake.Tbl functions
+// Validates column segment residency using INFO.STORAGETABLECOLUMNSEGMENTS()
+// ============================================
+
+// Note: These tests require a Direct Lake semantic model with actual segments.
+// On Import/DirectQuery models, all tests will fail with "no segments" message.
+// Replace placeholder table/column names with actual Direct Lake tables in your model.
+
+FUNCTION DirectLake.Residency.DEV.Tests = () =>
+    
+    // ============================================
+    // Test Group 1: Column-level full residency checks
+    // ============================================
+    
+    // Test 1: Should fail if column doesn't exist or isn't Direct Lake
+    VAR _Test1 = PQL.Assert.DirectLake.Col.ShouldBeResident(
+        "DL.Col.ShouldBeResident: NonExistentTable[Column] should fail gracefully",
+        'NonExistentTable'[NonExistentColumn]
+    )
+    
+    // Test 2: Example test for an actual Direct Lake column (update with your table/column names)
+    // VAR _Test2 = PQL.Assert.DirectLake.Col.ShouldBeResident(
+    //     "DL.Col.ShouldBeResident: YourTable[YourColumn] should be fully resident",
+    //     'YourTable'[YourColumn]
+    // )
+    
+    // ============================================
+    // Test Group 2: Column-level NOT resident checks
+    // ============================================
+    
+    // Test 3: Should pass when column has no resident segments (cold start)
+    VAR _Test3 = PQL.Assert.DirectLake.Col.ShouldNotBeResident(
+        "DL.Col.ShouldNotBeResident: NonExistent column should fail (no segments)",
+        'NonExistentTable'[NonExistentColumn]
+    )
+    
+    // Test 4: Example test for verifying column is evicted from memory
+    // VAR _Test4 = PQL.Assert.DirectLake.Col.ShouldNotBeResident(
+    //     "DL.Col.ShouldNotBeResident: LargeColumn should not be resident after eviction",
+    //     'LargeTable'[LargeColumn]
+    // )
+    
+    // ============================================
+    // Test Group 3: Table-level residency checks
+    // ============================================
+    
+    // Test 6: Should fail gracefully on non-existent table
+    VAR _Test6 = PQL.Assert.DirectLake.Tbl.ResidencyRateShouldBeAtLeast(
+        "DL.Tbl.ResidencyRateShouldBeAtLeast: NonExistentTable should fail gracefully",
+        NonExistentTable,
+        50
+    )
+    
+    // Test 7: Example test for dimension table (should be highly resident)
+    // VAR _Test7 = PQL.Assert.DirectLake.Tbl.ResidencyRateShouldBeAtLeast(
+    //     "DL.Tbl.ResidencyRateShouldBeAtLeast: Date dimension should be >= 90% resident",
+    //     'Date',
+    //     90
+    // )
+    
+    // Test 8: Example test for fact table (may have lower residency)
+    // VAR _Test8 = PQL.Assert.DirectLake.Tbl.ResidencyRateShouldBeAtLeast(
+    //     "DL.Tbl.ResidencyRateShouldBeAtLeast: Sales fact should be >= 50% resident",
+    //     Sales,
+    //     50
+    // )
+    
+    RETURN UNION(
+        _Test1,
+        _Test3,
+        _Test6
+        // Add your actual tests here when testing with a real Direct Lake model
+        // _Test2,
+        // _Test4,
+        // _Test5,
+        // _Test7,
+        // _Test8
+    )
+
+EVALUATE DirectLake.Residency.DEV.Tests()
+
+// ============================================
+// Usage Examples (commented out - uncomment to use with actual Direct Lake model)
+// ============================================
+
+// Example 1: Verify critical report columns are pre-warmed
+// EVALUATE PQL.Assert.DirectLake.Col.ShouldBeResident(
+//     "Product name column must be fully resident for fast filtering",
+//     "Product",
+//     "ProductName"
+// )
+
+// Example 2: Validate warming strategy met 80% target for large fact table
+// EVALUATE PQL.Assert.DirectLake.Col.ResidencyRateShouldBeAtLeast(
+//     "Sales amount should be at least 80% resident after warming",
+//     "Sales",
+//     "SalesAmount",
+//     80
+// )
+
+// Example 3: Verify dimension table warming (expect 100% residency)
+// EVALUATE PQL.Assert.DirectLake.Tbl.ResidencyRateShouldBeAtLeast(
+//     "Customer dimension should be fully resident",
+//     "Customer",
+//     100
+// )
+
+// Example 4: Monitor fact table residency in production
+// EVALUATE PQL.Assert.DirectLake.Tbl.ResidencyRateShouldBeAtLeast(
+//     "Sales fact table should maintain at least 40% residency",
+//     "Sales",
+//     40
+// )
+
+// ============================================
+// Production Monitoring Workflow
+// ============================================
+
+// 1. Pre-warming script runs (via Fabric notebook or Power Automate)
+// 2. Wait 30 seconds for segments to load
+// 3. Run residency tests to verify warming succeeded
+// 4. Alert if critical columns fall below threshold
+// 5. Re-run warming if needed
+
+// Example production test suite:
+// EVALUATE UNION(
+//     PQL.Assert.DirectLake.Col.ShouldBeResident("Critical Filter 1", "Product", "CategoryName"),
+//     PQL.Assert.DirectLake.Col.ShouldBeResident("Critical Filter 2", "Date", "MonthName"),
+//     PQL.Assert.DirectLake.Col.ResidencyRateShouldBeAtLeast("Fact Key Column", "Sales", "ProductKey", 80),
+//     PQL.Assert.DirectLake.Tbl.ResidencyRateShouldBeAtLeast("Date Dimension", "Date", 100),
+//     PQL.Assert.DirectLake.Tbl.ResidencyRateShouldBeAtLeast("Sales Fact", "Sales", 50)
+// )

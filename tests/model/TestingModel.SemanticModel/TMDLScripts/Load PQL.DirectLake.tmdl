@@ -1,0 +1,204 @@
+createOrReplace
+	/// Direct Lake Residency Assertions - PQL.Assert.DirectLake namespace
+	/// Uses INFO.STORAGETABLECOLUMNSEGMENTS() to validate column segment residency
+	/// These functions work with any Direct Lake semantic model without schema assumptions
+	
+	/// Asserts that all segments of a column are fully resident in memory.
+	function 'PQL.Assert.DirectLake.Col.ShouldBeResident' =
+			(testName: STRING, columnRef: ANYREF EXPR) =>
+				VAR _Segments = INFO.STORAGETABLECOLUMNSEGMENTS()
+				VAR _Tables =
+					SELECTCOLUMNS(
+						INFO.TABLES(),
+						"TableID", [ID],
+						"TableName", [Name]
+					)
+				VAR _Columns =
+					SELECTCOLUMNS(
+						INFO.COLUMNS(),
+						"ColumnID", [ID],
+						"ColumnName", [Name],
+						"ColumnTableID", [TableID]
+					)
+				
+				VAR _SegmentsWithColumns =
+					NATURALLEFTOUTERJOIN(_Segments, _Columns)
+				VAR _SegmentsWithMetadata =
+					NATURALLEFTOUTERJOIN(_SegmentsWithColumns, _Tables)
+				
+				VAR _Filtered =
+					CALCULATETABLE(
+						_SegmentsWithMetadata,
+						NOT ISBLANK(columnRef)
+					)
+				
+				VAR _TotalSegments = COUNTROWS(_Filtered)
+				VAR _ResidentSegments =
+					COUNTROWS(
+						FILTER(_Filtered, [ISRESIDENT] = TRUE)
+					)
+				
+				VAR _Passed =
+					_TotalSegments > 0 && _ResidentSegments = _TotalSegments
+				
+				VAR _FullColumnName = 
+					IF(
+						_TotalSegments > 0,
+						SELECTEDVALUE(_Filtered[TableName], "Unknown") & "[" & SELECTEDVALUE(_Filtered[ColumnName], "Unknown") & "]",
+						"<column reference>"
+					)
+				
+				VAR _ExpectedMsg =
+					"All segments resident for " & _FullColumnName
+				
+				VAR _ActualMsg =
+					IF(
+						_TotalSegments = 0,
+						"Column not found or has no segments (may be Import/DirectQuery mode)",
+						FORMAT(_ResidentSegments, "0") & " of " & FORMAT(_TotalSegments, "0") & " segments resident (" &
+						FORMAT(DIVIDE(_ResidentSegments, _TotalSegments, 0) * 100, "0.0") & "%)"
+					)
+				
+				RETURN ROW(
+					"TestName", testName,
+					"Expected", _ExpectedMsg,
+					"Actual", _ActualMsg,
+					"Passed", _Passed
+				)
+		annotation DAXLIB_PackageId = PQL.Assert
+		annotation DAXLIB_PackageVersion = 0.6.0
+
+	/// Asserts that all segments of a column are NOT resident in memory.
+	function 'PQL.Assert.DirectLake.Col.ShouldNotBeResident' =
+			(testName: STRING, columnRef: ANYREF EXPR) =>
+				VAR _Segments = INFO.STORAGETABLECOLUMNSEGMENTS()
+				VAR _Tables =
+					SELECTCOLUMNS(
+						INFO.TABLES(),
+						"TableID", [ID],
+						"TableName", [Name]
+					)
+				VAR _Columns =
+					SELECTCOLUMNS(
+						INFO.COLUMNS(),
+						"ColumnID", [ID],
+						"ColumnName", [Name],
+						"ColumnTableID", [TableID]
+					)
+				
+				VAR _SegmentsWithColumns =
+					NATURALLEFTOUTERJOIN(_Segments, _Columns)
+				VAR _SegmentsWithMetadata =
+					NATURALLEFTOUTERJOIN(_SegmentsWithColumns, _Tables)
+				
+				VAR _Filtered =
+					CALCULATETABLE(
+						_SegmentsWithMetadata,
+						NOT ISBLANK(columnRef)
+					)
+				
+				VAR _TotalSegments = COUNTROWS(_Filtered)
+				VAR _ResidentSegments =
+					COUNTROWS(
+						FILTER(_Filtered, [ISRESIDENT] = TRUE)
+					)
+				
+				VAR _Passed =
+					_TotalSegments > 0 && _ResidentSegments = 0
+				
+				VAR _FullColumnName = 
+					IF(
+						_TotalSegments > 0,
+						SELECTEDVALUE(_Filtered[TableName], "Unknown") & "[" & SELECTEDVALUE(_Filtered[ColumnName], "Unknown") & "]",
+						"<column reference>"
+					)
+				
+				VAR _ExpectedMsg =
+					"No segments resident for " & _FullColumnName
+				
+				VAR _ActualMsg =
+					IF(
+						_TotalSegments = 0,
+						"Column not found or has no segments (may be Import/DirectQuery mode)",
+						FORMAT(_ResidentSegments, "0") & " of " & FORMAT(_TotalSegments, "0") & " segments resident (" &
+						FORMAT(DIVIDE(_ResidentSegments, _TotalSegments, 0) * 100, "0.0") & "%)"
+					)
+				
+				RETURN ROW(
+					"TestName", testName,
+					"Expected", _ExpectedMsg,
+					"Actual", _ActualMsg,
+					"Passed", _Passed
+				)
+		annotation DAXLIB_PackageId = PQL.Assert
+		annotation DAXLIB_PackageVersion = 0.6.0
+
+	/// Asserts that at least a minimum percentage of all segments in a table are resident in memory.
+	function 'PQL.Assert.DirectLake.Tbl.ResidencyRateShouldBeAtLeast' =
+			(testName: STRING, tableRef: TABLE EXPR, minResidencyPct: DOUBLE) =>
+				VAR _Segments = INFO.STORAGETABLECOLUMNSEGMENTS()
+				VAR _Tables =
+					SELECTCOLUMNS(
+						INFO.TABLES(),
+						"TableID", [ID],
+						"TableName", [Name]
+					)
+				VAR _Columns =
+					SELECTCOLUMNS(
+						INFO.COLUMNS(),
+						"ColumnID", [ID],
+						"ColumnName", [Name],
+						"ColumnTableID", [TableID]
+					)
+				
+				VAR _SegmentsWithColumns =
+					NATURALLEFTOUTERJOIN(_Segments, _Columns)
+				VAR _SegmentsWithMetadata =
+					NATURALLEFTOUTERJOIN(_SegmentsWithColumns, _Tables)
+				
+				VAR _Filtered =
+				CALCULATETABLE(
+					_SegmentsWithMetadata,
+					NOT ISEMPTY(tableRef)
+					)
+				
+				VAR _ResidencyPct =
+					IF(
+						_TotalSegments > 0,
+						DIVIDE(_ResidentSegments, _TotalSegments, 0) * 100,
+						0
+					)
+				
+				VAR _ColumnCount =
+					COUNTROWS(
+						SUMMARIZE(_Filtered, [ColumnName])
+					)
+				
+				VAR _Passed =
+					_TotalSegments > 0 && _ResidencyPct >= minResidencyPct
+				
+			VAR _TableName =
+				IF(
+					_TotalSegments > 0,
+					SELECTEDVALUE(_Filtered[TableName], "Unknown"),
+					"<table reference>"
+				)
+			
+			VAR _ExpectedMsg =
+				"Table residency rate >= " & FORMAT(minResidencyPct, "0.0") & "% for '" & _TableName & "'"
+			
+			VAR _ActualMsg =
+				IF(
+					_TotalSegments = 0,
+					"Table not found or has no segments (may be Import/DirectQuery mode)",
+						FORMAT(_ColumnCount, "0") & " columns)"
+					)
+				
+				RETURN ROW(
+					"TestName", testName,
+					"Expected", _ExpectedMsg,
+					"Actual", _ActualMsg,
+					"Passed", _Passed
+				)
+		annotation DAXLIB_PackageId = PQL.Assert
+		annotation DAXLIB_PackageVersion = 0.6.0

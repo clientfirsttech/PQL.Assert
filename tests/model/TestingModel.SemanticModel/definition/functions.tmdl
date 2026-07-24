@@ -636,6 +636,218 @@ function 'PQL.Assert.Relationship.ShouldExist' =
 
 	annotation DAXLIB_PackageVersion = 0.5.0
 
+/// Direct Lake Residency Assertions - PQL.Assert.DirectLake namespace
+/// Uses INFO.STORAGETABLECOLUMNSEGMENTS() to validate column segment residency
+/// Asserts that all segments of a column are fully resident in memory.
+function 'PQL.Assert.DirectLake.Col.ShouldBeResident' =
+		(testName: STRING, columnRef: ANYREF EXPR) =>
+		    VAR _Segments = INFO.STORAGETABLECOLUMNSEGMENTS()
+		    VAR _Tables =
+		        SELECTCOLUMNS(
+		            INFO.TABLES(),
+		            "TableID", [ID],
+		            "TableName", [Name]
+		        )
+		    VAR _Columns =
+		        SELECTCOLUMNS(
+		            INFO.COLUMNS(),
+		            "ColumnID", [ID],
+		            "ColumnName", [Name],
+		            "ColumnTableID", [TableID]
+		        )
+		    
+		    VAR _SegmentsWithColumns =
+		        NATURALLEFTOUTERJOIN(_Segments, _Columns)
+		    VAR _SegmentsWithMetadata =
+		        NATURALLEFTOUTERJOIN(_SegmentsWithColumns, _Tables)
+		    
+		    VAR _Filtered =
+		        CALCULATETABLE(
+		            _SegmentsWithMetadata,
+		            NOT ISBLANK(columnRef)
+		        )
+		    
+		    VAR _TotalSegments = COUNTROWS(_Filtered)
+		    VAR _ResidentSegments =
+		        COUNTROWS(
+		            FILTER(_Filtered, [ISRESIDENT] = TRUE)
+		        )
+		    
+		    VAR _Passed =
+		        _TotalSegments > 0 && _ResidentSegments = _TotalSegments
+		    
+	    VAR _FullColumnName = 
+	        IF(
+	            _TotalSegments > 0,
+	            SELECTEDVALUE(_Filtered[TableName], "Unknown") & "[" & SELECTEDVALUE(_Filtered[ColumnName], "Unknown") & "]",
+	            "<column reference>"
+	        )
+	    
+	    VAR _ExpectedMsg =
+	        "All segments resident for " & _FullColumnName
+	    
+	    VAR _ActualMsg =
+	        IF(
+	            _TotalSegments = 0,
+	            "Column not found or has no segments (may be Import/DirectQuery mode)",
+	            FORMAT(_ResidentSegments, "0") & " of " & FORMAT(_TotalSegments, "0") & " segments resident (" &
+	            FORMAT(DIVIDE(_ResidentSegments, _TotalSegments, 0) * 100, "0.0") & "%)"
+	        )
+	    
+	    RETURN ROW(
+	        "TestName", testName,
+	        "Expected", _ExpectedMsg,
+	        "Actual", _ActualMsg,
+	        "Passed", _Passed
+	    )
+	lineageTag: 11111111-1111-1111-1111-111111111111
+
+	annotation DAXLIB_PackageId = PQL.Assert
+
+	annotation DAXLIB_PackageVersion = 0.6.0
+		            "TableName", [Name]
+		        )
+		    VAR _Columns =
+		        SELECTCOLUMNS(
+		            INFO.COLUMNS(),
+		            "ColumnID", [ID],
+		            "ColumnName", [Name],
+		            "ColumnTableID", [TableID]
+		        )
+		    
+		    VAR _SegmentsWithColumns =
+		        NATURALLEFTOUTERJOIN(_Segments, _Columns)
+		    VAR _SegmentsWithMetadata =
+		        NATURALLEFTOUTERJOIN(_SegmentsWithColumns, _Tables)
+		    
+		    VAR _Filtered =
+		        FILTER(
+		            _SegmentsWithMetadata,
+		            [TableName] = tableName && [ColumnName] = columnName
+		        )
+		    
+		    VAR _TotalSegments = COUNTROWS(_Filtered)
+		    VAR _ResidentSegments =
+		        COUNTROWS(
+		            FILTER(_Filtered, [ISRESIDENT] = TRUE)
+		        )
+		    
+		    VAR _ResidencyPct =
+		        IF(
+		            _TotalSegments > 0,
+		            DIVIDE(_ResidentSegments, _TotalSegments, 0) * 100,
+		            0
+		        )
+		    
+		    VAR _Passed =
+		        _TotalSegments > 0 && _ResidencyPct >= minResidencyPct
+		    
+		    VAR _FullColumnName = 
+		        IF(
+		            _TotalSegments > 0,
+		            SELECTEDVALUE(_Filtered[TableName], "Unknown") & "[" & SELECTEDVALUE(_Filtered[ColumnName], "Unknown") & "]",
+		            "<column reference>"
+		        )
+		    
+		    VAR _ExpectedMsg =
+		        "Residency rate >= " & FORMAT(minResidencyPct, "0.0") & "% for " & _FullColumnName
+		    
+		    VAR _ActualMsg =
+		        IF(
+		            _TotalSegments = 0,
+		            "Column not found or has no segments (may be Import/DirectQuery mode)",
+		            FORMAT(_ResidencyPct, "0.0") & "% (" &
+		            FORMAT(_ResidentSegments, "0") & "/" &
+		            FORMAT(_TotalSegments, "0") & " segments)"
+		        )
+		    
+		    RETURN ROW(
+		        "TestName", testName,
+		        "Expected", _ExpectedMsg,
+		        "Actual", _ActualMsg,
+		        "Passed", _Passed
+		    )
+	lineageTag: 22222222-2222-2222-2222-222222222222
+
+	annotation DAXLIB_PackageId = PQL.Assert
+
+	annotation DAXLIB_PackageVersion = 0.6.0
+
+/// Asserts that at least a minimum percentage of all segments in a table are resident in memory.
+function 'PQL.Assert.DirectLake.Tbl.ResidencyRateShouldBeAtLeast' =
+		(testName: STRING, tableName: STRING, minResidencyPct: DOUBLE) =>
+		    VAR _Segments = INFO.STORAGETABLECOLUMNSEGMENTS()
+		    VAR _Tables =
+		        SELECTCOLUMNS(
+		            INFO.TABLES(),
+		            "TableID", [ID],
+		            "TableName", [Name]
+		        )
+		    VAR _Columns =
+		        SELECTCOLUMNS(
+		            INFO.COLUMNS(),
+		            "ColumnID", [ID],
+		            "ColumnName", [Name],
+		            "ColumnTableID", [TableID]
+		        )
+		    
+		    VAR _SegmentsWithColumns =
+		        NATURALLEFTOUTERJOIN(_Segments, _Columns)
+		    VAR _SegmentsWithMetadata =
+		        NATURALLEFTOUTERJOIN(_SegmentsWithColumns, _Tables)
+		    
+		    VAR _Filtered =
+		        FILTER(
+		            _SegmentsWithMetadata,
+		            [TableName] = tableName
+		        )
+		    
+		    VAR _TotalSegments = COUNTROWS(_Filtered)
+		    VAR _ResidentSegments =
+		        COUNTROWS(
+		            FILTER(_Filtered, [ISRESIDENT] = TRUE)
+		        )
+		    
+		    VAR _ResidencyPct =
+		        IF(
+		            _TotalSegments > 0,
+		            DIVIDE(_ResidentSegments, _TotalSegments, 0) * 100,
+		            0
+		        )
+		    
+		    VAR _ColumnCount =
+		        COUNTROWS(
+		            SUMMARIZE(_Filtered, [ColumnName])
+		        )
+		    
+		    VAR _Passed =
+		        _TotalSegments > 0 && _ResidencyPct >= minResidencyPct
+		    
+		    VAR _ExpectedMsg =
+		        "Table residency rate >= " & FORMAT(minResidencyPct, "0.0") & "% for '" & tableName & "'"
+		    
+		    VAR _ActualMsg =
+		        IF(
+		            _TotalSegments = 0,
+		            "Table '" & tableName & "' not found or has no segments (may be Import/DirectQuery mode)",
+		            FORMAT(_ResidencyPct, "0.0") & "% (" &
+		            FORMAT(_ResidentSegments, "0") & "/" &
+		            FORMAT(_TotalSegments, "0") & " segments across " &
+		            FORMAT(_ColumnCount, "0") & " columns)"
+		        )
+		    
+		    RETURN ROW(
+		        "TestName", testName,
+		        "Expected", _ExpectedMsg,
+		        "Actual", _ActualMsg,
+		        "Passed", _Passed
+		    )
+	lineageTag: 33333333-3333-3333-3333-333333333333
+
+	annotation DAXLIB_PackageId = PQL.Assert
+
+	annotation DAXLIB_PackageVersion = 0.6.0
+
 /// Test Discovery Functions - PQL.Assert namespace
 /// Uses INFO.FUNCTIONS only - compatible with Power Automate REST API.
 /// Returns function names of test functions (ending with .Test or .Tests).

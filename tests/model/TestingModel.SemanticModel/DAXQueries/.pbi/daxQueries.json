@@ -21,6 +21,7 @@
     "RLS.Tests",
     "Partition.Tests",
     "Perspective.Tests",
+    "DirectLake.Residency.Tests",
     "Query 1"
   ],
   "defaultTab": "Perspective.Tests"

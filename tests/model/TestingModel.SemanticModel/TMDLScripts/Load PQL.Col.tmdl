@@ -650,3 +650,19 @@ createOrReplace
 		annotation DAXLIB_PackageId = PQL.Assert
 		annotation DAXLIB_PackageVersion = 0.6.0
 
+	/// Asserts whether column is available for MDX queries. Prevents problems for downstream Analyze in Excel users
+	function 'PQL.Assert.Col.IsAvailableInMDX' =
+		(testName : STRING, tableName : STRING, columnName : STRING) =>
+			VAR _ColumnID = MAXX(FILTER(INFO.VIEW.COLUMNS(), [Table] = tableName && [Name] = columnName), [ID])
+			VAR _ColumnExists = NOT ISBLANK(_ColumnID)
+			VAR _IsMDXActive = COUNTROWS(FILTER(INFO.COLUMNS(), [ID] = _ColumnID && [IsAvailableInMDX] = TRUE())) = 1
+			RETURN ROW(
+				"TestName", testName,
+				"Expected", "Column '" & tableName & "'[" & columnName & "] should be available in MDX",
+				"Actual", SWITCH(TRUE(), NOT _ColumnExists, "Column not found", _IsMDXActive, "Available in MDX", "Not available in MDX"),
+				"Passed", _ColumnExists && _IsMDXActive,
+				"IsMDXActive", _IsMDXActive
+			)
+    annotation DAXLIB_PackageId = PQL.Assert
+    annotation DAXLIB_PackageVersion = 0.6.0
+

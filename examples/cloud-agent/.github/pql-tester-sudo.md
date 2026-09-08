@@ -184,6 +184,25 @@ updateDaxQueriesJson() => {
   update: tabOrder, defaultTab
 }
 
+updateChangelog(releaseVersion, releaseDate, changes) => {
+  read: CHANGELOG.md
+  read: src/manifest.daxlib
+  validate: releaseVersion matches manifest version
+  validate: releaseDate is ISO date YYYY-MM-DD
+  locate: topmost release heading after introduction
+  if releaseVersion already exists:
+    update existing release entry
+  else:
+    insert new entry above latest release
+  group changes by Keep a Changelog sections:
+    Added, Changed, Deprecated, Removed, Fixed, Security
+  include only non-empty sections
+  write: concise bullets describing user-visible library, test, docs, or tooling changes
+  verify: version heading format is `## [x.y.z] - YYYY-MM-DD`
+  verify: no duplicate release heading exists
+  return: changed sections and any missing release notes
+}
+
 executeTests(environment?) => {
   discover via RetrieveTestsByEnvironmentV2
   execute each test (with impersonation if required)
@@ -201,6 +220,7 @@ validate-model-structure => schema + relationships
 retrieve-tests => RetrieveTestsV2()
 run-all-tests(env?) => executeTests(env)
 validate-best-practices(category) => BP.Check*
+update-changelog => updateChangelog()
 
 ---
 
@@ -215,6 +235,7 @@ match userRequest {
   /run.*test/ => executeTests
   /create.*test/ => createTest
   /rename.*test/ => renameTest
+  /update.*changelog|changelog|release notes/ => updateChangelog
 }
 
 ---

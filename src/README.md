@@ -112,6 +112,7 @@ EVALUATE PQL.Assert.ShouldEqual("Test 1: 2+2 should equal 4", 4, 2+2)
 #### Schema & Existence
 
 - `PQL.Assert.Col.ShouldExist(testName, tableName, columnName)` - Asserts column exists
+- `PQL.Assert.Col.IsAvailableInMDX(testName, tableName, columnName)` - Asserts column is available to MDX clients such as Analyze in Excel. The assertion resolves the column ID from `INFO.VIEW.COLUMNS()` and reads `IsAvailableInMDX` from `INFO.COLUMNS()`.
 
 ### Table Assertions
 
@@ -564,6 +565,18 @@ EVALUATE _Validation
 ```
 
 ## 💡 Best Practices
+
+### Model-Independent Assertions
+
+Reusable PQL.Assert functions should avoid assumptions about the caller's semantic model unless the function is explicitly validating named model metadata. In particular, functions that accept TABLE or TABLE EXPR parameters should not depend on hard-coded parameter column names such as `[Name]` or `[Value]`.
+
+Prefer these patterns:
+- Use row-count operations such as `COUNTROWS(tableRef)` when the assertion only needs table shape.
+- Accept comma-separated STRING lists for simple schema expectations such as table, column, measure, or perspective membership.
+- When comparing table expressions, normalize each side with `SELECTCOLUMNS` and an explicit projected value column before using `EXCEPT` or `INTERSECT`.
+- Treat joins and filters over `INFO.*` metadata separately from user-supplied TABLE parameters. Metadata functions have known schemas; caller-provided TABLE parameters do not.
+
+Before releasing a new reusable assertion, audit every TABLE parameter for direct column references and add tests that exercise a differently named input column when practical.
 
 ### Test Naming
 

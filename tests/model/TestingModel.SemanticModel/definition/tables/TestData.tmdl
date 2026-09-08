@@ -83,6 +83,14 @@ table TestData
 
 		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
 
+	column 'MDX Disabled Column' = [ID]
+		formatString: 0
+		isAvailableInMdx: false
+		lineageTag: e128d867-73df-46d8-962f-fd24c82c6147
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
 	partition TestData = m
 		mode: import
 		source = ```

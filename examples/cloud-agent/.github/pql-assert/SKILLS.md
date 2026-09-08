@@ -118,6 +118,7 @@ EVALUATE PQL.Assert.ShouldEqual("Test 1: 2+2 should equal 4", 4, 2+2)
 #### Schema & Existence
 
 - `PQL.Assert.Col.ShouldExist(testName, tableName, columnName)` - Asserts column exists
+- `PQL.Assert.Col.IsAvailableInMDX(testName, tableName, columnName)` - Asserts column is available to MDX clients such as Analyze in Excel. The assertion resolves the column ID from `INFO.VIEW.COLUMNS()` and reads `IsAvailableInMDX` from `INFO.COLUMNS()`.
 
 ### Table Assertions
 

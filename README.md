@@ -120,11 +120,11 @@ The **Power BI Semantic Model Test Specialist** is a custom Copilot agent that:
    - [Power BI Model Context Protocol](https://marketplace.visualstudio.com/items?itemName=powerbi.powerbi-modeling-mcp)
 
 2. **Configure the Custom Agent**
-   - Copy `examples/custom-agents/sm-testing-agent.md` to your workspace `.github/agents` folder:
+    - Copy `examples/custom-agents/agents/power-query-tester.agent.md` to your workspace `.github/agents` folder:
      ```
      .github/
        agents/
-         sm-testing-agent.md
+             power-query-tester.agent.md
      ```
    - Or place it in your global Copilot instructions folder (varies by OS)
 
@@ -157,6 +157,8 @@ The custom agent can:
 - **Run Best Practice Checks**: Execute built-in semantic model validations
 - **Discover Tests**: Find and filter existing test functions by environment
 - **Rename Tests**: Update test names and manage environment transitions
+- **Audit Model Independence**: Review reusable assertion functions for TABLE parameter schema assumptions
+- **Maintain Release Notes**: Use the cloud-agent Sudolang `updateChangelog` workflow to keep `CHANGELOG.md` aligned with `src/manifest.daxlib`
 
 ### Example Usage
 
@@ -189,7 +191,13 @@ The agent follows strict constraints:
 - Does not modify production measures or model structure unless explicitly asked
 - Returns complete DAX queries (not fragments)
 
-For complete agent documentation, see [examples/custom-agents/sm-testing-agent.md](examples/custom-agents/sm-testing-agent.md).
+For complete agent documentation, see [examples/custom-agents/agents/power-query-tester.agent.md](examples/custom-agents/agents/power-query-tester.agent.md).
+
+### Cloud Agent Workflow
+
+The [examples/cloud-agent/.github/pql-tester-sudo.md](examples/cloud-agent/.github/pql-tester-sudo.md) prompt includes a compact Sudolang workflow for semantic-model test automation. In addition to test creation and execution, it now includes `updateChangelog(releaseVersion, releaseDate, changes)` for maintaining release notes. The workflow validates the requested release against `src/manifest.daxlib`, writes Keep a Changelog sections, and checks for duplicate release headings.
+
+When reviewing reusable assertion functions, pair the `pql-assert` skill with the `model-independence` skill. Functions that accept TABLE parameters should avoid hard-coded column assumptions on those parameters. Row-count checks, string-list schema checks, and set operations over normalized `SELECTCOLUMNS` projections are preferred patterns.
 
 ## 🆘 Support
 

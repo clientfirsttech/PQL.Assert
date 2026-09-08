@@ -116,7 +116,7 @@ createOrReplace
 			        "RuleDescription", "Hidden measures that are not referenced by any DAX expression are unnecessary and should be removed for maintainability. Scope: Measure. CompatibilityLevel: 1200. Severity: High (3)."
 			    )	
 	    annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.6.0
+		annotation DAXLIB_PackageVersion = 0.6.2
 
 	/// Asserts that visible objects should have descriptions.
 	/// Add descriptions to visible tables, measures, and columns. Descriptions are shown on hover within the Field List in Power BI Desktop.
@@ -262,7 +262,7 @@ createOrReplace
 			        "RuleDescription", "Add descriptions to visible objects. Descriptions are shown on hover within the Field List in Power BI Desktop. Additionally, you can leverage these descriptions to create an automated data dictionary. Reference: https://www.elegantbi.com/post/datadictionary. Scope: Table, Measure, DataColumn, CalculatedColumn, CalculatedTable, CalculatedTableColumn, CalculationGroup. CompatibilityLevel: 1200. Severity: High (3)."
 			    )	
 	    annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.6.0
+		annotation DAXLIB_PackageVersion = 0.6.2
 
 	/// Asserts that hidden columns not referenced by any DAX expressions, relationships, hierarchy levels, or Sort By-properties should be removed.
 	/// Scope: DataColumn, CalculatedColumn, CalculatedTableColumn. CompatibilityLevel >= 1200.
@@ -419,7 +419,7 @@ createOrReplace
 			        "RuleDescription", "Hidden columns that are not referenced by any DAX expressions, relationships, hierarchy levels, or Sort By-properties should be removed. Scope: DataColumn, CalculatedColumn, CalculatedTableColumn. CompatibilityLevel: 1200. Severity: High (3)."
 			    )	
 	    annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.6.0
+		annotation DAXLIB_PackageVersion = 0.6.2
 
 	/// Runs all maintenance best practice checks.
 	/// This function executes all maintenance validation rules and returns combined results.
@@ -431,4 +431,4 @@ createOrReplace
 			        PQL.Assert.BP.ShouldHaveObjectDescriptions()
 			    )
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.6.0
+		annotation DAXLIB_PackageVersion = 0.6.2

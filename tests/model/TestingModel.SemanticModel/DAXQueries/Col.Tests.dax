@@ -193,6 +193,24 @@ VAR _Lower_Fail = PQL.Assert.Col.TextCaseShouldBeLower("Col.TextCaseShouldBeLowe
 VAR _TextLen_Pass = PQL.Assert.Col.TextLengthShouldBeInRange("Col.TextLengthShouldBeInRange: Name [3,10] should pass", 'TestData'[Name], 3, 10)
 VAR _TextLen_Fail = PQL.Assert.Col.TextLengthShouldBeInRange("Col.TextLengthShouldBeInRange: Name [5,5] should fail", 'TestData'[Name], 5, 5)
 
+// PQL.Assert.Col.IsAvailableInMDX
+VAR _IsAvailableInMDX_Pass =
+    SELECTCOLUMNS(
+        PQL.Assert.Col.IsAvailableInMDX("Col.IsAvailableInMDX: TestData[ID] should pass", "TestData", "ID"),
+        "TestName", [TestName],
+        "Expected", [Expected],
+        "Actual", [Actual],
+        "Passed", [Passed]
+    )
+VAR _IsAvailableInMDX_Fail =
+    SELECTCOLUMNS(
+        PQL.Assert.Col.IsAvailableInMDX("Col.IsAvailableInMDX: TestData[MDX Disabled Column] should fail", "TestData", "MDX Disabled Column"),
+        "TestName", [TestName],
+        "Expected", [Expected],
+        "Actual", [Actual],
+        "Passed", [Passed]
+    )
+
 // ============================================
 // Combine All Test Results
 // ============================================
@@ -269,7 +287,9 @@ VAR _AllTests = UNION(
     _Upper_Fail,
     _Lower_Fail,
     _TextLen_Pass,
-    _TextLen_Fail
+    _TextLen_Fail,
+    _IsAvailableInMDX_Pass,
+    _IsAvailableInMDX_Fail
 )
 
 // ============================================

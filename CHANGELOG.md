@@ -9,6 +9,32 @@ match the `version` value in [src/manifest.daxlib](src/manifest.daxlib) and the
 
 ---
 
+## [0.6.2] - 2026-09-08
+
+### Added
+- `PQL.Assert.Col.IsAvailableInMDX(testName, tableName, columnName)` validates that a column is
+  available to MDX clients such as Analyze in Excel.
+- TestingModel fixture coverage for MDX availability using a real `MDX Disabled Column` with
+  `isAvailableInMdx: false`, plus pass/fail cases in `Col.Tests.dax`.
+- Cloud-agent Sudolang workflow for maintaining release notes via `updateChangelog`, including
+  manifest-version validation, Keep a Changelog section grouping, duplicate-heading checks, and
+  command/pattern routing for changelog and release-note requests.
+- Documentation guidance for model-independence audits so reusable assertion functions avoid
+  schema assumptions on TABLE parameters and distinguish user-supplied tables from `INFO.*`
+  metadata tables.
+
+### Changed
+- `PQL.Assert.Col.IsAvailableInMDX` resolves the target column ID from `INFO.VIEW.COLUMNS()` and
+  reads `IsAvailableInMDX` from `INFO.COLUMNS()` so the assertion checks the reliable metadata
+  source while still accepting table and column names.
+- Custom-agent documentation now lists changelog maintenance and model-independence review as
+  supported semantic-model testing workflows.
+- Clarified that set operations are acceptable after normalizing table expressions with explicit
+  value columns, and that joins over `INFO.*` metadata are not the same risk as joins over
+  user-supplied TABLE parameters.
+
+---
+
 ## [0.6.0] - 2026-08-31
 
 ### Added

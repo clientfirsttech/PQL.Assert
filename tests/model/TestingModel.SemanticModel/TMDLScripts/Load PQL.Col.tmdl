@@ -16,7 +16,7 @@ createOrReplace
 					"Passed", _Passed
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.6.0
+		annotation DAXLIB_PackageVersion = 0.6.2
 
 	/// Asserts that a column contains at least one non-NULL value (not DAX BLANK()).
 	function 'PQL.Assert.Col.ShouldNotBeNull' =
@@ -30,7 +30,7 @@ createOrReplace
 					"Passed", _Passed
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.6.0
+		annotation DAXLIB_PackageVersion = 0.6.2
 
 	/// Asserts that all values in a column are BLANK (empty string "" or NULL BLANK()). Fails if any non-blank values exist.
 	function 'PQL.Assert.Col.ShouldBeBlank' =
@@ -48,7 +48,7 @@ createOrReplace
 					"Passed", _Passed
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.6.0
+		annotation DAXLIB_PackageVersion = 0.6.2
 
 	/// Asserts that all values in a column are non-BLANK (not empty string "" and not NULL BLANK()). Fails if any blank values exist.
 	function 'PQL.Assert.Col.ShouldNotBeBlank' =
@@ -63,7 +63,7 @@ createOrReplace
 					"Passed", _Passed
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.6.0
+		annotation DAXLIB_PackageVersion = 0.6.2
 
 	/// Asserts that all values in a column are NULL or BLANK (BLANK() or empty string ""). Fails if any values with content exist.
 	function 'PQL.Assert.Col.ShouldBeNullOrBlank' =
@@ -81,7 +81,7 @@ createOrReplace
 					"Passed", _Passed
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.6.0
+		annotation DAXLIB_PackageVersion = 0.6.2
 
 	/// Asserts that all values in a column are not NULL and not BLANK. Fails if any NULL or empty values exist.
 	function 'PQL.Assert.Col.ShouldNotBeNullOrBlank' =
@@ -96,7 +96,7 @@ createOrReplace
 					"Passed", _Passed
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.6.0
+		annotation DAXLIB_PackageVersion = 0.6.2
 
 	/// Asserts that all values in a column are unique (no duplicates).
 	function 'PQL.Assert.Col.ShouldBeDistinct' =
@@ -111,7 +111,7 @@ createOrReplace
 					"Passed", _Passed
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.6.0
+		annotation DAXLIB_PackageVersion = 0.6.2
 
 	/// Asserts that a column exists in a table.
 	function 'PQL.Assert.Col.ShouldExist' =
@@ -125,7 +125,7 @@ createOrReplace
 					"Passed", _Found
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.6.0
+		annotation DAXLIB_PackageVersion = 0.6.2
 
 	/// Presence / Completeness Thresholds
 	/// Asserts that the null rate of a column is at most the specified percentage.
@@ -142,7 +142,7 @@ createOrReplace
 					"Passed", _Passed
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.6.0
+		annotation DAXLIB_PackageVersion = 0.6.2
 
 	/// Asserts that the blank rate (empty string) of a column is at most the specified percentage.
 	function 'PQL.Assert.Col.BlankRateShouldBeAtMost' =
@@ -158,7 +158,7 @@ createOrReplace
 					"Passed", _Passed
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.6.0
+		annotation DAXLIB_PackageVersion = 0.6.2
 
 	/// Asserts that the null or blank rate of a column is at most the specified percentage.
 	function 'PQL.Assert.Col.NullOrBlankRateShouldBeAtMost' =
@@ -174,7 +174,7 @@ createOrReplace
 					"Passed", _Passed
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.6.0
+		annotation DAXLIB_PackageVersion = 0.6.2
 
 	/// Asserts that the populated (non-null, non-blank) rate of a column is at least the specified percentage.
 	function 'PQL.Assert.Col.PopulatedRateShouldBeAtLeast' =
@@ -190,7 +190,7 @@ createOrReplace
 					"Passed", _Passed
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.6.0
+		annotation DAXLIB_PackageVersion = 0.6.2
 
 	/// Uniqueness & Key-Like Behavior
 	/// Asserts that column values are unique within partitions defined by another column.
@@ -207,7 +207,7 @@ createOrReplace
 					"Passed", _Passed
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.6.0
+		annotation DAXLIB_PackageVersion = 0.6.2
 
 	/// Asserts that the combination of two columns forms a distinct composite key.
 	function 'PQL.Assert.Col.ComboShouldBeDistinct' =
@@ -223,7 +223,7 @@ createOrReplace
 					"Passed", _Passed
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.6.0
+		annotation DAXLIB_PackageVersion = 0.6.2
 
 	/// Asserts that a column contains no duplicate values. Alias for ShouldBeDistinct.
 	function 'PQL.Assert.Col.ShouldNotContainDuplicates' =
@@ -238,7 +238,7 @@ createOrReplace
 					"Passed", _Passed
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.6.0
+		annotation DAXLIB_PackageVersion = 0.6.2
 
 	/// Range & Distribution Checks (Numeric)
 	/// Asserts that all values in a numeric column fall within the specified inclusive range.
@@ -254,7 +254,7 @@ createOrReplace
 					"Passed", _Passed
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.6.0
+		annotation DAXLIB_PackageVersion = 0.6.2
 
 	/// Asserts that the minimum value in a column is at least the specified value.
 	function 'PQL.Assert.Col.MinShouldBeAtLeast' =
@@ -268,7 +268,7 @@ createOrReplace
 					"Passed", _Passed
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.6.0
+		annotation DAXLIB_PackageVersion = 0.6.2
 
 	/// Asserts that the maximum value in a column is at most the specified value.
 	function 'PQL.Assert.Col.MaxShouldBeAtMost' =
@@ -282,7 +282,7 @@ createOrReplace
 					"Passed", _Passed
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.6.0
+		annotation DAXLIB_PackageVersion = 0.6.2
 
 	/// Asserts that the specified percentile of a column falls within the given range.
 	function 'PQL.Assert.Col.PctileShouldBeInRange' =
@@ -296,7 +296,7 @@ createOrReplace
 					"Passed", _Passed
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.6.0
+		annotation DAXLIB_PackageVersion = 0.6.2
 
 	/// Asserts that the mean of a column falls within the specified range.
 	function 'PQL.Assert.Col.MeanShouldBeInRange' =
@@ -310,7 +310,7 @@ createOrReplace
 					"Passed", _Passed
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.6.0
+		annotation DAXLIB_PackageVersion = 0.6.2
 
 	/// Asserts that the standard deviation of a column is at most the specified value.
 	function 'PQL.Assert.Col.StdDevShouldBeAtMost' =
@@ -328,7 +328,7 @@ createOrReplace
 					"Passed", _Passed
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.6.0
+		annotation DAXLIB_PackageVersion = 0.6.2
 
 	/// Asserts that the share of zero values in a column is at most the specified percentage.
 	function 'PQL.Assert.Col.ShareOfZerosAtMost' =
@@ -344,7 +344,7 @@ createOrReplace
 					"Passed", _Passed
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.6.0
+		annotation DAXLIB_PackageVersion = 0.6.2
 
 	/// Asserts that the share of even values in a column is at least the specified percentage.
 	function 'PQL.Assert.Col.ShareOfEvensAtLeast' =
@@ -360,7 +360,7 @@ createOrReplace
 					"Passed", _Passed
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.6.0
+		annotation DAXLIB_PackageVersion = 0.6.2
 
 	/// Asserts that the share of odd values in a column is at least the specified percentage.
 	function 'PQL.Assert.Col.ShareOfOddsAtLeast' =
@@ -376,7 +376,7 @@ createOrReplace
 					"Passed", _Passed
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.6.0
+		annotation DAXLIB_PackageVersion = 0.6.2
 
 	/// Sign & Monotonicity
 	/// Asserts that all values in a column are non-negative (>= 0).
@@ -392,7 +392,7 @@ createOrReplace
 					"Passed", _Passed
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.6.0
+		annotation DAXLIB_PackageVersion = 0.6.2
 
 	/// Asserts that all values in a column are strictly positive (> 0).
 	function 'PQL.Assert.Col.ShouldBePositive' =
@@ -407,7 +407,7 @@ createOrReplace
 					"Passed", _Passed
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.6.0
+		annotation DAXLIB_PackageVersion = 0.6.2
 
 	/// Asserts that no values in a column are zero.
 	function 'PQL.Assert.Col.ShouldBeNonZero' =
@@ -422,7 +422,7 @@ createOrReplace
 					"Passed", _Passed
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.6.0
+		annotation DAXLIB_PackageVersion = 0.6.2
 
 	/// Asserts that values in a column are monotonically strictly increasing when ordered by another column.
 	function 'PQL.Assert.Col.ShouldBeMonotonicIncreasing' =
@@ -448,7 +448,7 @@ createOrReplace
 					"Passed", _Passed
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.6.0
+		annotation DAXLIB_PackageVersion = 0.6.2
 
 	/// Asserts that values in a column are monotonically non-decreasing when ordered by another column.
 	function 'PQL.Assert.Col.ShouldBeMonotonicNonDecreasing' =
@@ -474,7 +474,7 @@ createOrReplace
 					"Passed", _Passed
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.6.0
+		annotation DAXLIB_PackageVersion = 0.6.2
 
 	/// Asserts that values in a column are monotonically strictly decreasing when ordered by another column.
 	function 'PQL.Assert.Col.ShouldBeMonotonicDecreasing' =
@@ -500,7 +500,7 @@ createOrReplace
 					"Passed", _Passed
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.6.0
+		annotation DAXLIB_PackageVersion = 0.6.2
 
 	/// Categorical / Membership / Format
 	/// Asserts that all values in a column are in the specified allowed set (table).
@@ -523,7 +523,7 @@ createOrReplace
 					"Passed", _Passed
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.6.0
+		annotation DAXLIB_PackageVersion = 0.6.2
 
 	/// Asserts that no values in a column are in the specified banned set (table).
 	function 'PQL.Assert.Col.ValuesShouldNotBeInSet' =
@@ -545,7 +545,7 @@ createOrReplace
 					"Passed", _Passed
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.6.0
+		annotation DAXLIB_PackageVersion = 0.6.2
 
 	/// Asserts that the distinct count of values in a column is at most the specified number.
 	function 'PQL.Assert.Col.DistinctCountShouldBeAtMost' =
@@ -559,7 +559,7 @@ createOrReplace
 					"Passed", _Passed
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.6.0
+		annotation DAXLIB_PackageVersion = 0.6.2
 
 	/// Asserts that the distinct count of values in a column is at least the specified number.
 	function 'PQL.Assert.Col.DistinctCountShouldBeAtLeast' =
@@ -573,7 +573,7 @@ createOrReplace
 					"Passed", _Passed
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.6.0
+		annotation DAXLIB_PackageVersion = 0.6.2
 
 	/// Asserts that no text values in a column have leading or trailing spaces.
 	function 'PQL.Assert.Col.TextShouldHaveNoLeadingOrTrailingSpaces' =
@@ -588,7 +588,7 @@ createOrReplace
 					"Passed", _Passed
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.6.0
+		annotation DAXLIB_PackageVersion = 0.6.2
 
 	/// Asserts that all text values in a column are trimmed. Alias for TextShouldHaveNoLeadingOrTrailingSpaces.
 	function 'PQL.Assert.Col.TextShouldBeTrimmed' =
@@ -603,7 +603,7 @@ createOrReplace
 					"Passed", _Passed
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.6.0
+		annotation DAXLIB_PackageVersion = 0.6.2
 
 	/// Asserts that all text values in a column are uppercase.
 	function 'PQL.Assert.Col.TextCaseShouldBeUpper' =
@@ -618,7 +618,7 @@ createOrReplace
 					"Passed", _Passed
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.6.0
+		annotation DAXLIB_PackageVersion = 0.6.2
 
 	/// Asserts that all text values in a column are lowercase.
 	function 'PQL.Assert.Col.TextCaseShouldBeLower' =
@@ -633,7 +633,7 @@ createOrReplace
 					"Passed", _Passed
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.6.0
+		annotation DAXLIB_PackageVersion = 0.6.2
 
 	/// Asserts that text lengths in a column fall within the specified range.
 	function 'PQL.Assert.Col.TextLengthShouldBeInRange' =
@@ -648,21 +648,21 @@ createOrReplace
 					"Passed", _Passed
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.6.0
+		annotation DAXLIB_PackageVersion = 0.6.2
 
 	/// Asserts whether column is available for MDX queries. Prevents problems for downstream Analyze in Excel users
 	function 'PQL.Assert.Col.IsAvailableInMDX' =
-		(testName : STRING, tableName : STRING, columnName : STRING) =>
-			VAR _ColumnID = MAXX(FILTER(INFO.VIEW.COLUMNS(), [Table] = tableName && [Name] = columnName), [ID])
-			VAR _ColumnExists = NOT ISBLANK(_ColumnID)
-			VAR _IsMDXActive = COUNTROWS(FILTER(INFO.COLUMNS(), [ID] = _ColumnID && [IsAvailableInMDX] = TRUE())) = 1
-			RETURN ROW(
-				"TestName", testName,
-				"Expected", "Column '" & tableName & "'[" & columnName & "] should be available in MDX",
-				"Actual", SWITCH(TRUE(), NOT _ColumnExists, "Column not found", _IsMDXActive, "Available in MDX", "Not available in MDX"),
-				"Passed", _ColumnExists && _IsMDXActive,
-				"IsMDXActive", _IsMDXActive
-			)
-    annotation DAXLIB_PackageId = PQL.Assert
-    annotation DAXLIB_PackageVersion = 0.6.0
+			(testName : STRING, tableName : STRING, columnName : STRING) =>
+				VAR _ColumnID = MAXX(FILTER(INFO.VIEW.COLUMNS(), [Table] = tableName && [Name] = columnName), [ID])
+				VAR _ColumnExists = NOT ISBLANK(_ColumnID)
+				VAR _IsMDXActive = COUNTROWS(FILTER(INFO.COLUMNS(), [ID] = _ColumnID && [IsAvailableInMDX] = TRUE())) = 1
+				RETURN ROW(
+					"TestName", testName,
+					"Expected", "Column '" & tableName & "'[" & columnName & "] should be available in MDX",
+					"Actual", SWITCH(TRUE(), NOT _ColumnExists, "Column not found", _IsMDXActive, "Available in MDX", "Not available in MDX"),
+					"Passed", _ColumnExists && _IsMDXActive,
+					"IsMDXActive", _IsMDXActive
+				)
+		annotation DAXLIB_PackageId = PQL.Assert
+		annotation DAXLIB_PackageVersion = 0.6.2
 

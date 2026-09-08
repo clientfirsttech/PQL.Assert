@@ -16,7 +16,7 @@ createOrReplace
 					"Passed", NOT _IsVisible
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.6.0
+		annotation DAXLIB_PackageVersion = 0.6.2
 
 	/// Asserts that a table is visible in metadata (OLS allows access).
 	/// Use this when a role SHOULD have access to view or query a table.
@@ -31,7 +31,7 @@ createOrReplace
 					"Passed", _IsVisible
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.6.0
+		annotation DAXLIB_PackageVersion = 0.6.2
 
 	/// Asserts that a column is hidden from metadata (OLS columnPermission = none).
 	/// Use this when a role should NOT have access to view or query a column.
@@ -46,7 +46,7 @@ createOrReplace
 					"Passed", NOT _IsVisible
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.6.0
+		annotation DAXLIB_PackageVersion = 0.6.2
 
 	/// Asserts that a column is visible in metadata (OLS allows access).
 	/// Use this when a role SHOULD have access to view or query a column.
@@ -61,4 +61,4 @@ createOrReplace
 					"Passed", _IsVisible
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.6.0
+		annotation DAXLIB_PackageVersion = 0.6.2

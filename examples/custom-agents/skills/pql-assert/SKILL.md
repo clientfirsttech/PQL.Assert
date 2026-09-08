@@ -12,7 +12,7 @@ A comprehensive DAX assertion library for writing unit tests in Power BI and Ana
 
 ### Installation
 
-1. Load the [`functions.tmdl`](references/functions.tmdl) file (located in the extension's `skills/pql-assert/references/` folder) into your semantic model
+1. Load the [`functions.tmdl`](../../../cloud-agent/.github/pql-assert/references/functions.tmdl) file into your semantic model
 2. Refresh the model to make functions available
 3. Start writing tests using PQL.Assert functions
 
@@ -118,6 +118,7 @@ EVALUATE PQL.Assert.ShouldEqual("Test 1: 2+2 should equal 4", 4, 2+2)
 #### Schema & Existence
 
 - `PQL.Assert.Col.ShouldExist(testName, tableName, columnName)` - Asserts column exists
+- `PQL.Assert.Col.IsAvailableInMDX(testName, tableName, columnName)` - Asserts column is available to MDX clients such as Analyze in Excel. The assertion resolves the column ID from `INFO.VIEW.COLUMNS()` and reads `IsAvailableInMDX` from `INFO.COLUMNS()`.
 
 ### Table Assertions
 
@@ -286,6 +287,25 @@ Follow the pattern: `[name].[environment].test(s)`
 
 ### Creating Test Functions
 
+#### Testing Metadata Properties With TMDL Fixtures
+
+When testing semantic model metadata such as `isAvailableInMDX`, `isHidden`, summarization, formatting, or relationship behavior, create a real fixture object in the checked-in `.SemanticModel/definition` TMDL. Do not use a missing table or column as the only failing case for a metadata-property assertion; that proves existence handling, not the property-specific branch.
+
+For `isAvailableInMDX`, prefer a dedicated column fixture such as:
+
+```tmdl
+column 'MDX Disabled Column' = [ID]
+	formatString: 0
+	isAvailableInMdx: false
+	summarizeBy: none
+```
+
+Tests for `PQL.Assert.Col.IsAvailableInMDX` should include both:
+- A pass case against a real column with MDX availability enabled.
+- A fail case against a real column with `isAvailableInMdx: false`.
+
+Implementation note: `INFO.VIEW.COLUMNS()` provides table/name context and column `ID`, but its `IsAvailableInMDX` value is not reliable for this assertion. Resolve the target column `ID` from `INFO.VIEW.COLUMNS()` and filter `INFO.COLUMNS()` by that `ID` to read `IsAvailableInMDX`.
+
 #### Testing Calculations (DEV Environment)
 ```dax
 DEFINE
@@ -446,6 +466,18 @@ EVALUATE _Validation
 ```
 
 ## Best Practices
+
+### Model Independence
+
+Reusable assertion functions should work across semantic models without assuming caller-specific schemas. When a function accepts a TABLE or TABLE EXPR parameter, do not directly reference parameter columns by hard-coded names unless the parameter contract explicitly requires that schema.
+
+Preferred patterns:
+- Use `COUNTROWS(tableRef)` for row-count assertions that do not need column access.
+- Use STRING parameters for simple expected lists, especially table, column, measure, perspective, and schema membership checks.
+- If a table expression must be compared to another set, first project both sides with `SELECTCOLUMNS` into a known temporary column and then use `EXCEPT` or `INTERSECT`.
+- Joins and filters over `INFO.*` metadata are acceptable because those metadata tables have known schemas; the model-independence risk is hard-coded access to user-supplied TABLE parameters.
+
+Use the `model-independence` skill when creating or reviewing reusable DAX UDFs. An audit should list each TABLE parameter, whether it is accessed only through row-count/shape operations or normalized projections, and any remaining schema assumptions.
 
 ### Test Naming
 

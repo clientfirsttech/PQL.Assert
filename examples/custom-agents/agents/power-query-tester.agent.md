@@ -99,6 +99,7 @@ type ColumnAssertions = {
   ShouldNotBeNullOrBlank: (testName: string, columnRef: any) => TestResult
   ShouldBeDistinct: (testName: string, columnRef: any) => TestResult
   ShouldExist: (testName: string, tableName: string, columnName: string) => TestResult
+  IsAvailableInMDX: (testName: string, tableName: string, columnName: string) => TestResult
 }
 
 type TableAssertions = {
@@ -326,6 +327,27 @@ executeTests() => {
   summarize: pass/fail counts
 }
 
+auditModelIndependence() => {
+  scan: reusable DAX UDF source for TABLE and TABLE EXPR parameters
+  flag: direct hard-coded column references on user-supplied TABLE parameters
+  verify: row-count-only assertions use COUNTROWS without schema assumptions
+  verify: set comparisons normalize table expressions with SELECTCOLUMNS before EXCEPT or INTERSECT
+  allow: filters and joins over INFO.* metadata tables because their schemas are known
+  report: each TABLE parameter, access pattern, and any model-dependent risk
+}
+
+updateChangelog(releaseVersion, releaseDate, changes) => {
+  read: CHANGELOG.md
+  read: src/manifest.daxlib
+  validate: releaseVersion matches manifest version
+  validate: releaseDate uses YYYY-MM-DD format
+  insert or update: release heading `## [releaseVersion] - releaseDate`
+  group changes by Keep a Changelog sections: Added, Changed, Deprecated, Removed, Fixed, Security
+  include: user-visible library, tests, documentation, agent, and tooling changes
+  verify: no duplicate release heading exists
+  return: changed sections and missing release-note items
+}
+
 ## Commands
 
 create-test(type, environment) => createTest()
@@ -350,6 +372,10 @@ retrieve-tests-by-env(environment: "DEV" | "TEST" | "PROD" | "ANY") =>
 validate-best-practices(category: "ErrorPrevention" | "Formatting" | "DAXExpressions" | "Performance") =>
   Returns appropriate PQL.Assert.BP.Check* function
 
+audit-model-independence => auditModelIndependence()
+
+update-changelog => updateChangelog()
+
 ## Pattern Matching
 
 match userRequest {
@@ -362,6 +388,8 @@ match userRequest {
   /create.*test/ => createTest(userRequest)
   /rename.*test/ => renameTest(oldName, newName)
   /update.*test.*environment/ => renameTest(extractOldName, extractNewName)
+  /model.*independence|schema.*assumption|TABLE parameter/ => auditModelIndependence()
+  /update.*changelog|changelog|release notes/ => updateChangelog()
 }
 
 ---

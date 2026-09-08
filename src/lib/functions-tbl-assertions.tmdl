@@ -14,7 +14,7 @@ createOrReplace
 					"Passed", _Passed
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.6.0
+		annotation DAXLIB_PackageVersion = 0.6.2
 
 	/// Asserts that a table has exactly the expected number of rows.
 	function 'PQL.Assert.Tbl.ShouldHaveRowCount' =
@@ -28,7 +28,7 @@ createOrReplace
 					"Passed", _Passed
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.6.0
+		annotation DAXLIB_PackageVersion = 0.6.2
 
 	/// Asserts that a table has more rows than the specified threshold.
 	function 'PQL.Assert.Tbl.ShouldHaveMoreRowsThan' =
@@ -42,7 +42,7 @@ createOrReplace
 					"Passed", _Passed
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.6.0
+		annotation DAXLIB_PackageVersion = 0.6.2
 
 	/// Asserts that a table exists in the model.
 	function 'PQL.Assert.Tbl.ShouldExist' =
@@ -56,7 +56,7 @@ createOrReplace
 					"Passed", _Found
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.6.0
+		annotation DAXLIB_PackageVersion = 0.6.2
 
 	/// Schema & Column Shape
 	/// Asserts that a table has all the specified columns (comma-separated list).
@@ -81,7 +81,7 @@ createOrReplace
 					"Passed", _Passed
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.6.0
+		annotation DAXLIB_PackageVersion = 0.6.2
 
 	/// Asserts that a table does not have extra columns beyond the allowed list (comma-separated).
 	function 'PQL.Assert.Tbl.ShouldNotHaveExtraColumns' =
@@ -104,7 +104,7 @@ createOrReplace
 					"Passed", _Passed
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.6.0
+		annotation DAXLIB_PackageVersion = 0.6.2
 
 	/// Asserts that a column in a table has the expected data type.
 	function 'PQL.Assert.Tbl.ColumnDataTypeShouldBe' =
@@ -121,5 +121,5 @@ createOrReplace
 					"Passed", _Passed
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.6.0
+		annotation DAXLIB_PackageVersion = 0.6.2
 

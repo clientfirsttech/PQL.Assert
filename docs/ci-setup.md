@@ -110,7 +110,18 @@ Later deploys update the model in place and keep these credentials. **Redo this 
 
 **Verify:** a manual **Refresh now** on TestingModel succeeds.
 
-### 6.2 Make the gate required
+### 6.2 Add the service principal to the test roles (one time)
+Suites with a `PQLAssert_RoleName` annotation run with `Roles=<role>`. Over XMLA, that only works when the caller is a **member** of the role; workspace access isn't enough. Without membership the suites fail with *"You are not a member of any of the roles specified"*.
+
+1. In the workspace, open the semantic model's **⋯ → Security**.
+2. Add `sg-pql-assert-ci` (or the `pql-assert-ci` service principal) as a member of:
+   - **TestingModel:** `West`
+   - **RLS_Model:** `West` and `East`
+3. Select **Save** and re-run the workflow.
+
+**Verify:** the next run has no role errors for `RLS.ANY.Tests`, `OLS_West.ANY.Tests` or `OLS_East.ANY.Tests`. That run redeploys first, so a pass also confirms the deploy keeps role members.
+
+### 6.3 Make the gate required
 GitHub only offers a status check in rulesets after that check has run at least once.
 
 1. Go to **Settings → Rules → Rulesets → New branch ruleset**.

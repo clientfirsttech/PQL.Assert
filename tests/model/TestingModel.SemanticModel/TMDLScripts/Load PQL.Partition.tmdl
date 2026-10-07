@@ -47,7 +47,7 @@ createOrReplace
                     "Passed", _Passed
                 )
         annotation DAXLIB_PackageId = PQL.Assert
-        annotation DAXLIB_PackageVersion = 0.6.2
+        annotation DAXLIB_PackageVersion = 0.7.0
 
     /// Asserts that at least one partition exists for the specified table, with optional date range filtering.
     /// Uses INFO.PARTITIONS() to verify partition existence for table-level and incremental-refresh checks.
@@ -103,7 +103,7 @@ createOrReplace
                     "Passed", _Passed
                 )
         annotation DAXLIB_PackageId = PQL.Assert
-        annotation DAXLIB_PackageVersion = 0.6.2
+        annotation DAXLIB_PackageVersion = 0.7.0
 
     /// Asserts that a table has at least a minimum number of partitions, with optional date range filtering.
     /// Uses INFO.PARTITIONS() to validate partition volume for incremental and rolling window partition strategies.
@@ -160,4 +160,4 @@ createOrReplace
                     "Passed", _Passed
                 )
         annotation DAXLIB_PackageId = PQL.Assert
-        annotation DAXLIB_PackageVersion = 0.6.2
+        annotation DAXLIB_PackageVersion = 0.7.0

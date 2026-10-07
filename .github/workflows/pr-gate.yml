@@ -1,0 +1,144 @@
+# PR gate for main: deploy the test models to the CI workspace, refresh them,
+# run the PQL.Assert test suites with pql-test, and fail on unexpected results.
+#
+# Design: docs/ci-test-gate-plan.md   One-time setup: docs/ci-setup.md
+#
+# Same-repo PRs run on pull_request. PRs from forks get no secrets on
+# pull_request, so that run fails with instructions; a maintainer then adds the
+# `safe-to-test` label, which runs the gate on pull_request_target with the
+# workflow and ci/ scripts taken from main and only src/ and tests/ from the PR.
+
+name: pr-gate
+
+on:
+  pull_request:
+    branches: [main]
+  pull_request_target:
+    branches: [main]
+    types: [labeled, synchronize]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# One shared CI workspace: never deploy two runs at once, and never cancel a
+# run mid-deploy.
+concurrency:
+  group: pql-assert-ci-workspace
+  cancel-in-progress: false
+
+jobs:
+  build-and-gate:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      github.event_name == 'pull_request' ||
+      (github.event_name == 'pull_request_target' &&
+       github.event.action == 'labeled' &&
+       github.event.label.name == 'safe-to-test' &&
+       github.event.pull_request.head.repo.full_name != github.repository)
+    runs-on: windows-latest
+    timeout-minutes: 60
+    defaults:
+      run:
+        shell: pwsh
+    env:
+      PQL_TENANT_ID: ${{ secrets.PQL_TENANT_ID }}
+      PQL_CLIENT_ID: ${{ secrets.PQL_CLIENT_ID }}
+      PQL_CLIENT_SECRET: ${{ secrets.PQL_CLIENT_SECRET }}
+      PQL_WORKSPACE_ID: ${{ vars.PQL_WORKSPACE_ID }}
+      PYTHONUTF8: "1"
+    steps:
+      - name: Fork PRs need a maintainer
+        if: >-
+          github.event_name == 'pull_request' &&
+          github.event.pull_request.head.repo.full_name != github.repository
+        run: |
+          Write-Output "::error::This PR comes from a fork, so the test gate can't use the CI workspace secrets. A maintainer must review the changes and add the 'safe-to-test' label to run it."
+          exit 1
+
+      # pull_request_target checks out main by default: workflow and ci/ stay trusted.
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Checkout fork PR content
+        if: github.event_name == 'pull_request_target'
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: _pr
+          persist-credentials: false
+
+      - name: Use src/ and tests/ from the fork PR
+        if: github.event_name == 'pull_request_target'
+        run: |
+          foreach ($dir in 'src', 'tests') {
+            Remove-Item -Recurse -Force $dir
+            Copy-Item -Recurse "_pr/$dir" $dir
+          }
+          Remove-Item -Recurse -Force _pr
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Create venv and install pql-test
+        run: |
+          python -m venv .venv
+          .venv\Scripts\python -m pip install --disable-pip-version-check -r ci/requirements.txt
+          .venv\Scripts\pql-test --version
+          .venv\Scripts\pql-test check-prereqs
+
+      - name: Check src/lib is synced into the test models
+        run: .venv\Scripts\python ci/build_stage.py check -v
+
+      - name: Stage models
+        run: .venv\Scripts\python ci/build_stage.py stage
+
+      - name: Deploy to CI workspace
+        run: .venv\Scripts\python ci/deploy.py
+
+      - name: Refresh models
+        run: .venv\Scripts\python ci/refresh_models.py TestingModel RLS_Model
+
+      - name: Run test suites
+        run: |
+          New-Item -ItemType Directory -Force ci-results | Out-Null
+          foreach ($model in 'TestingModel', 'RLS_Model') {
+            Write-Output "::group::$model"
+            .venv\Scripts\pql-test run-tests "_stage/$model.SemanticModel" --log-format github --output "ci-results/results-$model.json"
+            .venv\Scripts\pql-test retrieve-tests "_stage/$model.SemanticModel" --env ANY > "ci-results/env-ANY-$model.json"
+            Write-Output "::endgroup::"
+          }
+          # pql-test exits 1 for the expected failures too; the next step decides.
+          exit 0
+
+      - name: Evaluate results
+        run: .venv\Scripts\python ci/evaluate_results.py --results-dir ci-results
+
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pql-test-results
+          path: ci-results/
+          if-no-files-found: ignore
+
+  # A new push to a fork PR invalidates the maintainer's review, so remove the
+  # label; the maintainer re-adds it after reviewing the new commits.
+  drop-safe-to-test:
+    if: >-
+      github.event_name == 'pull_request_target' &&
+      github.event.action == 'synchronize' &&
+      contains(github.event.pull_request.labels.*.name, 'safe-to-test')
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Remove safe-to-test label
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh pr edit ${{ github.event.pull_request.number }} --repo ${{ github.repository }} --remove-label safe-to-test

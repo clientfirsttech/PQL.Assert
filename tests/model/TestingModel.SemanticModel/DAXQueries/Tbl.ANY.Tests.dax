@@ -1,0 +1,117 @@
+DEFINE
+	FUNCTION Tbl.ANY.Tests = () =>
+		// ============================================
+		// Table Assertion Test Suite
+		// Tests for PQL.Assert.Tbl namespace functions
+		// ============================================
+
+		// Test data setup
+		VAR _TestTableWithRows = DATATABLE("Col1", STRING, "Col2", INTEGER, {{"A", 1}, {"B", 2}, {"C", 3}})
+		VAR _EmptyTable = FILTER(_TestTableWithRows, FALSE)
+
+		// ============================================
+		// EXISTING TBL ASSERTIONS
+		// ============================================
+
+		// PQL.Assert.Tbl.ShouldHaveRows
+		VAR _Tbl_ShouldHaveRows_Pass = PQL.Assert.Tbl.ShouldHaveRows("Tbl.ShouldHaveRows: Test table should pass", _TestTableWithRows)
+		VAR _Tbl_ShouldHaveRows_Fail = PQL.Assert.Tbl.ShouldHaveRows("Tbl.ShouldHaveRows: Empty table should fail", _EmptyTable)
+
+		// PQL.Assert.Tbl.ShouldHaveRowCount
+		VAR _Tbl_ShouldHaveRowCount_Pass = PQL.Assert.Tbl.ShouldHaveRowCount("Tbl.ShouldHaveRowCount: Test table 3 rows should pass", _TestTableWithRows, 3)
+		VAR _Tbl_ShouldHaveRowCount_Fail = PQL.Assert.Tbl.ShouldHaveRowCount("Tbl.ShouldHaveRowCount: Test table 5 rows should fail", _TestTableWithRows, 5)
+
+		// PQL.Assert.Tbl.ShouldHaveMoreRowsThan
+		VAR _Tbl_ShouldHaveMoreRowsThan_Pass = PQL.Assert.Tbl.ShouldHaveMoreRowsThan("Tbl.ShouldHaveMoreRowsThan: Test table > 2 should pass", 2, _TestTableWithRows)
+		VAR _Tbl_ShouldHaveMoreRowsThan_Fail = PQL.Assert.Tbl.ShouldHaveMoreRowsThan("Tbl.ShouldHaveMoreRowsThan: Test table > 3 should fail", 3, _TestTableWithRows)
+
+		// PQL.Assert.Tbl.ShouldExist
+		VAR _Tbl_ShouldExist_Pass = PQL.Assert.Tbl.ShouldExist("Tbl.ShouldExist: TestData table should pass", "TestData")
+		VAR _Tbl_ShouldExist_Fail = PQL.Assert.Tbl.ShouldExist("Tbl.ShouldExist: FakeTable should fail", "FakeTable")
+
+		// ============================================
+		// SCHEMA & COLUMN SHAPE
+		// ============================================
+
+		// PQL.Assert.Tbl.ShouldHaveColumns
+		// TestData has: ID, Name, Value, Category, IsActive, CreatedDate, NullableField
+		VAR _Tbl_ShouldHaveColumns_Pass = PQL.Assert.Tbl.ShouldHaveColumns("Tbl.ShouldHaveColumns: TestData has ID,Name should pass", "TestData", "ID,Name")
+		VAR _Tbl_ShouldHaveColumns_Fail = PQL.Assert.Tbl.ShouldHaveColumns("Tbl.ShouldHaveColumns: TestData has FakeCol should fail", "TestData", "FakeCol")
+
+		// PQL.Assert.Tbl.ShouldNotHaveExtraColumns
+		// TestData has 7 columns: ID, Name, Value, Category, IsActive, CreatedDate, NullableField
+		VAR _Tbl_NoExtra_Pass = PQL.Assert.Tbl.ShouldNotHaveExtraColumns("Tbl.ShouldNotHaveExtraColumns: All cols allowed should pass", "TestData", "ID,Name,Value,Category,IsActive,CreatedDate,NullableField,Fixed Decimal,MDX Disabled Column,Order Code,Short Text,Sparse Code")
+		VAR _Tbl_NoExtra_Fail = PQL.Assert.Tbl.ShouldNotHaveExtraColumns("Tbl.ShouldNotHaveExtraColumns: Only ID allowed should fail", "TestData", "ID")
+
+		// PQL.Assert.Tbl.ColumnDataTypeShouldBe
+		// TestData[ID] is Integer (int64), TestData[Name] is String, TestData[Value] is Number (double)
+		VAR _Tbl_DataType_Pass = PQL.Assert.Tbl.ColumnDataTypeShouldBe("Tbl.ColumnDataTypeShouldBe: ID=Integer should pass", "TestData", "ID", "Integer")
+		VAR _Tbl_DataType_Fail = PQL.Assert.Tbl.ColumnDataTypeShouldBe("Tbl.ColumnDataTypeShouldBe: ID=String should fail", "TestData", "ID", "String")
+		VAR _Tbl_DataType_NotFound = PQL.Assert.Tbl.ColumnDataTypeShouldBe("Tbl.ColumnDataTypeShouldBe: FakeCol should fail", "TestData", "FakeCol", "Integer")
+
+		// ============================================
+		// Combine All Test Results
+		// ============================================
+		VAR _AllTests = UNION(
+		    // Existing Tbl Assertions
+		    _Tbl_ShouldHaveRows_Pass,
+		    _Tbl_ShouldHaveRows_Fail,
+		    _Tbl_ShouldHaveRowCount_Pass,
+		    _Tbl_ShouldHaveRowCount_Fail,
+		    _Tbl_ShouldHaveMoreRowsThan_Pass,
+		    _Tbl_ShouldHaveMoreRowsThan_Fail,
+		    _Tbl_ShouldExist_Pass,
+		    _Tbl_ShouldExist_Fail,
+
+		    // Schema & Column Shape
+		    _Tbl_ShouldHaveColumns_Pass,
+		    _Tbl_ShouldHaveColumns_Fail,
+		    _Tbl_NoExtra_Pass,
+		    _Tbl_NoExtra_Fail,
+		    _Tbl_DataType_Pass,
+		    _Tbl_DataType_Fail,
+		    _Tbl_DataType_NotFound
+		)
+
+		// ============================================
+		// TEST VALIDATION LAYER
+		// Checks if test names match actual results
+		// ============================================
+		VAR _ValidationResults =
+		    ADDCOLUMNS(
+		        _AllTests,
+		        "ExpectedToPass",
+		            CONTAINSSTRING([TestName], "should pass"),
+		        "ExpectedToFail",
+		            CONTAINSSTRING([TestName], "should fail"),
+		        "HasExpectation",
+		            CONTAINSSTRING([TestName], "should pass") || CONTAINSSTRING([TestName], "should fail"),
+		        "ValidationStatus",
+		            SWITCH(
+		                TRUE(),
+		                CONTAINSSTRING([TestName], "should pass") && [Passed] = TRUE, "✅ CORRECT",
+		                CONTAINSSTRING([TestName], "should fail") && [Passed] = FALSE, "✅ CORRECT",
+		                CONTAINSSTRING([TestName], "should pass") && [Passed] = FALSE, "❌ MISMATCH: Expected PASS but got FAIL",
+		                CONTAINSSTRING([TestName], "should fail") && [Passed] = TRUE, "❌ MISMATCH: Expected FAIL but got PASS",
+		                "⚠️ NO CLEAR EXPECTATION"
+		            )
+		    )
+		RETURN
+		    // One row per assertion: Passed means it behaved as its name says
+		    // ("should pass" / "should fail"). Assertions without an expectation keep their own result.
+		    SELECTCOLUMNS(
+		        _ValidationResults,
+		        "TestName", [TestName],
+		        "Expected", [Expected],
+		        "Actual", [Actual] & " [" & [ValidationStatus] & "]",
+		        "Passed",
+		            SWITCH(
+		                TRUE(),
+		                CONTAINSSTRING([ValidationStatus], "MISMATCH"), FALSE,
+		                CONTAINSSTRING([ValidationStatus], "CORRECT"), TRUE,
+		                [Passed]
+		            )
+		    )
+
+EVALUATE Tbl.ANY.Tests()
+ORDER BY [Passed], [TestName]

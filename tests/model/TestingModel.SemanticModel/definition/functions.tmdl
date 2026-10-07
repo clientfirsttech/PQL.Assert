@@ -15,7 +15,7 @@ function 'PQL.Assert.ShouldBeTrue' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 function 'PQL.Assert.ShouldBeFalse' =
 		(testName : STRING, actualCondition : BOOLEAN) =>
@@ -30,7 +30,7 @@ function 'PQL.Assert.ShouldBeFalse' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Asserts that a value is NULL (DAX BLANK()).
 function 'PQL.Assert.ShouldBeNull' =
@@ -46,7 +46,7 @@ function 'PQL.Assert.ShouldBeNull' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Asserts that a value is not NULL (not DAX BLANK()). Accepts both simple values and expressions.
 function 'PQL.Assert.ShouldNotBeNull' =
@@ -63,7 +63,7 @@ function 'PQL.Assert.ShouldNotBeNull' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Asserts that a value is BLANK (empty string "").
 function 'PQL.Assert.ShouldBeBlank' =
@@ -79,7 +79,7 @@ function 'PQL.Assert.ShouldBeBlank' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Asserts that a value is not BLANK (not empty string "").
 function 'PQL.Assert.ShouldNotBeBlank' =
@@ -96,7 +96,7 @@ function 'PQL.Assert.ShouldNotBeBlank' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Asserts that a value is NULL or BLANK (BLANK() or empty string "").
 function 'PQL.Assert.ShouldBeNullOrBlank' =
@@ -112,7 +112,7 @@ function 'PQL.Assert.ShouldBeNullOrBlank' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Asserts that a value is not NULL and not BLANK (has actual content).
 function 'PQL.Assert.ShouldNotBeNullOrBlank' =
@@ -129,7 +129,7 @@ function 'PQL.Assert.ShouldNotBeNullOrBlank' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 function 'PQL.Assert.ShouldEqual' =
 		(testName : STRING, expected : VARIANT, actual : VARIANT) =>
@@ -146,7 +146,7 @@ function 'PQL.Assert.ShouldEqual' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 function 'PQL.Assert.ShouldNotEqual' =
 		(testName : STRING, notExpected : VARIANT, actual : VARIANT) =>
@@ -163,7 +163,7 @@ function 'PQL.Assert.ShouldNotEqual' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Asserts that two strings are exactly equal (case-sensitive comparison).
 function 'PQL.Assert.ShouldEqualExactly' =
@@ -179,7 +179,7 @@ function 'PQL.Assert.ShouldEqualExactly' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 function 'PQL.Assert.ShouldBeGreaterThan' =
 		(testName : STRING, threshold : DOUBLE, actual : DOUBLE) =>
@@ -194,7 +194,7 @@ function 'PQL.Assert.ShouldBeGreaterThan' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 function 'PQL.Assert.ShouldBeLessThan' =
 		(testName : STRING, threshold : DOUBLE, actual : DOUBLE) =>
@@ -209,7 +209,7 @@ function 'PQL.Assert.ShouldBeLessThan' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Asserts that a number is greater than or equal to an expected value.
 function 'PQL.Assert.ShouldBeGreaterOrEqual' =
@@ -225,7 +225,7 @@ function 'PQL.Assert.ShouldBeGreaterOrEqual' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Asserts that a number is less than or equal to an expected value.
 function 'PQL.Assert.ShouldBeLessOrEqual' =
@@ -241,7 +241,7 @@ function 'PQL.Assert.ShouldBeLessOrEqual' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 function 'PQL.Assert.ShouldBeBetween' =
 		(testName : STRING, lowerBound : DOUBLE, upperBound : DOUBLE, actual : DOUBLE) =>
@@ -256,7 +256,7 @@ function 'PQL.Assert.ShouldBeBetween' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// String Assertions - PQL.Assert namespace
 /// Asserts that a string starts with the specified prefix (case-insensitive).
@@ -273,7 +273,7 @@ function 'PQL.Assert.ShouldStartWith' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Asserts that a string ends with the specified suffix (case-insensitive).
 function 'PQL.Assert.ShouldEndWith' =
@@ -289,7 +289,7 @@ function 'PQL.Assert.ShouldEndWith' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Asserts that a string contains the specified substring (case-insensitive).
 function 'PQL.Assert.ShouldContainString' =
@@ -305,7 +305,7 @@ function 'PQL.Assert.ShouldContainString' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Asserts that a string matches a pattern (case-insensitive).
 function 'PQL.Assert.ShouldMatch' =
@@ -321,7 +321,7 @@ function 'PQL.Assert.ShouldMatch' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Object Level Security (OLS) Assertions - PQL.Assert.OLS namespace
 /// Asserts that a table is hidden from metadata (OLS metadataPermission = none).
@@ -340,7 +340,7 @@ function 'PQL.Assert.OLS.TableShouldBeHidden' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Asserts that a table is visible in metadata (OLS allows access).
 /// Use this when a role SHOULD have access to view or query a table.
@@ -358,7 +358,7 @@ function 'PQL.Assert.OLS.TableShouldBeVisible' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Asserts that a column is hidden from metadata (OLS columnPermission = none).
 /// Use this when a role should NOT have access to view or query a column.
@@ -376,7 +376,7 @@ function 'PQL.Assert.OLS.ColumnShouldBeHidden' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Asserts that a column is visible in metadata (OLS allows access).
 /// Use this when a role SHOULD have access to view or query a column.
@@ -394,7 +394,7 @@ function 'PQL.Assert.OLS.ColumnShouldBeVisible' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Col Assertions - PQL.Assert.Col namespace
 /// Column-level assertion functions for data quality validation
@@ -414,7 +414,7 @@ function 'PQL.Assert.Col.ShouldBeNull' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Asserts that a column contains at least one non-NULL value (not DAX BLANK()).
 function 'PQL.Assert.Col.ShouldNotBeNull' =
@@ -431,7 +431,7 @@ function 'PQL.Assert.Col.ShouldNotBeNull' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Asserts that all values in a column are BLANK (empty string "" or NULL BLANK()). Fails if any non-blank values exist.
 function 'PQL.Assert.Col.ShouldBeBlank' =
@@ -452,7 +452,7 @@ function 'PQL.Assert.Col.ShouldBeBlank' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Asserts that all values in a column are non-BLANK (not empty string "" and not NULL BLANK()). Fails if any blank values exist.
 function 'PQL.Assert.Col.ShouldNotBeBlank' =
@@ -470,7 +470,7 @@ function 'PQL.Assert.Col.ShouldNotBeBlank' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Asserts that all values in a column are NULL or BLANK (BLANK() or empty string ""). Fails if any values with content exist.
 function 'PQL.Assert.Col.ShouldBeNullOrBlank' =
@@ -491,7 +491,7 @@ function 'PQL.Assert.Col.ShouldBeNullOrBlank' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Asserts that all values in a column are not NULL and not BLANK. Fails if any NULL or empty values exist.
 function 'PQL.Assert.Col.ShouldNotBeNullOrBlank' =
@@ -509,7 +509,7 @@ function 'PQL.Assert.Col.ShouldNotBeNullOrBlank' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Asserts that all values in a column are unique (no duplicates).
 function 'PQL.Assert.Col.ShouldBeDistinct' =
@@ -527,7 +527,7 @@ function 'PQL.Assert.Col.ShouldBeDistinct' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Asserts that a column exists in a table.
 function 'PQL.Assert.Col.ShouldExist' =
@@ -544,7 +544,7 @@ function 'PQL.Assert.Col.ShouldExist' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Table Assertions - PQL.Assert.Tbl namespace
 /// Table-level assertion functions for schema and structure validation
@@ -564,7 +564,7 @@ function 'PQL.Assert.Tbl.ShouldHaveRows' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Asserts that a table has exactly the expected number of rows.
 function 'PQL.Assert.Tbl.ShouldHaveRowCount' =
@@ -581,7 +581,7 @@ function 'PQL.Assert.Tbl.ShouldHaveRowCount' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Asserts that a table has more rows than the specified threshold.
 function 'PQL.Assert.Tbl.ShouldHaveMoreRowsThan' =
@@ -598,7 +598,7 @@ function 'PQL.Assert.Tbl.ShouldHaveMoreRowsThan' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Asserts that a table exists in the model.
 function 'PQL.Assert.Tbl.ShouldExist' =
@@ -615,7 +615,7 @@ function 'PQL.Assert.Tbl.ShouldExist' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Relationship Assertions - PQL.Assert.Relationship namespace
 /// Asserts that a relationship exists between two columns, with optional cardinality and security filtering checks.
@@ -680,7 +680,7 @@ function 'PQL.Assert.Relationship.ShouldExist' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Test Discovery Functions - PQL.Assert namespace
 /// Uses INFO.FUNCTIONS only - compatible with Power Automate REST API.
@@ -699,7 +699,7 @@ function 'PQL.Assert.RetrieveTests' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Retrieves tests filtered by environment. Looks for .{ENV}. or .ANY. in function names.
 /// If environment is blank, returns all tests.
@@ -727,7 +727,7 @@ function 'PQL.Assert.RetrieveTestsByEnvironment' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 function 'Example.prod.test' =
 		() =>
@@ -824,7 +824,7 @@ function 'PQL.Assert.BP.ShouldAvoidBiDirectionalOnHighCardinalityColumn' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Asserts that auto-date tables should be removed.
 /// Auto-date tables (DateTableTemplate_* and LocalDateTable_*) consume memory and should be disabled.
@@ -850,7 +850,7 @@ function 'PQL.Assert.BP.ShouldRemoveAutoDateTable' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Asserts that no columns use floating point data types.
 /// The "Double" floating point data type should be avoided to prevent unpredictable roundoff errors and performance issues.
@@ -889,7 +889,7 @@ function 'PQL.Assert.BP.ShouldAvoidFloatingPointDataTypes' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// DAX Expression Best Practice Validation Functions
 /// Publisher: PQL (Power Query Lint)
@@ -944,7 +944,7 @@ function 'PQL.Assert.BP.ShouldUseFullyQualifiedColumnReferences' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Asserts that IsAvailableInMdx should be set to false on hidden non-attribute columns.
 /// Hidden columns that still have IsAvailableInMdx = true cause unnecessary attribute hierarchy builds, consuming memory and slowing processing.
@@ -998,7 +998,7 @@ function 'PQL.Assert.BP.ShouldSetIsAvailableInMdxFalseOnNonAttributeColumns' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Error Prevention Best Practice Validation Functions
 /// Publisher: PQL (Power Query Lint)
@@ -1086,7 +1086,7 @@ function 'PQL.Assert.BP.ShouldHaveSameDataTypeInRelationships' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Asserts that measures should use TREATAS instead of INTERSECT for virtual relationships.
 /// The TREATAS function is more efficient and provides better performance than the INTERSECT function when used in virtual relationships.
@@ -1133,7 +1133,7 @@ function 'PQL.Assert.BP.ShouldUseTreatAsInsteadOfIntersect' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Runs all DAX expression best practice checks.
 /// This function executes all DAX expression validation rules and returns combined results.
@@ -1147,7 +1147,7 @@ function 'PQL.Assert.BP.CheckDAXExpressions' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Formatting Best Practice Validation Functions
 /// Publisher: PQL (Power Query Lint)
@@ -1230,7 +1230,7 @@ function 'PQL.Assert.BP.ShouldProvideFormatStringForMeasures' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Asserts that numeric columns should have SummarizeBy set to None.
 /// Numeric columns with SummarizeBy enabled may cause accidental aggregation in reports. Users should create explicit measures instead.
@@ -1309,7 +1309,7 @@ function 'PQL.Assert.BP.ShouldNotSummarizeNumericColumns' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Runs all formatting best practice checks.
 /// This function executes all formatting validation rules and returns combined results.
@@ -1326,7 +1326,7 @@ function 'PQL.Assert.BP.CheckFormatting' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Runs all error prevention best practice checks.
 /// This function executes all error prevention validation rules and returns combined results.
@@ -1337,7 +1337,7 @@ function 'PQL.Assert.BP.CheckErrorPrevention' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Runs all performance best practice checks.
 /// This function executes all performance validation rules and returns combined results.
@@ -1353,7 +1353,7 @@ function 'PQL.Assert.BP.CheckPerformance' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Maintenance Best Practice Validation Functions
 /// Publisher: PQL (Power Query Lint)
@@ -1475,7 +1475,7 @@ function 'PQL.Assert.BP.ShouldRemoveUnnecessaryMeasures' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Asserts that visible objects should have descriptions.
 /// Add descriptions to visible tables, measures, and columns. Descriptions are shown on hover within the Field List in Power BI Desktop.
@@ -1624,7 +1624,7 @@ function 'PQL.Assert.BP.ShouldHaveObjectDescriptions' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Asserts that hidden columns not referenced by any DAX expressions, relationships, hierarchy levels, or Sort By-properties should be removed.
 /// Scope: DataColumn, CalculatedColumn, CalculatedTableColumn. CompatibilityLevel >= 1200.
@@ -1784,7 +1784,7 @@ function 'PQL.Assert.BP.ShouldRemoveUnnecessaryColumns' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Runs all maintenance best practice checks.
 /// This function executes all maintenance validation rules and returns combined results.
@@ -1799,7 +1799,7 @@ function 'PQL.Assert.BP.CheckMaintenance' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Asserts that tables should have at least one column marked as a row label (IsDefaultLabel = true).
 /// Row labels help Power BI Copilot understand which columns represent the primary identifier for rows in a table.
@@ -1872,7 +1872,7 @@ function 'PQL.Assert.BP.ShouldMarkRowLabels' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Asserts that columns on the "One" side of relationships should have the IsKey property set to true.
 /// Marking primary keys helps Power BI understand table relationships and optimize query performance.
@@ -1979,7 +1979,7 @@ function 'PQL.Assert.BP.ShouldMarkPrimaryKeys' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Presence / Completeness Thresholds
 /// Asserts that the null rate of a column is at most the specified percentage.
@@ -1999,7 +1999,7 @@ function 'PQL.Assert.Col.NullRateShouldBeAtMost' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Asserts that the blank rate (empty string) of a column is at most the specified percentage.
 function 'PQL.Assert.Col.BlankRateShouldBeAtMost' =
@@ -2018,7 +2018,7 @@ function 'PQL.Assert.Col.BlankRateShouldBeAtMost' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Asserts that the null or blank rate of a column is at most the specified percentage.
 function 'PQL.Assert.Col.NullOrBlankRateShouldBeAtMost' =
@@ -2037,7 +2037,7 @@ function 'PQL.Assert.Col.NullOrBlankRateShouldBeAtMost' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Asserts that the populated (non-null, non-blank) rate of a column is at least the specified percentage.
 function 'PQL.Assert.Col.PopulatedRateShouldBeAtLeast' =
@@ -2056,7 +2056,7 @@ function 'PQL.Assert.Col.PopulatedRateShouldBeAtLeast' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Uniqueness & Key-Like Behavior
 /// Asserts that column values are unique within partitions defined by another column.
@@ -2076,7 +2076,7 @@ function 'PQL.Assert.Col.ShouldBeUniqueWithin' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Asserts that the combination of two columns forms a distinct composite key.
 function 'PQL.Assert.Col.ComboShouldBeDistinct' =
@@ -2095,7 +2095,7 @@ function 'PQL.Assert.Col.ComboShouldBeDistinct' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Asserts that a column contains no duplicate values. Alias for ShouldBeDistinct.
 function 'PQL.Assert.Col.ShouldNotContainDuplicates' =
@@ -2113,7 +2113,7 @@ function 'PQL.Assert.Col.ShouldNotContainDuplicates' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Range & Distribution Checks (Numeric)
 /// Asserts that all values in a numeric column fall within the specified inclusive range.
@@ -2132,7 +2132,7 @@ function 'PQL.Assert.Col.ShouldBeInRange' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Asserts that the minimum value in a column is at least the specified value.
 function 'PQL.Assert.Col.MinShouldBeAtLeast' =
@@ -2149,7 +2149,7 @@ function 'PQL.Assert.Col.MinShouldBeAtLeast' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Asserts that the maximum value in a column is at most the specified value.
 function 'PQL.Assert.Col.MaxShouldBeAtMost' =
@@ -2166,7 +2166,7 @@ function 'PQL.Assert.Col.MaxShouldBeAtMost' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Asserts that the specified percentile of a column falls within the given range.
 function 'PQL.Assert.Col.PctileShouldBeInRange' =
@@ -2183,7 +2183,7 @@ function 'PQL.Assert.Col.PctileShouldBeInRange' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Asserts that the mean of a column falls within the specified range.
 function 'PQL.Assert.Col.MeanShouldBeInRange' =
@@ -2200,7 +2200,7 @@ function 'PQL.Assert.Col.MeanShouldBeInRange' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Asserts that the standard deviation of a column is at most the specified value.
 function 'PQL.Assert.Col.StdDevShouldBeAtMost' =
@@ -2221,7 +2221,7 @@ function 'PQL.Assert.Col.StdDevShouldBeAtMost' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Asserts that the share of zero values in a column is at most the specified percentage.
 function 'PQL.Assert.Col.ShareOfZerosAtMost' =
@@ -2240,7 +2240,7 @@ function 'PQL.Assert.Col.ShareOfZerosAtMost' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Asserts that the share of even values in a column is at least the specified percentage.
 function 'PQL.Assert.Col.ShareOfEvensAtLeast' =
@@ -2259,7 +2259,7 @@ function 'PQL.Assert.Col.ShareOfEvensAtLeast' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Asserts that the share of odd values in a column is at least the specified percentage.
 function 'PQL.Assert.Col.ShareOfOddsAtLeast' =
@@ -2278,7 +2278,7 @@ function 'PQL.Assert.Col.ShareOfOddsAtLeast' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Sign & Monotonicity
 /// Asserts that all values in a column are non-negative (>= 0).
@@ -2297,7 +2297,7 @@ function 'PQL.Assert.Col.ShouldBeNonNegative' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Asserts that all values in a column are strictly positive (> 0).
 function 'PQL.Assert.Col.ShouldBePositive' =
@@ -2315,7 +2315,7 @@ function 'PQL.Assert.Col.ShouldBePositive' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Asserts that no values in a column are zero.
 function 'PQL.Assert.Col.ShouldBeNonZero' =
@@ -2333,7 +2333,7 @@ function 'PQL.Assert.Col.ShouldBeNonZero' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Asserts that values in a column are monotonically strictly increasing when ordered by another column.
 function 'PQL.Assert.Col.ShouldBeMonotonicIncreasing' =
@@ -2362,7 +2362,7 @@ function 'PQL.Assert.Col.ShouldBeMonotonicIncreasing' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Asserts that values in a column are monotonically non-decreasing when ordered by another column.
 function 'PQL.Assert.Col.ShouldBeMonotonicNonDecreasing' =
@@ -2391,7 +2391,7 @@ function 'PQL.Assert.Col.ShouldBeMonotonicNonDecreasing' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Asserts that values in a column are monotonically strictly decreasing when ordered by another column.
 function 'PQL.Assert.Col.ShouldBeMonotonicDecreasing' =
@@ -2420,7 +2420,7 @@ function 'PQL.Assert.Col.ShouldBeMonotonicDecreasing' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Categorical / Membership / Format
 /// Asserts that all values in a column are in the specified allowed set (table).
@@ -2446,7 +2446,7 @@ function 'PQL.Assert.Col.ValuesShouldBeInSet' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Asserts that no values in a column are in the specified banned set (table).
 function 'PQL.Assert.Col.ValuesShouldNotBeInSet' =
@@ -2471,7 +2471,7 @@ function 'PQL.Assert.Col.ValuesShouldNotBeInSet' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Asserts that the distinct count of values in a column is at most the specified number.
 function 'PQL.Assert.Col.DistinctCountShouldBeAtMost' =
@@ -2488,7 +2488,7 @@ function 'PQL.Assert.Col.DistinctCountShouldBeAtMost' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Asserts that the distinct count of values in a column is at least the specified number.
 function 'PQL.Assert.Col.DistinctCountShouldBeAtLeast' =
@@ -2505,7 +2505,7 @@ function 'PQL.Assert.Col.DistinctCountShouldBeAtLeast' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Asserts that no text values in a column have leading or trailing spaces.
 function 'PQL.Assert.Col.TextShouldHaveNoLeadingOrTrailingSpaces' =
@@ -2523,7 +2523,7 @@ function 'PQL.Assert.Col.TextShouldHaveNoLeadingOrTrailingSpaces' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Asserts that all text values in a column are trimmed. Alias for TextShouldHaveNoLeadingOrTrailingSpaces.
 function 'PQL.Assert.Col.TextShouldBeTrimmed' =
@@ -2541,7 +2541,7 @@ function 'PQL.Assert.Col.TextShouldBeTrimmed' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Asserts that all text values in a column are uppercase.
 function 'PQL.Assert.Col.TextCaseShouldBeUpper' =
@@ -2559,7 +2559,7 @@ function 'PQL.Assert.Col.TextCaseShouldBeUpper' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Asserts that all text values in a column are lowercase.
 function 'PQL.Assert.Col.TextCaseShouldBeLower' =
@@ -2577,7 +2577,7 @@ function 'PQL.Assert.Col.TextCaseShouldBeLower' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Asserts that text lengths in a column fall within the specified range.
 function 'PQL.Assert.Col.TextLengthShouldBeInRange' =
@@ -2595,7 +2595,7 @@ function 'PQL.Assert.Col.TextLengthShouldBeInRange' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Asserts whether column is available for MDX queries. Prevents problems for downstream Analyze in Excel users
 function 'PQL.Assert.Col.IsAvailableInMDX' =
@@ -2613,7 +2613,165 @@ function 'PQL.Assert.Col.IsAvailableInMDX' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
+
+/// Asserts that every non-blank value in a column starts with the given prefix. Uses LEFT() (DAX has no STARTSWITH). Pass "Y" for matchCase to compare case-sensitively; default is case-insensitive.
+function 'PQL.Assert.Col.ShouldStartWith' =
+		(testName : STRING, columnRef : ANYREF EXPR, prefix : STRING, matchCase : STRING = "") =>
+			VAR _CaseSensitive = UPPER(TRIM(matchCase)) IN { "Y", "YES", "TRUE", "1" }
+			VAR _PrefixLen = LEN(prefix)
+			VAR _Prefix = IF(_CaseSensitive, prefix, UPPER(prefix))
+			VAR _Values = ALLNOBLANKROW(columnRef)
+			VAR _TotalCount = COUNTROWS(_Values)
+			VAR _NonMatchingCount =
+				COUNTAX(
+					_Values,
+					VAR _Head = LEFT(FORMAT(columnRef, ""), _PrefixLen)
+					VAR _Candidate = IF(_CaseSensitive, _Head, UPPER(_Head))
+					RETURN IF(NOT ISBLANK(columnRef) && NOT EXACT(_Candidate, _Prefix), 1, BLANK())
+				)
+			VAR _Passed = _NonMatchingCount = 0
+			RETURN ROW(
+				"TestName", testName,
+				"Expected", "All values start with '" & prefix & "'" & IF(_CaseSensitive, " (case-sensitive)", " (case-insensitive)"),
+				"Actual", IF(_Passed, "ALL START WITH PREFIX (" & FORMAT(_TotalCount, "0") & " rows)", "NON-MATCHING VALUES (" & FORMAT(_NonMatchingCount, "0") & " of " & FORMAT(_TotalCount, "0") & ")"),
+				"Passed", _Passed
+			)
+
+	annotation DAXLIB_PackageId = PQL.Assert
+
+	annotation DAXLIB_PackageVersion = 0.7.0
+
+/// Asserts that no non-blank value in a column starts with the given prefix. Uses LEFT() (DAX has no STARTSWITH). Pass "Y" for matchCase to compare case-sensitively; default is case-insensitive.
+function 'PQL.Assert.Col.ShouldNotStartWith' =
+		(testName : STRING, columnRef : ANYREF EXPR, prefix : STRING, matchCase : STRING = "") =>
+			VAR _CaseSensitive = UPPER(TRIM(matchCase)) IN { "Y", "YES", "TRUE", "1" }
+			VAR _PrefixLen = LEN(prefix)
+			VAR _Prefix = IF(_CaseSensitive, prefix, UPPER(prefix))
+			VAR _Values = ALLNOBLANKROW(columnRef)
+			VAR _TotalCount = COUNTROWS(_Values)
+			VAR _MatchingCount =
+				COUNTAX(
+					_Values,
+					VAR _Head = LEFT(FORMAT(columnRef, ""), _PrefixLen)
+					VAR _Candidate = IF(_CaseSensitive, _Head, UPPER(_Head))
+					RETURN IF(NOT ISBLANK(columnRef) && EXACT(_Candidate, _Prefix), 1, BLANK())
+				)
+			VAR _Passed = _MatchingCount = 0
+			RETURN ROW(
+				"TestName", testName,
+				"Expected", "No values start with '" & prefix & "'" & IF(_CaseSensitive, " (case-sensitive)", " (case-insensitive)"),
+				"Actual", IF(_Passed, "NONE START WITH PREFIX (" & FORMAT(_TotalCount, "0") & " rows)", "MATCHING VALUES (" & FORMAT(_MatchingCount, "0") & " of " & FORMAT(_TotalCount, "0") & ")"),
+				"Passed", _Passed
+			)
+
+	annotation DAXLIB_PackageId = PQL.Assert
+
+	annotation DAXLIB_PackageVersion = 0.7.0
+
+/// Asserts that every non-blank value in a column ends with the given suffix. Uses RIGHT() (DAX has no ENDSWITH). Pass "Y" for matchCase to compare case-sensitively; default is case-insensitive.
+function 'PQL.Assert.Col.ShouldEndWith' =
+		(testName : STRING, columnRef : ANYREF EXPR, suffix : STRING, matchCase : STRING = "") =>
+			VAR _CaseSensitive = UPPER(TRIM(matchCase)) IN { "Y", "YES", "TRUE", "1" }
+			VAR _SuffixLen = LEN(suffix)
+			VAR _Suffix = IF(_CaseSensitive, suffix, UPPER(suffix))
+			VAR _Values = ALLNOBLANKROW(columnRef)
+			VAR _TotalCount = COUNTROWS(_Values)
+			VAR _NonMatchingCount =
+				COUNTAX(
+					_Values,
+					VAR _Tail = RIGHT(FORMAT(columnRef, ""), _SuffixLen)
+					VAR _Candidate = IF(_CaseSensitive, _Tail, UPPER(_Tail))
+					RETURN IF(NOT ISBLANK(columnRef) && NOT EXACT(_Candidate, _Suffix), 1, BLANK())
+				)
+			VAR _Passed = _NonMatchingCount = 0
+			RETURN ROW(
+				"TestName", testName,
+				"Expected", "All values end with '" & suffix & "'" & IF(_CaseSensitive, " (case-sensitive)", " (case-insensitive)"),
+				"Actual", IF(_Passed, "ALL END WITH SUFFIX (" & FORMAT(_TotalCount, "0") & " rows)", "NON-MATCHING VALUES (" & FORMAT(_NonMatchingCount, "0") & " of " & FORMAT(_TotalCount, "0") & ")"),
+				"Passed", _Passed
+			)
+
+	annotation DAXLIB_PackageId = PQL.Assert
+
+	annotation DAXLIB_PackageVersion = 0.7.0
+
+/// Asserts that no non-blank value in a column ends with the given suffix. Uses RIGHT() (DAX has no ENDSWITH). Pass "Y" for matchCase to compare case-sensitively; default is case-insensitive.
+function 'PQL.Assert.Col.ShouldNotEndWith' =
+		(testName : STRING, columnRef : ANYREF EXPR, suffix : STRING, matchCase : STRING = "") =>
+			VAR _CaseSensitive = UPPER(TRIM(matchCase)) IN { "Y", "YES", "TRUE", "1" }
+			VAR _SuffixLen = LEN(suffix)
+			VAR _Suffix = IF(_CaseSensitive, suffix, UPPER(suffix))
+			VAR _Values = ALLNOBLANKROW(columnRef)
+			VAR _TotalCount = COUNTROWS(_Values)
+			VAR _MatchingCount =
+				COUNTAX(
+					_Values,
+					VAR _Tail = RIGHT(FORMAT(columnRef, ""), _SuffixLen)
+					VAR _Candidate = IF(_CaseSensitive, _Tail, UPPER(_Tail))
+					RETURN IF(NOT ISBLANK(columnRef) && EXACT(_Candidate, _Suffix), 1, BLANK())
+				)
+			VAR _Passed = _MatchingCount = 0
+			RETURN ROW(
+				"TestName", testName,
+				"Expected", "No values end with '" & suffix & "'" & IF(_CaseSensitive, " (case-sensitive)", " (case-insensitive)"),
+				"Actual", IF(_Passed, "NONE END WITH SUFFIX (" & FORMAT(_TotalCount, "0") & " rows)", "MATCHING VALUES (" & FORMAT(_MatchingCount, "0") & " of " & FORMAT(_TotalCount, "0") & ")"),
+				"Passed", _Passed
+			)
+
+	annotation DAXLIB_PackageId = PQL.Assert
+
+	annotation DAXLIB_PackageVersion = 0.7.0
+
+/// Asserts that every non-blank value in a column contains the given substring. Pass "Y" for matchCase to compare case-sensitively; default is case-insensitive.
+function 'PQL.Assert.Col.ShouldContainString' =
+		(testName : STRING, columnRef : ANYREF EXPR, substring : STRING, matchCase : STRING = "") =>
+			VAR _CaseSensitive = UPPER(TRIM(matchCase)) IN { "Y", "YES", "TRUE", "1" }
+			VAR _Values = ALLNOBLANKROW(columnRef)
+			VAR _TotalCount = COUNTROWS(_Values)
+			VAR _NonMatchingCount =
+				COUNTAX(
+					_Values,
+					VAR _Text = FORMAT(columnRef, "")
+					VAR _Found = IF(_CaseSensitive, CONTAINSSTRINGEXACT(_Text, substring), CONTAINSSTRING(_Text, substring))
+					RETURN IF(NOT ISBLANK(columnRef) && NOT _Found, 1, BLANK())
+				)
+			VAR _Passed = _NonMatchingCount = 0
+			RETURN ROW(
+				"TestName", testName,
+				"Expected", "All values contain '" & substring & "'" & IF(_CaseSensitive, " (case-sensitive)", " (case-insensitive)"),
+				"Actual", IF(_Passed, "ALL CONTAIN TEXT (" & FORMAT(_TotalCount, "0") & " rows)", "NON-MATCHING VALUES (" & FORMAT(_NonMatchingCount, "0") & " of " & FORMAT(_TotalCount, "0") & ")"),
+				"Passed", _Passed
+			)
+
+	annotation DAXLIB_PackageId = PQL.Assert
+
+	annotation DAXLIB_PackageVersion = 0.7.0
+
+/// Asserts that no non-blank value in a column contains the given substring. Pass "Y" for matchCase to compare case-sensitively; default is case-insensitive.
+function 'PQL.Assert.Col.ShouldNotContainString' =
+		(testName : STRING, columnRef : ANYREF EXPR, substring : STRING, matchCase : STRING = "") =>
+			VAR _CaseSensitive = UPPER(TRIM(matchCase)) IN { "Y", "YES", "TRUE", "1" }
+			VAR _Values = ALLNOBLANKROW(columnRef)
+			VAR _TotalCount = COUNTROWS(_Values)
+			VAR _MatchingCount =
+				COUNTAX(
+					_Values,
+					VAR _Text = FORMAT(columnRef, "")
+					VAR _Found = IF(_CaseSensitive, CONTAINSSTRINGEXACT(_Text, substring), CONTAINSSTRING(_Text, substring))
+					RETURN IF(NOT ISBLANK(columnRef) && _Found, 1, BLANK())
+				)
+			VAR _Passed = _MatchingCount = 0
+			RETURN ROW(
+				"TestName", testName,
+				"Expected", "No values contain '" & substring & "'" & IF(_CaseSensitive, " (case-sensitive)", " (case-insensitive)"),
+				"Actual", IF(_Passed, "NONE CONTAIN TEXT (" & FORMAT(_TotalCount, "0") & " rows)", "MATCHING VALUES (" & FORMAT(_MatchingCount, "0") & " of " & FORMAT(_TotalCount, "0") & ")"),
+				"Passed", _Passed
+			)
+
+	annotation DAXLIB_PackageId = PQL.Assert
+
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Schema & Column Shape
 /// Asserts that a table has all the specified columns (comma-separated list).
@@ -2641,7 +2799,7 @@ function 'PQL.Assert.Tbl.ShouldHaveColumns' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Asserts that a table does not have extra columns beyond the allowed list (comma-separated).
 function 'PQL.Assert.Tbl.ShouldNotHaveExtraColumns' =
@@ -2667,7 +2825,7 @@ function 'PQL.Assert.Tbl.ShouldNotHaveExtraColumns' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Asserts that a column in a table has the expected data type.
 function 'PQL.Assert.Tbl.ColumnDataTypeShouldBe' =
@@ -2687,7 +2845,7 @@ function 'PQL.Assert.Tbl.ColumnDataTypeShouldBe' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Asserts that visible numeric columns used in aggregation measures should be hidden.
 /// It is a best practice to hide fact table columns that are used for aggregation in measures.
@@ -2826,7 +2984,7 @@ function 'PQL.Assert.BP.ShouldHideFactTableColumns' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 function 'RLS.ANY.Tests' =
 		() =>
@@ -2835,7 +2993,7 @@ function 'RLS.ANY.Tests' =
 
 	annotation PQLAssert_ImpersonatedUserName = atlas.kerski@cftechnologiesllc.com
 
-	annotation PQLAssert_RoleName = WestSales
+	annotation PQLAssert_RoleName = West
 
 /// Retrieves all test functions with full metadata (Description, RLS ImpersonatedUserName, RoleName).
 /// Uses INFO.USERDEFINEDFUNCTIONS and INFO.ANNOTATIONS - NOT compatible with Power Automate REST API.
@@ -2903,7 +3061,7 @@ function 'PQL.Assert.RetrieveTestsV2' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Retrieves tests filtered by environment with full metadata (Description, RLS ImpersonatedUserName, RoleName).
 /// Looks for .{ENV}. or .ANY. in function names. If environment is blank, returns all tests.
@@ -2979,7 +3137,7 @@ function 'PQL.Assert.RetrieveTestsByEnvironmentV2' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 function 'PQL.Assert.Partitions.ShouldBe' =
 		(testName: STRING, tableName: STRING, expectedCount: INT64, startDate: DATETIME = BLANK(), endDate: DATETIME = BLANK()) =>
@@ -3032,7 +3190,7 @@ function 'PQL.Assert.Partitions.ShouldBe' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Asserts that a perspective exists in the semantic model.
 /// @param {STRING} testName - Description of the test being performed
@@ -3055,7 +3213,7 @@ function 'PQL.Assert.Perspective.ShouldExist' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 function 'PQL.Assert.Perspective.ShouldContain' =
 		(testName: STRING, perspectiveName: STRING, expectedTablesList: STRING, expectedColumnsList: STRING, expectedMeasuresList: STRING) =>
@@ -3236,7 +3394,7 @@ function 'PQL.Assert.Perspective.ShouldContain' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Asserts that at least one partition exists for the specified table, with optional date range filtering.
 /// Uses INFO.PARTITIONS() to verify partition existence for table-level and incremental-refresh checks.
@@ -3295,7 +3453,7 @@ function 'PQL.Assert.Partitions.ShouldExist' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Asserts that a table has at least a minimum number of partitions, with optional date range filtering.
 /// Uses INFO.PARTITIONS() to validate partition volume for incremental and rolling window partition strategies.
@@ -3355,7 +3513,7 @@ function 'PQL.Assert.Partitions.ShouldBeAtLeast' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Asserts that a perspective exactly matches expected tables, columns, and measures from comma-separated lists.
 /// This is a schema-check style function aligned with other PQL.Assert schema assertions.
@@ -3534,5 +3692,1243 @@ function 'PQL.Assert.Perspective.ShouldMatchSchema' =
 
 	annotation DAXLIB_PackageId = PQL.Assert
 
-	annotation DAXLIB_PackageVersion = 0.6.2
+	annotation DAXLIB_PackageVersion = 0.7.0
+
+/// Core PQL.Assert assertion tests. Registered so pql-test discovers it via RetrieveTestsV2.
+function 'Assert.ANY.Tests' =
+		() =>
+			VAR _TestTableWithRows = DATATABLE("Col1", STRING, "Col2", INTEGER, {{"A", 1}, {"B", 2}, {"C", 3}})
+			VAR _EmptyTable = FILTER(_TestTableWithRows, FALSE)
+			VAR _TestTableWithDupes = DATATABLE("DupeCol", STRING, {{"A"}, {"A"}, {"B"}})
+			VAR _ShouldBeTrue_Pass = PQL.Assert.ShouldBeTrue("ShouldBeTrue: TRUE should pass", TRUE)
+			VAR _ShouldBeTrue_Fail = PQL.Assert.ShouldBeTrue("ShouldBeTrue: FALSE should fail", FALSE)
+			VAR _ShouldBeFalse_Pass = PQL.Assert.ShouldBeFalse("ShouldBeFalse: FALSE should pass", FALSE)
+			VAR _ShouldBeFalse_Fail = PQL.Assert.ShouldBeFalse("ShouldBeFalse: TRUE should fail", TRUE)
+			VAR _ShouldBeNull_Pass = PQL.Assert.ShouldBeNull("ShouldBeNull: BLANK should pass", BLANK())
+			VAR _ShouldBeNull_Fail_Value = PQL.Assert.ShouldBeNull("ShouldBeNull: 42 should fail", 42)
+			VAR _ShouldBeNull_Fail_Empty = PQL.Assert.ShouldBeNull("ShouldBeNull: Empty string should fail", "")
+			VAR _ShouldNotBeNull_Pass_Value = PQL.Assert.ShouldNotBeNull("ShouldNotBeNull: 42 should pass", 42)
+			VAR _ShouldNotBeNull_Pass_Empty = PQL.Assert.ShouldNotBeNull("ShouldNotBeNull: Empty string should pass", "")
+			VAR _ShouldNotBeNull_Fail = PQL.Assert.ShouldNotBeNull("ShouldNotBeNull: BLANK should fail", BLANK())
+			VAR _ShouldBeBlank_Pass = PQL.Assert.ShouldBeBlank("ShouldBeBlank: Empty string should pass", "")
+			VAR _ShouldBeBlank_Fail_Value = PQL.Assert.ShouldBeBlank("ShouldBeBlank: 42 should fail", 42)
+			VAR _ShouldBeBlank_Fail_Null = PQL.Assert.ShouldBeBlank("ShouldBeBlank: BLANK should fail", BLANK())
+			VAR _ShouldNotBeBlank_Pass_Value = PQL.Assert.ShouldNotBeBlank("ShouldNotBeBlank: 42 should pass", 42)
+			VAR _ShouldNotBeBlank_Pass_Null = PQL.Assert.ShouldNotBeBlank("ShouldNotBeBlank: _ should pass", "_")
+			VAR _ShouldNotBeBlank_Fail = PQL.Assert.ShouldNotBeBlank("ShouldNotBeBlank: Empty string should fail", "")
+			VAR _ShouldBeNullOrBlank_Pass_Null = PQL.Assert.ShouldBeNullOrBlank("ShouldBeNullOrBlank: BLANK should pass", BLANK())
+			VAR _ShouldBeNullOrBlank_Pass_Empty = PQL.Assert.ShouldBeNullOrBlank("ShouldBeNullOrBlank: Empty string should pass", "")
+			VAR _ShouldBeNullOrBlank_Fail = PQL.Assert.ShouldBeNullOrBlank("ShouldBeNullOrBlank: 42 should fail", 42)
+			VAR _ShouldNotBeNullOrBlank_Pass = PQL.Assert.ShouldNotBeNullOrBlank("ShouldNotBeNullOrBlank: 42 should pass", 42)
+			VAR _ShouldNotBeNullOrBlank_Fail_Null = PQL.Assert.ShouldNotBeNullOrBlank("ShouldNotBeNullOrBlank: BLANK should fail", BLANK())
+			VAR _ShouldNotBeNullOrBlank_Fail_Empty = PQL.Assert.ShouldNotBeNullOrBlank("ShouldNotBeNullOrBlank: Empty string should fail", "")
+			VAR _ShouldEqual_Pass_Int = PQL.Assert.ShouldEqual("ShouldEqual: 10=10 should pass", 10, 10)
+			VAR _ShouldEqual_Pass_Str = PQL.Assert.ShouldEqual("ShouldEqual: String equality should pass", "Hello", "Hello")
+			VAR _ShouldEqual_Pass_Decimal = PQL.Assert.ShouldEqual("ShouldEqual: Decimal 3.14=3.14 should pass", 3.14, 3.14)
+			VAR _ShouldEqual_Pass_Bool = PQL.Assert.ShouldEqual("ShouldEqual: Boolean TRUE=TRUE should pass", TRUE, TRUE)
+			VAR _ShouldEqual_Pass_Date = PQL.Assert.ShouldEqual("ShouldEqual: Date equality should pass", DATE(2024,1,1), DATE(2024,1,1))
+			VAR _ShouldEqual_Pass_DateTime = PQL.Assert.ShouldEqual("ShouldEqual: DateTime equality should pass", DATE(2024,1,1) + TIME(12,30,45), DATE(2024,1,1) + TIME(12,30,45))
+			VAR _ShouldEqual_Pass_Null = PQL.Assert.ShouldEqual("ShouldEqual: NULL=NULL should pass", BLANK(), BLANK())
+			VAR _ShouldEqual_Fail_Int = PQL.Assert.ShouldEqual("ShouldEqual: 10=20 should fail", 10, 20)
+			VAR _ShouldEqual_Fail_Str = PQL.Assert.ShouldEqual("ShouldEqual: Different strings should fail", "Hello", "World")
+			VAR _ShouldEqual_Fail_Bool = PQL.Assert.ShouldEqual("ShouldEqual: TRUE=FALSE should fail", TRUE, FALSE)
+			VAR _ShouldEqual_Fail_DateTime = PQL.Assert.ShouldEqual("ShouldEqual: Different DateTimes should fail", DATE(2024,1,1) + TIME(12,30,45), DATE(2024,1,1) + TIME(12,30,46))
+			VAR _ShouldEqual_Fail_DateVsDateTime = PQL.Assert.ShouldEqual("ShouldEqual: Date vs DateTime should fail", DATE(2024,1,1), DATE(2024,1,1) + TIME(1,0,0))
+			VAR _ShouldEqual_Fail_MixedType = PQL.Assert.ShouldEqual("ShouldEqual: Mixed types 10='10' should fail", 10, "10")
+			VAR _ShouldNotEqual_Pass_Int = PQL.Assert.ShouldNotEqual("ShouldNotEqual: 10<>20 should pass", 10, 20)
+			VAR _ShouldNotEqual_Pass_Str = PQL.Assert.ShouldNotEqual("ShouldNotEqual: Different strings should pass", "Hello", "World")
+			VAR _ShouldNotEqual_Pass_Bool = PQL.Assert.ShouldNotEqual("ShouldNotEqual: TRUE<>FALSE should pass", TRUE, FALSE)
+			VAR _ShouldNotEqual_Pass_DateTime = PQL.Assert.ShouldNotEqual("ShouldNotEqual: Different DateTimes should pass", DATE(2024,1,1) + TIME(12,30,45), DATE(2024,1,1) + TIME(12,30,46))
+			VAR _ShouldNotEqual_Pass_DateVsDateTime = PQL.Assert.ShouldNotEqual("ShouldNotEqual: Date<>DateTime should pass", DATE(2024,1,1), DATE(2024,1,1) + TIME(1,0,0))
+			VAR _ShouldNotEqual_Pass_MixedType = PQL.Assert.ShouldNotEqual("ShouldNotEqual: Mixed types 10<>'10' should pass", 10, "10")
+			VAR _ShouldNotEqual_Fail_Int = PQL.Assert.ShouldNotEqual("ShouldNotEqual: 10<>10 should fail", 10, 10)
+			VAR _ShouldNotEqual_Fail_Str = PQL.Assert.ShouldNotEqual("ShouldNotEqual: Same strings should fail", "Hello", "Hello")
+			VAR _ShouldNotEqual_Fail_Bool = PQL.Assert.ShouldNotEqual("ShouldNotEqual: TRUE<>TRUE should fail", TRUE, TRUE)
+			VAR _ShouldNotEqual_Fail_DateTime = PQL.Assert.ShouldNotEqual("ShouldNotEqual: Same DateTimes should fail", DATE(2024,1,1) + TIME(12,30,45), DATE(2024,1,1) + TIME(12,30,45))
+			VAR _ShouldEqualExactly_Pass = PQL.Assert.ShouldEqualExactly("ShouldEqualExactly: Case match should pass", "Hello", "Hello")
+			VAR _ShouldEqualExactly_Pass_Empty = PQL.Assert.ShouldEqualExactly("ShouldEqualExactly: Empty strings should pass", "", "")
+			VAR _ShouldEqualExactly_Pass_DateTime = PQL.Assert.ShouldEqualExactly("ShouldEqualExactly: Exact DateTimes should pass", DATE(2024,1,1) + TIME(12,30,45), DATE(2024,1,1) + TIME(12,30,45))
+			VAR _ShouldEqualExactly_Fail_Case = PQL.Assert.ShouldEqualExactly("ShouldEqualExactly: Case mismatch should fail", "Hello", "HELLO")
+			VAR _ShouldEqualExactly_Fail_Content = PQL.Assert.ShouldEqualExactly("ShouldEqualExactly: Different content should fail", "Hello", "World")
+			VAR _ShouldEqualExactly_Fail_DateTimePrecision = PQL.Assert.ShouldEqualExactly("ShouldEqualExactly: DateTime precision should fail", DATE(2024,1,1) + TIME(12,30,45), DATE(2024,1,1) + TIME(12,30,46))
+			VAR _ShouldBeGreaterThan_Pass = PQL.Assert.ShouldBeGreaterThan("ShouldBeGreaterThan: 15>10 should pass", 10, 15)
+			VAR _ShouldBeGreaterThan_Fail = PQL.Assert.ShouldBeGreaterThan("ShouldBeGreaterThan: 10>15 should fail", 15, 10)
+			VAR _ShouldBeLessThan_Pass = PQL.Assert.ShouldBeLessThan("ShouldBeLessThan: 5<10 should pass", 10, 5)
+			VAR _ShouldBeLessThan_Fail = PQL.Assert.ShouldBeLessThan("ShouldBeLessThan: 15<10 should fail", 10, 15)
+			VAR _ShouldBeGreaterOrEqual_Pass_Greater = PQL.Assert.ShouldBeGreaterOrEqual("ShouldBeGreaterOrEqual: 15>=10 should pass", 10, 15)
+			VAR _ShouldBeGreaterOrEqual_Pass_Equal = PQL.Assert.ShouldBeGreaterOrEqual("ShouldBeGreaterOrEqual: 10>=10 should pass", 10, 10)
+			VAR _ShouldBeGreaterOrEqual_Fail = PQL.Assert.ShouldBeGreaterOrEqual("ShouldBeGreaterOrEqual: 5>=10 should fail", 10, 5)
+			VAR _ShouldBeLessOrEqual_Pass_Less = PQL.Assert.ShouldBeLessOrEqual("ShouldBeLessOrEqual: 5<=10 should pass", 10, 5)
+			VAR _ShouldBeLessOrEqual_Pass_Equal = PQL.Assert.ShouldBeLessOrEqual("ShouldBeLessOrEqual: 10<=10 should pass", 10, 10)
+			VAR _ShouldBeLessOrEqual_Fail = PQL.Assert.ShouldBeLessOrEqual("ShouldBeLessOrEqual: 15<=10 should fail", 10, 15)
+			VAR _ShouldBeBetween_Pass = PQL.Assert.ShouldBeBetween("ShouldBeBetween: 15 in [10,20] should pass", 10, 20, 15)
+			VAR _ShouldBeBetween_Fail_Low = PQL.Assert.ShouldBeBetween("ShouldBeBetween: 5 in [10,20] should fail", 10, 20, 5)
+			VAR _ShouldBeBetween_Fail_High = PQL.Assert.ShouldBeBetween("ShouldBeBetween: 25 in [10,20] should fail", 10, 20, 25)
+			VAR _ShouldStartWith_Pass = PQL.Assert.ShouldStartWith("ShouldStartWith: 'Hello World' starts with 'Hello'", "Hello", "Hello World")
+			VAR _ShouldStartWith_Fail = PQL.Assert.ShouldStartWith("ShouldStartWith: 'Hello World' starts with 'World' should fail", "World", "Hello World")
+			VAR _ShouldEndWith_Pass = PQL.Assert.ShouldEndWith("ShouldEndWith: 'Hello World' ends with 'World'", "World", "Hello World")
+			VAR _ShouldEndWith_Fail = PQL.Assert.ShouldEndWith("ShouldEndWith: 'Hello World' ends with 'Hello' should fail", "Hello", "Hello World")
+			VAR _ShouldContainString_Pass = PQL.Assert.ShouldContainString("ShouldContainString: 'Hello World' contains 'lo Wo'", "lo Wo", "Hello World")
+			VAR _ShouldContainString_Fail = PQL.Assert.ShouldContainString("ShouldContainString: 'Hello World' contains 'xyz' should fail", "xyz", "Hello World")
+			VAR _ShouldMatch_Pass = PQL.Assert.ShouldMatch("ShouldMatch: 'Hello World' matches 'World'", "World", "Hello World")
+			VAR _ShouldMatch_Fail = PQL.Assert.ShouldMatch("ShouldMatch: 'Hello World' matches 'xyz' should fail", "xyz", "Hello World")
+			VAR _Col_ShouldBeNull_Fail = PQL.Assert.Col.ShouldBeNull("Col.ShouldBeNull: ID column should fail (has values)", 'TestData'[ID])
+			VAR _Col_ShouldNotBeNull_Pass = PQL.Assert.Col.ShouldNotBeNull("Col.ShouldNotBeNull: ID column should pass", 'TestData'[ID])
+			VAR _Col_ShouldBeBlank_Pass = PQL.Assert.Col.ShouldBeBlank("Col.ShouldBeBlank: Empty column should pass", 'TestData-Fact'[Blank Column])
+			VAR _Col_ShouldBeBlank_Fail = PQL.Assert.Col.ShouldBeBlank("Col.ShouldBeBlank: NullableField should fail (has non-blank)", 'TestData-Fact'[NullableField])
+			VAR _Col_ShouldNotBeBlank_Pass = PQL.Assert.Col.ShouldNotBeBlank("Col.ShouldNotBeBlank: ID column should pass (all non-blank)", 'TestData'[ID])
+			VAR _Col_ShouldNotBeBlank_Fail = PQL.Assert.Col.ShouldNotBeBlank("Col.ShouldNotBeBlank: Nullable column should fail (has blank)", 'TestData-Fact'[NullableField])
+			VAR _Col_ShouldBeNullOrBlank_Pass = PQL.Assert.Col.ShouldBeNullOrBlank("Col.ShouldBeNullOrBlank: Empty column should pass", 'TestData-Fact'[Blank Column])
+			VAR _Col_ShouldBeNullOrBlank_Fail = PQL.Assert.Col.ShouldBeNullOrBlank("Col.ShouldBeNullOrBlank: ID column should fail (has values)", 'TestData'[ID])
+			VAR _Col_ShouldNotBeNullOrBlank_Pass = PQL.Assert.Col.ShouldNotBeNullOrBlank("Col.ShouldNotBeNullOrBlank: ID column should pass (no nulls/blanks)", 'TestData'[ID])
+			VAR _Col_ShouldNotBeNullOrBlank_Fail = PQL.Assert.Col.ShouldNotBeNullOrBlank("Col.ShouldNotBeNullOrBlank: Nullable column should fail (has blank)", 'TestData-Fact'[NullableField])
+			VAR _Col_ShouldBeDistinct_Pass = PQL.Assert.Col.ShouldBeDistinct("Col.ShouldBeDistinct: ID column should be distinct", 'TestData'[ID])
+			VAR _Col_ShouldExist_Pass = PQL.Assert.Col.ShouldExist("Col.ShouldExist: TestData[ID] should exist", "TestData", "ID")
+			VAR _Col_ShouldExist_Fail = PQL.Assert.Col.ShouldExist("Col.ShouldExist: FakeTable[Col] should fail", "FakeTable", "Col")
+			VAR _NullRate_Pass = PQL.Assert.Col.NullRateShouldBeAtMost("Col.NullRateShouldBeAtMost: NullableField <=50% should pass", 'TestData'[NullableField], 50)
+			VAR _NullRate_Fail = PQL.Assert.Col.NullRateShouldBeAtMost("Col.NullRateShouldBeAtMost: NullableField <=10% should fail", 'TestData'[NullableField], 10)
+			VAR _BlankRate_Pass = PQL.Assert.Col.BlankRateShouldBeAtMost("Col.BlankRateShouldBeAtMost: ID <=0% should pass", 'TestData'[ID], 0)
+			VAR _NullOrBlankRate_Pass = PQL.Assert.Col.NullOrBlankRateShouldBeAtMost("Col.NullOrBlankRateShouldBeAtMost: NullableField <=50% should pass", 'TestData'[NullableField], 50)
+			VAR _NullOrBlankRate_Fail = PQL.Assert.Col.NullOrBlankRateShouldBeAtMost("Col.NullOrBlankRateShouldBeAtMost: NullableField <=10% should fail", 'TestData'[NullableField], 10)
+			VAR _PopulatedRate_Pass = PQL.Assert.Col.PopulatedRateShouldBeAtLeast("Col.PopulatedRateShouldBeAtLeast: NullableField >=50% should pass", 'TestData'[NullableField], 50)
+			VAR _PopulatedRate_Fail = PQL.Assert.Col.PopulatedRateShouldBeAtLeast("Col.PopulatedRateShouldBeAtLeast: NullableField >=90% should fail", 'TestData'[NullableField], 90)
+			VAR _NoDupes_Pass = PQL.Assert.Col.ShouldNotContainDuplicates("Col.ShouldNotContainDuplicates: ID should pass", 'TestData'[ID])
+			VAR _InRange_Pass = PQL.Assert.Col.ShouldBeInRange("Col.ShouldBeInRange: Value [0,500] should pass", 'TestData'[Value], 0, 500)
+			VAR _InRange_Fail = PQL.Assert.Col.ShouldBeInRange("Col.ShouldBeInRange: Value [0,100] should fail", 'TestData'[Value], 0, 100)
+			VAR _MinAtLeast_Pass = PQL.Assert.Col.MinShouldBeAtLeast("Col.MinShouldBeAtLeast: Value >=0 should pass", 'TestData'[Value], 0)
+			VAR _MinAtLeast_Fail = PQL.Assert.Col.MinShouldBeAtLeast("Col.MinShouldBeAtLeast: Value >=100 should fail", 'TestData'[Value], 100)
+			VAR _MaxAtMost_Pass = PQL.Assert.Col.MaxShouldBeAtMost("Col.MaxShouldBeAtMost: Value <=500 should pass", 'TestData'[Value], 500)
+			VAR _MaxAtMost_Fail = PQL.Assert.Col.MaxShouldBeAtMost("Col.MaxShouldBeAtMost: Value <=200 should fail", 'TestData'[Value], 200)
+			VAR _Mean_Pass = PQL.Assert.Col.MeanShouldBeInRange("Col.MeanShouldBeInRange: Value [100,200] should pass", 'TestData'[Value], 100, 200)
+			VAR _Mean_Fail = PQL.Assert.Col.MeanShouldBeInRange("Col.MeanShouldBeInRange: Value [0,100] should fail", 'TestData'[Value], 0, 100)
+			VAR _StdDev_Pass = PQL.Assert.Col.StdDevShouldBeAtMost("Col.StdDevShouldBeAtMost: Value <=200 should pass", 'TestData'[Value], 200)
+			VAR _StdDev_Fail = PQL.Assert.Col.StdDevShouldBeAtMost("Col.StdDevShouldBeAtMost: Value <=10 should fail", 'TestData'[Value], 10)
+			VAR _ZeroShare_Pass = PQL.Assert.Col.ShareOfZerosAtMost("Col.ShareOfZerosAtMost: Value <=5% should pass", 'TestData'[Value], 5)
+			VAR _NonNeg_Pass = PQL.Assert.Col.ShouldBeNonNegative("Col.ShouldBeNonNegative: Value should pass", 'TestData'[Value])
+			VAR _Positive_Pass = PQL.Assert.Col.ShouldBePositive("Col.ShouldBePositive: Value should pass", 'TestData'[Value])
+			VAR _NonZero_Pass = PQL.Assert.Col.ShouldBeNonZero("Col.ShouldBeNonZero: Value should pass", 'TestData'[Value])
+			VAR _ValuesInSet_Pass = PQL.Assert.Col.ValuesShouldBeInSet("Col.ValuesShouldBeInSet: Category in {A,B,C} should pass", 'TestData'[Category], {"A", "B", "C"}, [Value])
+			VAR _ValuesInSet_Fail = PQL.Assert.Col.ValuesShouldBeInSet("Col.ValuesShouldBeInSet: Category in {A,B} should fail", 'TestData'[Category], {"A", "B"}, [Value])
+			VAR _ValuesNotInSet_Pass = PQL.Assert.Col.ValuesShouldNotBeInSet("Col.ValuesShouldNotBeInSet: Category not in {X,Y} should pass", 'TestData'[Category], {"X", "Y"}, [Value])
+			VAR _ValuesNotInSet_Fail = PQL.Assert.Col.ValuesShouldNotBeInSet("Col.ValuesShouldNotBeInSet: Category not in {A,X} should fail", 'TestData'[Category], {"A", "X"}, [Value])
+			VAR _DistAtMost_Pass = PQL.Assert.Col.DistinctCountShouldBeAtMost("Col.DistinctCountShouldBeAtMost: Category <=5 should pass", 'TestData'[Category], 5)
+			VAR _DistAtMost_Fail = PQL.Assert.Col.DistinctCountShouldBeAtMost("Col.DistinctCountShouldBeAtMost: Category <=2 should fail", 'TestData'[Category], 2)
+			VAR _DistAtLeast_Pass = PQL.Assert.Col.DistinctCountShouldBeAtLeast("Col.DistinctCountShouldBeAtLeast: Category >=2 should pass", 'TestData'[Category], 2)
+			VAR _DistAtLeast_Fail = PQL.Assert.Col.DistinctCountShouldBeAtLeast("Col.DistinctCountShouldBeAtLeast: Category >=10 should fail", 'TestData'[Category], 10)
+			VAR _NoSpaces_Pass = PQL.Assert.Col.TextShouldHaveNoLeadingOrTrailingSpaces("Col.TextShouldHaveNoLeadingOrTrailingSpaces: Name should pass", 'TestData'[Name])
+			VAR _Trimmed_Pass = PQL.Assert.Col.TextShouldBeTrimmed("Col.TextShouldBeTrimmed: Name should pass", 'TestData'[Name])
+			VAR _Upper_Pass = PQL.Assert.Col.TextCaseShouldBeUpper("Col.TextCaseShouldBeUpper: Category should pass", 'TestData'[Category])
+			VAR _Upper_Fail = PQL.Assert.Col.TextCaseShouldBeUpper("Col.TextCaseShouldBeUpper: Name should fail", 'TestData'[Name])
+			VAR _Lower_Fail = PQL.Assert.Col.TextCaseShouldBeLower("Col.TextCaseShouldBeLower: Name should fail", 'TestData'[Name])
+			VAR _TextLen_Pass = PQL.Assert.Col.TextLengthShouldBeInRange("Col.TextLengthShouldBeInRange: Name [3,10] should pass", 'TestData'[Name], 3, 10)
+			VAR _TextLen_Fail = PQL.Assert.Col.TextLengthShouldBeInRange("Col.TextLengthShouldBeInRange: Name [5,5] should fail", 'TestData'[Name], 5, 5)
+			VAR _Tbl_ShouldHaveRows_Pass = PQL.Assert.Tbl.ShouldHaveRows("Tbl.ShouldHaveRows: Test table should have rows", _TestTableWithRows)
+			VAR _Tbl_ShouldHaveRows_Fail = PQL.Assert.Tbl.ShouldHaveRows("Tbl.ShouldHaveRows: Empty table should fail", _EmptyTable)
+			VAR _Tbl_ShouldHaveRowCount_Pass = PQL.Assert.Tbl.ShouldHaveRowCount("Tbl.ShouldHaveRowCount: Test table should have 3 rows", _TestTableWithRows, 3)
+			VAR _Tbl_ShouldHaveRowCount_Fail = PQL.Assert.Tbl.ShouldHaveRowCount("Tbl.ShouldHaveRowCount: Test table should fail for 5 rows", _TestTableWithRows, 5)
+			VAR _Tbl_ShouldHaveMoreRowsThan_Pass = PQL.Assert.Tbl.ShouldHaveMoreRowsThan("Tbl.ShouldHaveMoreRowsThan: Test table > 2 should pass", 2, _TestTableWithRows)
+			VAR _Tbl_ShouldHaveMoreRowsThan_Fail = PQL.Assert.Tbl.ShouldHaveMoreRowsThan("Tbl.ShouldHaveMoreRowsThan: Test table > 3 should fail", 3, _TestTableWithRows)
+			VAR _Tbl_ShouldExist_Pass = PQL.Assert.Tbl.ShouldExist("Tbl.ShouldExist: TestData table should exist", "TestData")
+			VAR _Tbl_ShouldExist_Fail = PQL.Assert.Tbl.ShouldExist("Tbl.ShouldExist: FakeTable should fail", "FakeTable")
+			VAR _Tbl_ShouldHaveColumns_Pass = PQL.Assert.Tbl.ShouldHaveColumns("Tbl.ShouldHaveColumns: TestData has ID,Name should pass", "TestData", "ID,Name")
+			VAR _Tbl_ShouldHaveColumns_Fail = PQL.Assert.Tbl.ShouldHaveColumns("Tbl.ShouldHaveColumns: TestData has FakeCol should fail", "TestData", "FakeCol")
+			VAR _Tbl_NoExtra_Pass = PQL.Assert.Tbl.ShouldNotHaveExtraColumns("Tbl.ShouldNotHaveExtraColumns: All cols allowed should pass", "TestData", "ID,Name,Value,Category,IsActive,CreatedDate,NullableField,Fixed Decimal,MDX Disabled Column,Order Code,Short Text,Sparse Code")
+			VAR _Tbl_NoExtra_Fail = PQL.Assert.Tbl.ShouldNotHaveExtraColumns("Tbl.ShouldNotHaveExtraColumns: Only ID allowed should fail", "TestData", "ID")
+			VAR _Tbl_DataType_Pass = PQL.Assert.Tbl.ColumnDataTypeShouldBe("Tbl.ColumnDataTypeShouldBe: ID=Integer should pass", "TestData", "ID", "Integer")
+			VAR _Tbl_DataType_Fail = PQL.Assert.Tbl.ColumnDataTypeShouldBe("Tbl.ColumnDataTypeShouldBe: ID=String should fail", "TestData", "ID", "String")
+			VAR _Rel_ShouldExist_Pass = PQL.Assert.Relationship.ShouldExist("Relationship.ShouldExist: Valid relationship should pass", "TestData", "ID", "TestData-Fact", "ID")
+			VAR _Rel_ShouldExist_Fail = PQL.Assert.Relationship.ShouldExist("Relationship.ShouldExist: Invalid relationship should fail", "FakeFrom", "Col", "FakeTo", "Col")
+			VAR _Rel_FromCard_Pass = PQL.Assert.Relationship.ShouldExist("Relationship.ShouldExist: FromCardinality=One should pass", "TestData", "ID", "TestData-Fact", "ID", "One")
+			VAR _Rel_FromCard_Fail = PQL.Assert.Relationship.ShouldExist("Relationship.ShouldExist: FromCardinality=Many should fail", "TestData", "ID", "TestData-Fact", "ID", "Many")
+			VAR _Rel_ToCard_Pass = PQL.Assert.Relationship.ShouldExist("Relationship.ShouldExist: ToCardinality=One should pass", "TestData", "ID", "TestData-Fact", "ID", "", "One")
+			VAR _Rel_ToCard_Fail = PQL.Assert.Relationship.ShouldExist("Relationship.ShouldExist: ToCardinality=Many should fail", "TestData", "ID", "TestData-Fact", "ID", "", "Many")
+			VAR _Rel_SecFilter_Pass = PQL.Assert.Relationship.ShouldExist("Relationship.ShouldExist: SecurityFiltering=OneDirection should pass", "TestData", "ID", "TestData-Fact", "ID", "", "", "OneDirection")
+			VAR _Rel_SecFilter_Fail = PQL.Assert.Relationship.ShouldExist("Relationship.ShouldExist: SecurityFiltering=BothDirections should fail", "TestData", "ID", "TestData-Fact", "ID", "", "", "BothDirections")
+			VAR _Rel_AllParams_Pass = PQL.Assert.Relationship.ShouldExist("Relationship.ShouldExist: All params correct should pass", "TestData", "ID", "TestData-Fact", "ID", "One", "One", "OneDirection")
+			VAR _Rel_NotFound_WithParams_Fail = PQL.Assert.Relationship.ShouldExist("Relationship.ShouldExist: Non-existent relationship with cardinality should fail", "FakeFrom", "Col", "FakeTo", "Col", "One", "One", "OneDirection")
+			VAR _AllTests = UNION(
+			    _ShouldBeTrue_Pass,
+			    _ShouldBeTrue_Fail,
+			    _ShouldBeFalse_Pass,
+			    _ShouldBeFalse_Fail,
+			    _ShouldBeNull_Pass,
+			    _ShouldBeNull_Fail_Value,
+			    _ShouldBeNull_Fail_Empty,
+			    _ShouldNotBeNull_Pass_Value,
+			    _ShouldNotBeNull_Pass_Empty,
+			    _ShouldNotBeNull_Fail,
+			    _ShouldBeBlank_Pass,
+			    _ShouldBeBlank_Fail_Value,
+			    _ShouldBeBlank_Fail_Null,
+			    _ShouldNotBeBlank_Pass_Value,
+			    _ShouldNotBeBlank_Pass_Null,
+			    _ShouldNotBeBlank_Fail,
+			    _ShouldBeNullOrBlank_Pass_Null,
+			    _ShouldBeNullOrBlank_Pass_Empty,
+			    _ShouldBeNullOrBlank_Fail,
+			    _ShouldNotBeNullOrBlank_Pass,
+			    _ShouldNotBeNullOrBlank_Fail_Null,
+			    _ShouldNotBeNullOrBlank_Fail_Empty,
+			    _ShouldEqual_Pass_Int,
+			    _ShouldEqual_Pass_Str,
+			    _ShouldEqual_Pass_Decimal,
+			    _ShouldEqual_Pass_Bool,
+			    _ShouldEqual_Pass_Date,
+			    _ShouldEqual_Pass_DateTime,
+			    _ShouldEqual_Pass_Null,
+			    _ShouldEqual_Fail_Int,
+			    _ShouldEqual_Fail_Str,
+			    _ShouldEqual_Fail_Bool,
+			    _ShouldEqual_Fail_DateTime,
+			    _ShouldEqual_Fail_DateVsDateTime,
+			    _ShouldEqual_Fail_MixedType,
+			    _ShouldNotEqual_Pass_Int,
+			    _ShouldNotEqual_Pass_Str,
+			    _ShouldNotEqual_Pass_Bool,
+			    _ShouldNotEqual_Pass_DateTime,
+			    _ShouldNotEqual_Pass_DateVsDateTime,
+			    _ShouldNotEqual_Pass_MixedType,
+			    _ShouldNotEqual_Fail_Int,
+			    _ShouldNotEqual_Fail_Str,
+			    _ShouldNotEqual_Fail_Bool,
+			    _ShouldNotEqual_Fail_DateTime,
+			    _ShouldEqualExactly_Pass,
+			    _ShouldEqualExactly_Pass_Empty,
+			    _ShouldEqualExactly_Pass_DateTime,
+			    _ShouldEqualExactly_Fail_Case,
+			    _ShouldEqualExactly_Fail_Content,
+			    _ShouldEqualExactly_Fail_DateTimePrecision,
+			    _ShouldBeGreaterThan_Pass,
+			    _ShouldBeGreaterThan_Fail,
+			    _ShouldBeLessThan_Pass,
+			    _ShouldBeLessThan_Fail,
+			    _ShouldBeGreaterOrEqual_Pass_Greater,
+			    _ShouldBeGreaterOrEqual_Pass_Equal,
+			    _ShouldBeGreaterOrEqual_Fail,
+			    _ShouldBeLessOrEqual_Pass_Less,
+			    _ShouldBeLessOrEqual_Pass_Equal,
+			    _ShouldBeLessOrEqual_Fail,
+			    _ShouldBeBetween_Pass,
+			    _ShouldBeBetween_Fail_Low,
+			    _ShouldBeBetween_Fail_High,
+			    _ShouldStartWith_Pass,
+			    _ShouldStartWith_Fail,
+			    _ShouldEndWith_Pass,
+			    _ShouldEndWith_Fail,
+			    _ShouldContainString_Pass,
+			    _ShouldContainString_Fail,
+			    _ShouldMatch_Pass,
+			    _ShouldMatch_Fail,
+			    _Col_ShouldBeNull_Fail,
+			    _Col_ShouldNotBeNull_Pass,
+			    _Col_ShouldBeBlank_Pass,
+			    _Col_ShouldBeBlank_Fail,
+			    _Col_ShouldNotBeBlank_Pass,
+			    _Col_ShouldNotBeBlank_Fail,
+			    _Col_ShouldBeNullOrBlank_Pass,
+			    _Col_ShouldBeNullOrBlank_Fail,
+			    _Col_ShouldNotBeNullOrBlank_Pass,
+			    _Col_ShouldNotBeNullOrBlank_Fail,
+			    _Col_ShouldBeDistinct_Pass,
+			    _Col_ShouldExist_Pass,
+			    _Col_ShouldExist_Fail,
+			    _NullRate_Pass,
+			    _NullRate_Fail,
+			    _BlankRate_Pass,
+			    _NullOrBlankRate_Pass,
+			    _NullOrBlankRate_Fail,
+			    _PopulatedRate_Pass,
+			    _PopulatedRate_Fail,
+			    _NoDupes_Pass,
+			    _InRange_Pass,
+			    _InRange_Fail,
+			    _MinAtLeast_Pass,
+			    _MinAtLeast_Fail,
+			    _MaxAtMost_Pass,
+			    _MaxAtMost_Fail,
+			    _Mean_Pass,
+			    _Mean_Fail,
+			    _StdDev_Pass,
+			    _StdDev_Fail,
+			    _ZeroShare_Pass,
+			    _NonNeg_Pass,
+			    _Positive_Pass,
+			    _NonZero_Pass,
+			    _ValuesInSet_Pass,
+			    _ValuesInSet_Fail,
+			    _ValuesNotInSet_Pass,
+			    _ValuesNotInSet_Fail,
+			    _DistAtMost_Pass,
+			    _DistAtMost_Fail,
+			    _DistAtLeast_Pass,
+			    _DistAtLeast_Fail,
+			    _NoSpaces_Pass,
+			    _Trimmed_Pass,
+			    _Upper_Pass,
+			    _Upper_Fail,
+			    _Lower_Fail,
+			    _TextLen_Pass,
+			    _TextLen_Fail,
+			    _Tbl_ShouldHaveRows_Pass,
+			    _Tbl_ShouldHaveRows_Fail,
+			    _Tbl_ShouldHaveRowCount_Pass,
+			    _Tbl_ShouldHaveRowCount_Fail,
+			    _Tbl_ShouldHaveMoreRowsThan_Pass,
+			    _Tbl_ShouldHaveMoreRowsThan_Fail,
+			    _Tbl_ShouldExist_Pass,
+			    _Tbl_ShouldExist_Fail,
+			    _Tbl_ShouldHaveColumns_Pass,
+			    _Tbl_ShouldHaveColumns_Fail,
+			    _Tbl_NoExtra_Pass,
+			    _Tbl_NoExtra_Fail,
+			    _Tbl_DataType_Pass,
+			    _Tbl_DataType_Fail,
+			    _Rel_ShouldExist_Pass,
+			    _Rel_ShouldExist_Fail,
+			    _Rel_FromCard_Pass,
+			    _Rel_FromCard_Fail,
+			    _Rel_ToCard_Pass,
+			    _Rel_ToCard_Fail,
+			    _Rel_SecFilter_Pass,
+			    _Rel_SecFilter_Fail,
+			    _Rel_AllParams_Pass,
+			    _Rel_NotFound_WithParams_Fail
+			)
+			VAR _ValidationResults =
+			    ADDCOLUMNS(
+			        _AllTests,
+			        "ExpectedToPass",
+			            CONTAINSSTRING([TestName], "should pass"),
+			        "ExpectedToFail",
+			            CONTAINSSTRING([TestName], "should fail"),
+			        "HasExpectation",
+			            CONTAINSSTRING([TestName], "should pass") || CONTAINSSTRING([TestName], "should fail"),
+			        "ValidationStatus",
+			            SWITCH(
+			                TRUE(),
+			                CONTAINSSTRING([TestName], "should pass") && [Passed] = TRUE, "✅ CORRECT",
+			                CONTAINSSTRING([TestName], "should fail") && [Passed] = FALSE, "✅ CORRECT",
+			                CONTAINSSTRING([TestName], "should pass") && [Passed] = FALSE, "❌ MISMATCH: Expected PASS but got FAIL",
+			                CONTAINSSTRING([TestName], "should fail") && [Passed] = TRUE, "❌ MISMATCH: Expected FAIL but got PASS",
+			                "⚠️ NO CLEAR EXPECTATION"
+			            )
+			    )
+			RETURN
+			    SELECTCOLUMNS(
+			        _ValidationResults,
+			        "TestName", [TestName],
+			        "Expected", [Expected],
+			        "Actual", [Actual] & " [" & [ValidationStatus] & "]",
+			        "Passed",
+			            SWITCH(
+			                TRUE(),
+			                CONTAINSSTRING([ValidationStatus], "MISMATCH"), FALSE,
+			                CONTAINSSTRING([ValidationStatus], "CORRECT"), TRUE,
+			                [Passed]
+			            )
+			    )
+
+/// PQL.Assert.Col column assertion tests. Registered so pql-test discovers it via RetrieveTestsV2.
+function 'Col.ANY.Tests' =
+		() =>
+			VAR _Col_ShouldBeNull_Fail = PQL.Assert.Col.ShouldBeNull("Col.ShouldBeNull: ID column should fail (has values)", 'TestData'[ID])
+			VAR _Col_ShouldNotBeNull_Pass = PQL.Assert.Col.ShouldNotBeNull("Col.ShouldNotBeNull: ID column should pass", 'TestData'[ID])
+			VAR _Col_ShouldBeBlank_Pass = PQL.Assert.Col.ShouldBeBlank("Col.ShouldBeBlank: Empty column should pass", 'TestData-Fact'[Blank Column])
+			VAR _Col_ShouldBeBlank_Fail = PQL.Assert.Col.ShouldBeBlank("Col.ShouldBeBlank: NullableField should fail (has non-blank)", 'TestData-Fact'[NullableField])
+			VAR _Col_ShouldNotBeBlank_Pass = PQL.Assert.Col.ShouldNotBeBlank("Col.ShouldNotBeBlank: ID column should pass (all non-blank)", 'TestData'[ID])
+			VAR _Col_ShouldNotBeBlank_Fail = PQL.Assert.Col.ShouldNotBeBlank("Col.ShouldNotBeBlank: Nullable column should fail (has blank)", 'TestData-Fact'[NullableField])
+			VAR _Col_ShouldBeNullOrBlank_Pass = PQL.Assert.Col.ShouldBeNullOrBlank("Col.ShouldBeNullOrBlank: Empty column should pass", 'TestData-Fact'[Blank Column])
+			VAR _Col_ShouldBeNullOrBlank_Fail = PQL.Assert.Col.ShouldBeNullOrBlank("Col.ShouldBeNullOrBlank: ID column should fail (has values)", 'TestData'[ID])
+			VAR _Col_ShouldNotBeNullOrBlank_Pass = PQL.Assert.Col.ShouldNotBeNullOrBlank("Col.ShouldNotBeNullOrBlank: ID column should pass (no nulls/blanks)", 'TestData'[ID])
+			VAR _Col_ShouldNotBeNullOrBlank_Fail = PQL.Assert.Col.ShouldNotBeNullOrBlank("Col.ShouldNotBeNullOrBlank: Nullable column should fail (has blank)", 'TestData-Fact'[NullableField])
+			VAR _Col_ShouldBeDistinct_Pass = PQL.Assert.Col.ShouldBeDistinct("Col.ShouldBeDistinct: ID column should pass", 'TestData'[ID])
+			VAR _Col_ShouldExist_Pass = PQL.Assert.Col.ShouldExist("Col.ShouldExist: TestData[ID] should pass", "TestData", "ID")
+			VAR _Col_ShouldExist_Fail = PQL.Assert.Col.ShouldExist("Col.ShouldExist: FakeTable[Col] should fail", "FakeTable", "Col")
+			VAR _NullRate_Pass = PQL.Assert.Col.NullRateShouldBeAtMost("Col.NullRateShouldBeAtMost: NullableField <=50% should pass", 'TestData'[NullableField], 50)
+			VAR _NullRate_Fail = PQL.Assert.Col.NullRateShouldBeAtMost("Col.NullRateShouldBeAtMost: NullableField <=10% should fail", 'TestData'[NullableField], 10)
+			VAR _NullRate_Pass_NoNulls = PQL.Assert.Col.NullRateShouldBeAtMost("Col.NullRateShouldBeAtMost: ID <=0% should pass", 'TestData'[ID], 0)
+			VAR _BlankRate_Pass = PQL.Assert.Col.BlankRateShouldBeAtMost("Col.BlankRateShouldBeAtMost: ID <=0% should pass", 'TestData'[ID], 0)
+			VAR _NullOrBlankRate_Pass = PQL.Assert.Col.NullOrBlankRateShouldBeAtMost("Col.NullOrBlankRateShouldBeAtMost: NullableField <=50% should pass", 'TestData'[NullableField], 50)
+			VAR _NullOrBlankRate_Fail = PQL.Assert.Col.NullOrBlankRateShouldBeAtMost("Col.NullOrBlankRateShouldBeAtMost: NullableField <=10% should fail", 'TestData'[NullableField], 10)
+			VAR _PopulatedRate_Pass = PQL.Assert.Col.PopulatedRateShouldBeAtLeast("Col.PopulatedRateShouldBeAtLeast: NullableField >=50% should pass", 'TestData'[NullableField], 50)
+			VAR _PopulatedRate_Fail = PQL.Assert.Col.PopulatedRateShouldBeAtLeast("Col.PopulatedRateShouldBeAtLeast: NullableField >=90% should fail", 'TestData'[NullableField], 90)
+			VAR _UniqueWithin_Pass = PQL.Assert.Col.ShouldBeUniqueWithin("Col.ShouldBeUniqueWithin: ID unique within Category should pass", 'TestData'[ID], 'TestData'[Category])
+			VAR _ComboDistinct_Pass = PQL.Assert.Col.ComboShouldBeDistinct("Col.ComboShouldBeDistinct: ID+Category combo should pass", 'TestData'[ID], 'TestData'[Category])
+			VAR _NoDupes_Pass = PQL.Assert.Col.ShouldNotContainDuplicates("Col.ShouldNotContainDuplicates: ID should pass", 'TestData'[ID])
+			VAR _InRange_Pass = PQL.Assert.Col.ShouldBeInRange("Col.ShouldBeInRange: Value [0,500] should pass", 'TestData'[Value], 0, 500)
+			VAR _InRange_Fail = PQL.Assert.Col.ShouldBeInRange("Col.ShouldBeInRange: Value [0,100] should fail", 'TestData'[Value], 0, 100)
+			VAR _MinAtLeast_Pass = PQL.Assert.Col.MinShouldBeAtLeast("Col.MinShouldBeAtLeast: Value >=0 should pass", 'TestData'[Value], 0)
+			VAR _MinAtLeast_Fail = PQL.Assert.Col.MinShouldBeAtLeast("Col.MinShouldBeAtLeast: Value >=100 should fail", 'TestData'[Value], 100)
+			VAR _MaxAtMost_Pass = PQL.Assert.Col.MaxShouldBeAtMost("Col.MaxShouldBeAtMost: Value <=500 should pass", 'TestData'[Value], 500)
+			VAR _MaxAtMost_Fail = PQL.Assert.Col.MaxShouldBeAtMost("Col.MaxShouldBeAtMost: Value <=200 should fail", 'TestData'[Value], 200)
+			VAR _Pctile_Pass = PQL.Assert.Col.PctileShouldBeInRange("Col.PctileShouldBeInRange: P50 of Value [100,200] should pass", 'TestData'[Value], 0.5, 100, 200)
+			VAR _Pctile_Fail = PQL.Assert.Col.PctileShouldBeInRange("Col.PctileShouldBeInRange: P50 of Value [0,50] should fail", 'TestData'[Value], 0.5, 0, 50)
+			VAR _Mean_Pass = PQL.Assert.Col.MeanShouldBeInRange("Col.MeanShouldBeInRange: Value [100,200] should pass", 'TestData'[Value], 100, 200)
+			VAR _Mean_Fail = PQL.Assert.Col.MeanShouldBeInRange("Col.MeanShouldBeInRange: Value [0,100] should fail", 'TestData'[Value], 0, 100)
+			VAR _StdDev_Pass = PQL.Assert.Col.StdDevShouldBeAtMost("Col.StdDevShouldBeAtMost: Value <=200 should pass", 'TestData'[Value], 200)
+			VAR _StdDev_Fail = PQL.Assert.Col.StdDevShouldBeAtMost("Col.StdDevShouldBeAtMost: Value <=10 should fail", 'TestData'[Value], 10)
+			VAR _ZeroShare_Pass = PQL.Assert.Col.ShareOfZerosAtMost("Col.ShareOfZerosAtMost: Value <=5% should pass", 'TestData'[Value], 5)
+			VAR _EvenShare_Pass = PQL.Assert.Col.ShareOfEvensAtLeast("Col.ShareOfEvensAtLeast: ID >=30% should pass", 'TestData'[ID], 30)
+			VAR _EvenShare_Fail = PQL.Assert.Col.ShareOfEvensAtLeast("Col.ShareOfEvensAtLeast: ID >=60% should fail", 'TestData'[ID], 60)
+			VAR _OddShare_Pass = PQL.Assert.Col.ShareOfOddsAtLeast("Col.ShareOfOddsAtLeast: ID >=50% should pass", 'TestData'[ID], 50)
+			VAR _OddShare_Fail = PQL.Assert.Col.ShareOfOddsAtLeast("Col.ShareOfOddsAtLeast: ID >=80% should fail", 'TestData'[ID], 80)
+			VAR _NonNeg_Pass = PQL.Assert.Col.ShouldBeNonNegative("Col.ShouldBeNonNegative: Value should pass", 'TestData'[Value])
+			VAR _Positive_Pass = PQL.Assert.Col.ShouldBePositive("Col.ShouldBePositive: Value should pass", 'TestData'[Value])
+			VAR _NonZero_Pass = PQL.Assert.Col.ShouldBeNonZero("Col.ShouldBeNonZero: Value should pass", 'TestData'[Value])
+			VAR _MonoInc_Pass = PQL.Assert.Col.ShouldBeMonotonicIncreasing("Col.ShouldBeMonotonicIncreasing: ID ordered by ID should pass", 'TestData'[ID], 'TestData'[ID])
+			VAR _MonoNonDec_Pass = PQL.Assert.Col.ShouldBeMonotonicNonDecreasing("Col.ShouldBeMonotonicNonDecreasing: ID ordered by ID should pass", 'TestData'[ID], 'TestData'[ID])
+			VAR _MonoDec_Fail = PQL.Assert.Col.ShouldBeMonotonicDecreasing("Col.ShouldBeMonotonicDecreasing: ID ordered by ID should fail", 'TestData'[ID], 'TestData'[ID])
+			VAR _ValuesInSet_Pass = PQL.Assert.Col.ValuesShouldBeInSet("Col.ValuesShouldBeInSet: Category in {A,B,C} should pass", 'TestData'[Category], {"A", "B", "C"}, [Value])
+			VAR _ValuesInSet_Fail = PQL.Assert.Col.ValuesShouldBeInSet("Col.ValuesShouldBeInSet: Category in {A,B} should fail", 'TestData'[Category], {"A", "B"}, [Value])
+			VAR _ValuesNotInSet_Pass = PQL.Assert.Col.ValuesShouldNotBeInSet("Col.ValuesShouldNotBeInSet: Category not in {X,Y} should pass", 'TestData'[Category], {"X", "Y"}, [Value])
+			VAR _ValuesNotInSet_Fail = PQL.Assert.Col.ValuesShouldNotBeInSet("Col.ValuesShouldNotBeInSet: Category not in {A,X} should fail", 'TestData'[Category], {"A", "X"}, [Value])
+			VAR _DistAtMost_Pass = PQL.Assert.Col.DistinctCountShouldBeAtMost("Col.DistinctCountShouldBeAtMost: Category <=5 should pass", 'TestData'[Category], 5)
+			VAR _DistAtMost_Fail = PQL.Assert.Col.DistinctCountShouldBeAtMost("Col.DistinctCountShouldBeAtMost: Category <=2 should fail", 'TestData'[Category], 2)
+			VAR _DistAtLeast_Pass = PQL.Assert.Col.DistinctCountShouldBeAtLeast("Col.DistinctCountShouldBeAtLeast: Category >=2 should pass", 'TestData'[Category], 2)
+			VAR _DistAtLeast_Fail = PQL.Assert.Col.DistinctCountShouldBeAtLeast("Col.DistinctCountShouldBeAtLeast: Category >=10 should fail", 'TestData'[Category], 10)
+			VAR _NoSpaces_Pass = PQL.Assert.Col.TextShouldHaveNoLeadingOrTrailingSpaces("Col.TextShouldHaveNoLeadingOrTrailingSpaces: Name should pass", 'TestData'[Name])
+			VAR _Trimmed_Pass = PQL.Assert.Col.TextShouldBeTrimmed("Col.TextShouldBeTrimmed: Name should pass", 'TestData'[Name])
+			VAR _Upper_Pass = PQL.Assert.Col.TextCaseShouldBeUpper("Col.TextCaseShouldBeUpper: Category should pass", 'TestData'[Category])
+			VAR _Upper_Fail = PQL.Assert.Col.TextCaseShouldBeUpper("Col.TextCaseShouldBeUpper: Name should fail", 'TestData'[Name])
+			VAR _Lower_Fail = PQL.Assert.Col.TextCaseShouldBeLower("Col.TextCaseShouldBeLower: Name should fail", 'TestData'[Name])
+			VAR _TextLen_Pass = PQL.Assert.Col.TextLengthShouldBeInRange("Col.TextLengthShouldBeInRange: Name [3,10] should pass", 'TestData'[Name], 3, 10)
+			VAR _TextLen_Fail = PQL.Assert.Col.TextLengthShouldBeInRange("Col.TextLengthShouldBeInRange: Name [5,5] should fail", 'TestData'[Name], 5, 5)
+			VAR _IsAvailableInMDX_Pass =
+			    SELECTCOLUMNS(
+			        PQL.Assert.Col.IsAvailableInMDX("Col.IsAvailableInMDX: TestData[ID] should pass", "TestData", "ID"),
+			        "TestName", [TestName],
+			        "Expected", [Expected],
+			        "Actual", [Actual],
+			        "Passed", [Passed]
+			    )
+			VAR _IsAvailableInMDX_Fail =
+			    SELECTCOLUMNS(
+			        PQL.Assert.Col.IsAvailableInMDX("Col.IsAvailableInMDX: TestData[MDX Disabled Column] should fail", "TestData", "MDX Disabled Column"),
+			        "TestName", [TestName],
+			        "Expected", [Expected],
+			        "Actual", [Actual],
+			        "Passed", [Passed]
+			    )
+			VAR _StartsWith_Pass = PQL.Assert.Col.ShouldStartWith("Col.ShouldStartWith: Order Code starts with 'ORD-' should pass", 'TestData'[Order Code], "ORD-")
+			VAR _StartsWith_Pass_IgnoreCase = PQL.Assert.Col.ShouldStartWith("Col.ShouldStartWith: Order Code starts with 'ord-' case-insensitive should pass", 'TestData'[Order Code], "ord-")
+			VAR _StartsWith_Fail_CaseSensitive = PQL.Assert.Col.ShouldStartWith("Col.ShouldStartWith: Order Code starts with 'ord-' case-sensitive should fail", 'TestData'[Order Code], "ord-", "Y")
+			VAR _StartsWith_Fail = PQL.Assert.Col.ShouldStartWith("Col.ShouldStartWith: Name starts with 'Al' should fail", 'TestData'[Name], "Al")
+			VAR _NotStartsWith_Pass = PQL.Assert.Col.ShouldNotStartWith("Col.ShouldNotStartWith: Order Code starts with 'INV-' should pass", 'TestData'[Order Code], "INV-")
+			VAR _NotStartsWith_Pass_CaseSensitive = PQL.Assert.Col.ShouldNotStartWith("Col.ShouldNotStartWith: Order Code starts with 'ord-' case-sensitive should pass", 'TestData'[Order Code], "ord-", "Y")
+			VAR _NotStartsWith_Fail = PQL.Assert.Col.ShouldNotStartWith("Col.ShouldNotStartWith: Order Code starts with 'ORD-' should fail", 'TestData'[Order Code], "ORD-")
+			VAR _EndsWith_Pass = PQL.Assert.Col.ShouldEndWith("Col.ShouldEndWith: Order Code ends with '-US' should pass", 'TestData'[Order Code], "-US")
+			VAR _EndsWith_Pass_IgnoreCase = PQL.Assert.Col.ShouldEndWith("Col.ShouldEndWith: Order Code ends with '-us' case-insensitive should pass", 'TestData'[Order Code], "-us")
+			VAR _EndsWith_Fail_CaseSensitive = PQL.Assert.Col.ShouldEndWith("Col.ShouldEndWith: Order Code ends with '-us' case-sensitive should fail", 'TestData'[Order Code], "-us", "Y")
+			VAR _EndsWith_Fail = PQL.Assert.Col.ShouldEndWith("Col.ShouldEndWith: Name ends with 'a' should fail", 'TestData'[Name], "a")
+			VAR _NotEndsWith_Pass = PQL.Assert.Col.ShouldNotEndWith("Col.ShouldNotEndWith: Order Code ends with '-CA' should pass", 'TestData'[Order Code], "-CA")
+			VAR _NotEndsWith_Pass_CaseSensitive = PQL.Assert.Col.ShouldNotEndWith("Col.ShouldNotEndWith: Order Code ends with '-us' case-sensitive should pass", 'TestData'[Order Code], "-us", "Y")
+			VAR _NotEndsWith_Fail = PQL.Assert.Col.ShouldNotEndWith("Col.ShouldNotEndWith: Order Code ends with '-US' should fail", 'TestData'[Order Code], "-US")
+			VAR _Contains_Pass = PQL.Assert.Col.ShouldContainString("Col.ShouldContainString: Order Code contains '-00' should pass", 'TestData'[Order Code], "-00")
+			VAR _Contains_Pass_CaseSensitive = PQL.Assert.Col.ShouldContainString("Col.ShouldContainString: Order Code contains 'ORD' case-sensitive should pass", 'TestData'[Order Code], "ORD", "Y")
+			VAR _Contains_Fail_CaseSensitive = PQL.Assert.Col.ShouldContainString("Col.ShouldContainString: Order Code contains 'ord' case-sensitive should fail", 'TestData'[Order Code], "ord", "Y")
+			VAR _Contains_Fail = PQL.Assert.Col.ShouldContainString("Col.ShouldContainString: Name contains 'a' should fail", 'TestData'[Name], "a")
+			VAR _NotContains_Pass = PQL.Assert.Col.ShouldNotContainString("Col.ShouldNotContainString: Order Code contains 'XYZ' should pass", 'TestData'[Order Code], "XYZ")
+			VAR _NotContains_Pass_CaseSensitive = PQL.Assert.Col.ShouldNotContainString("Col.ShouldNotContainString: Order Code contains 'ord' case-sensitive should pass", 'TestData'[Order Code], "ord", "Y")
+			VAR _NotContains_Fail = PQL.Assert.Col.ShouldNotContainString("Col.ShouldNotContainString: Order Code contains 'ORD' should fail", 'TestData'[Order Code], "ORD")
+			VAR _StartsWith_Pass_SkipsBlanks = PQL.Assert.Col.ShouldStartWith("Col.ShouldStartWith: Sparse Code starts with 'ORD-' ignoring blanks should pass", 'TestData'[Sparse Code], "ORD-")
+			VAR _NotStartsWith_Pass_SkipsBlanks = PQL.Assert.Col.ShouldNotStartWith("Col.ShouldNotStartWith: Sparse Code starts with 'INV-' ignoring blanks should pass", 'TestData'[Sparse Code], "INV-")
+			VAR _EndsWith_Pass_SkipsBlanks = PQL.Assert.Col.ShouldEndWith("Col.ShouldEndWith: Sparse Code ends with '-US' ignoring blanks should pass", 'TestData'[Sparse Code], "-US")
+			VAR _NotEndsWith_Pass_SkipsBlanks = PQL.Assert.Col.ShouldNotEndWith("Col.ShouldNotEndWith: Sparse Code ends with '-CA' ignoring blanks should pass", 'TestData'[Sparse Code], "-CA")
+			VAR _Contains_Pass_SkipsBlanks = PQL.Assert.Col.ShouldContainString("Col.ShouldContainString: Sparse Code contains '-00' ignoring blanks should pass", 'TestData'[Sparse Code], "-00")
+			VAR _NotContains_Pass_SkipsBlanks = PQL.Assert.Col.ShouldNotContainString("Col.ShouldNotContainString: Sparse Code contains 'XYZ' ignoring blanks should pass", 'TestData'[Sparse Code], "XYZ")
+			VAR _StartsWith_Fail_ValueShorterThanPrefix = PQL.Assert.Col.ShouldStartWith("Col.ShouldStartWith: Short Text starts with 'Error - ' ('x' is shorter than prefix) should fail", 'TestData'[Short Text], "Error - ")
+			VAR _NotStartsWith_Pass_PrefixLongerThanValue = PQL.Assert.Col.ShouldNotStartWith("Col.ShouldNotStartWith: Category starts with 'Error - ' (prefix longer than every value) should pass", 'TestData'[Category], "Error - ")
+			VAR _NotStartsWith_Pass_ValueIsPrefixOfPrefix = PQL.Assert.Col.ShouldNotStartWith("Col.ShouldNotStartWith: Short Text starts with 'Error - Timeout - Retry' (value is only a prefix of the prefix) should pass", 'TestData'[Short Text], "Error - Timeout - Retry")
+			VAR _NotStartsWith_Fail_ShortText = PQL.Assert.Col.ShouldNotStartWith("Col.ShouldNotStartWith: Short Text starts with 'Error - ' should fail", 'TestData'[Short Text], "Error - ")
+			VAR _EndsWith_Fail_ValueShorterThanSuffix = PQL.Assert.Col.ShouldEndWith("Col.ShouldEndWith: Short Text ends with ' - Timeout' ('x' is shorter than suffix) should fail", 'TestData'[Short Text], " - Timeout")
+			VAR _NotEndsWith_Pass_SuffixLongerThanValue = PQL.Assert.Col.ShouldNotEndWith("Col.ShouldNotEndWith: Category ends with ' - Error' (suffix longer than every value) should pass", 'TestData'[Category], " - Error")
+			VAR _NotEndsWith_Pass_ValueIsSuffixOfSuffix = PQL.Assert.Col.ShouldNotEndWith("Col.ShouldNotEndWith: Short Text ends with 'Big Error - Timeout' (value is only a suffix of the suffix) should pass", 'TestData'[Short Text], "Big Error - Timeout")
+			VAR _Contains_Fail_ValueShorterThanSearch = PQL.Assert.Col.ShouldContainString("Col.ShouldContainString: Short Text contains 'Error - ' ('x' is shorter than search text) should fail", 'TestData'[Short Text], "Error - ")
+			VAR _NotContains_Pass_SearchLongerThanValue = PQL.Assert.Col.ShouldNotContainString("Col.ShouldNotContainString: Category contains 'Error - ' (search text longer than every value) should pass", 'TestData'[Category], "Error - ")
+			VAR _StartsWith_Pass_EmptyPrefix = PQL.Assert.Col.ShouldStartWith("Col.ShouldStartWith: Short Text starts with '' (empty prefix) should pass", 'TestData'[Short Text], "")
+			VAR _NotEndsWith_Fail_EmptySuffix = PQL.Assert.Col.ShouldNotEndWith("Col.ShouldNotEndWith: Short Text ends with '' (empty suffix) should fail", 'TestData'[Short Text], "")
+			VAR _AllTests = UNION(
+			    _Col_ShouldBeNull_Fail,
+			    _Col_ShouldNotBeNull_Pass,
+			    _Col_ShouldBeBlank_Pass,
+			    _Col_ShouldBeBlank_Fail,
+			    _Col_ShouldNotBeBlank_Pass,
+			    _Col_ShouldNotBeBlank_Fail,
+			    _Col_ShouldBeNullOrBlank_Pass,
+			    _Col_ShouldBeNullOrBlank_Fail,
+			    _Col_ShouldNotBeNullOrBlank_Pass,
+			    _Col_ShouldNotBeNullOrBlank_Fail,
+			    _Col_ShouldBeDistinct_Pass,
+			    _Col_ShouldExist_Pass,
+			    _Col_ShouldExist_Fail,
+			    _NullRate_Pass,
+			    _NullRate_Fail,
+			    _NullRate_Pass_NoNulls,
+			    _BlankRate_Pass,
+			    _NullOrBlankRate_Pass,
+			    _NullOrBlankRate_Fail,
+			    _PopulatedRate_Pass,
+			    _PopulatedRate_Fail,
+			    _UniqueWithin_Pass,
+			    _ComboDistinct_Pass,
+			    _NoDupes_Pass,
+			    _InRange_Pass,
+			    _InRange_Fail,
+			    _MinAtLeast_Pass,
+			    _MinAtLeast_Fail,
+			    _MaxAtMost_Pass,
+			    _MaxAtMost_Fail,
+			    _Pctile_Pass,
+			    _Pctile_Fail,
+			    _Mean_Pass,
+			    _Mean_Fail,
+			    _StdDev_Pass,
+			    _StdDev_Fail,
+			    _ZeroShare_Pass,
+			    _EvenShare_Pass,
+			    _EvenShare_Fail,
+			    _OddShare_Pass,
+			    _OddShare_Fail,
+			    _NonNeg_Pass,
+			    _Positive_Pass,
+			    _NonZero_Pass,
+			    _MonoInc_Pass,
+			    _MonoNonDec_Pass,
+			    _MonoDec_Fail,
+			    _ValuesInSet_Pass,
+			    _ValuesInSet_Fail,
+			    _ValuesNotInSet_Pass,
+			    _ValuesNotInSet_Fail,
+			    _DistAtMost_Pass,
+			    _DistAtMost_Fail,
+			    _DistAtLeast_Pass,
+			    _DistAtLeast_Fail,
+			    _NoSpaces_Pass,
+			    _Trimmed_Pass,
+			    _Upper_Pass,
+			    _Upper_Fail,
+			    _Lower_Fail,
+			    _TextLen_Pass,
+			    _TextLen_Fail,
+			    _IsAvailableInMDX_Pass,
+			    _IsAvailableInMDX_Fail,
+			    _StartsWith_Pass,
+			    _StartsWith_Pass_IgnoreCase,
+			    _StartsWith_Fail_CaseSensitive,
+			    _StartsWith_Fail,
+			    _NotStartsWith_Pass,
+			    _NotStartsWith_Pass_CaseSensitive,
+			    _NotStartsWith_Fail,
+			    _EndsWith_Pass,
+			    _EndsWith_Pass_IgnoreCase,
+			    _EndsWith_Fail_CaseSensitive,
+			    _EndsWith_Fail,
+			    _NotEndsWith_Pass,
+			    _NotEndsWith_Pass_CaseSensitive,
+			    _NotEndsWith_Fail,
+			    _Contains_Pass,
+			    _Contains_Pass_CaseSensitive,
+			    _Contains_Fail_CaseSensitive,
+			    _Contains_Fail,
+			    _NotContains_Pass,
+			    _NotContains_Pass_CaseSensitive,
+			    _NotContains_Fail,
+			    _StartsWith_Pass_SkipsBlanks,
+			    _NotStartsWith_Pass_SkipsBlanks,
+			    _EndsWith_Pass_SkipsBlanks,
+			    _NotEndsWith_Pass_SkipsBlanks,
+			    _Contains_Pass_SkipsBlanks,
+			    _NotContains_Pass_SkipsBlanks,
+			    _StartsWith_Fail_ValueShorterThanPrefix,
+			    _NotStartsWith_Pass_PrefixLongerThanValue,
+			    _NotStartsWith_Pass_ValueIsPrefixOfPrefix,
+			    _NotStartsWith_Fail_ShortText,
+			    _EndsWith_Fail_ValueShorterThanSuffix,
+			    _NotEndsWith_Pass_SuffixLongerThanValue,
+			    _NotEndsWith_Pass_ValueIsSuffixOfSuffix,
+			    _Contains_Fail_ValueShorterThanSearch,
+			    _NotContains_Pass_SearchLongerThanValue,
+			    _StartsWith_Pass_EmptyPrefix,
+			    _NotEndsWith_Fail_EmptySuffix
+			)
+			VAR _ValidationResults =
+			    ADDCOLUMNS(
+			        _AllTests,
+			        "ExpectedToPass",
+			            CONTAINSSTRING([TestName], "should pass"),
+			        "ExpectedToFail",
+			            CONTAINSSTRING([TestName], "should fail"),
+			        "HasExpectation",
+			            CONTAINSSTRING([TestName], "should pass") || CONTAINSSTRING([TestName], "should fail"),
+			        "ValidationStatus",
+			            SWITCH(
+			                TRUE(),
+			                CONTAINSSTRING([TestName], "should pass") && [Passed] = TRUE, "✅ CORRECT",
+			                CONTAINSSTRING([TestName], "should fail") && [Passed] = FALSE, "✅ CORRECT",
+			                CONTAINSSTRING([TestName], "should pass") && [Passed] = FALSE, "❌ MISMATCH: Expected PASS but got FAIL",
+			                CONTAINSSTRING([TestName], "should fail") && [Passed] = TRUE, "❌ MISMATCH: Expected FAIL but got PASS",
+			                "⚠️ NO CLEAR EXPECTATION"
+			            )
+			    )
+			RETURN
+			    SELECTCOLUMNS(
+			        _ValidationResults,
+			        "TestName", [TestName],
+			        "Expected", [Expected],
+			        "Actual", [Actual] & " [" & [ValidationStatus] & "]",
+			        "Passed",
+			            SWITCH(
+			                TRUE(),
+			                CONTAINSSTRING([ValidationStatus], "MISMATCH"), FALSE,
+			                CONTAINSSTRING([ValidationStatus], "CORRECT"), TRUE,
+			                [Passed]
+			            )
+			    )
+
+/// PQL.Assert.Tbl table assertion tests. Registered so pql-test discovers it via RetrieveTestsV2.
+function 'Tbl.ANY.Tests' =
+		() =>
+			VAR _TestTableWithRows = DATATABLE("Col1", STRING, "Col2", INTEGER, {{"A", 1}, {"B", 2}, {"C", 3}})
+			VAR _EmptyTable = FILTER(_TestTableWithRows, FALSE)
+			VAR _Tbl_ShouldHaveRows_Pass = PQL.Assert.Tbl.ShouldHaveRows("Tbl.ShouldHaveRows: Test table should pass", _TestTableWithRows)
+			VAR _Tbl_ShouldHaveRows_Fail = PQL.Assert.Tbl.ShouldHaveRows("Tbl.ShouldHaveRows: Empty table should fail", _EmptyTable)
+			VAR _Tbl_ShouldHaveRowCount_Pass = PQL.Assert.Tbl.ShouldHaveRowCount("Tbl.ShouldHaveRowCount: Test table 3 rows should pass", _TestTableWithRows, 3)
+			VAR _Tbl_ShouldHaveRowCount_Fail = PQL.Assert.Tbl.ShouldHaveRowCount("Tbl.ShouldHaveRowCount: Test table 5 rows should fail", _TestTableWithRows, 5)
+			VAR _Tbl_ShouldHaveMoreRowsThan_Pass = PQL.Assert.Tbl.ShouldHaveMoreRowsThan("Tbl.ShouldHaveMoreRowsThan: Test table > 2 should pass", 2, _TestTableWithRows)
+			VAR _Tbl_ShouldHaveMoreRowsThan_Fail = PQL.Assert.Tbl.ShouldHaveMoreRowsThan("Tbl.ShouldHaveMoreRowsThan: Test table > 3 should fail", 3, _TestTableWithRows)
+			VAR _Tbl_ShouldExist_Pass = PQL.Assert.Tbl.ShouldExist("Tbl.ShouldExist: TestData table should pass", "TestData")
+			VAR _Tbl_ShouldExist_Fail = PQL.Assert.Tbl.ShouldExist("Tbl.ShouldExist: FakeTable should fail", "FakeTable")
+			VAR _Tbl_ShouldHaveColumns_Pass = PQL.Assert.Tbl.ShouldHaveColumns("Tbl.ShouldHaveColumns: TestData has ID,Name should pass", "TestData", "ID,Name")
+			VAR _Tbl_ShouldHaveColumns_Fail = PQL.Assert.Tbl.ShouldHaveColumns("Tbl.ShouldHaveColumns: TestData has FakeCol should fail", "TestData", "FakeCol")
+			VAR _Tbl_NoExtra_Pass = PQL.Assert.Tbl.ShouldNotHaveExtraColumns("Tbl.ShouldNotHaveExtraColumns: All cols allowed should pass", "TestData", "ID,Name,Value,Category,IsActive,CreatedDate,NullableField,Fixed Decimal,MDX Disabled Column,Order Code,Short Text,Sparse Code")
+			VAR _Tbl_NoExtra_Fail = PQL.Assert.Tbl.ShouldNotHaveExtraColumns("Tbl.ShouldNotHaveExtraColumns: Only ID allowed should fail", "TestData", "ID")
+			VAR _Tbl_DataType_Pass = PQL.Assert.Tbl.ColumnDataTypeShouldBe("Tbl.ColumnDataTypeShouldBe: ID=Integer should pass", "TestData", "ID", "Integer")
+			VAR _Tbl_DataType_Fail = PQL.Assert.Tbl.ColumnDataTypeShouldBe("Tbl.ColumnDataTypeShouldBe: ID=String should fail", "TestData", "ID", "String")
+			VAR _Tbl_DataType_NotFound = PQL.Assert.Tbl.ColumnDataTypeShouldBe("Tbl.ColumnDataTypeShouldBe: FakeCol should fail", "TestData", "FakeCol", "Integer")
+			VAR _AllTests = UNION(
+			    _Tbl_ShouldHaveRows_Pass,
+			    _Tbl_ShouldHaveRows_Fail,
+			    _Tbl_ShouldHaveRowCount_Pass,
+			    _Tbl_ShouldHaveRowCount_Fail,
+			    _Tbl_ShouldHaveMoreRowsThan_Pass,
+			    _Tbl_ShouldHaveMoreRowsThan_Fail,
+			    _Tbl_ShouldExist_Pass,
+			    _Tbl_ShouldExist_Fail,
+			    _Tbl_ShouldHaveColumns_Pass,
+			    _Tbl_ShouldHaveColumns_Fail,
+			    _Tbl_NoExtra_Pass,
+			    _Tbl_NoExtra_Fail,
+			    _Tbl_DataType_Pass,
+			    _Tbl_DataType_Fail,
+			    _Tbl_DataType_NotFound
+			)
+			VAR _ValidationResults =
+			    ADDCOLUMNS(
+			        _AllTests,
+			        "ExpectedToPass",
+			            CONTAINSSTRING([TestName], "should pass"),
+			        "ExpectedToFail",
+			            CONTAINSSTRING([TestName], "should fail"),
+			        "HasExpectation",
+			            CONTAINSSTRING([TestName], "should pass") || CONTAINSSTRING([TestName], "should fail"),
+			        "ValidationStatus",
+			            SWITCH(
+			                TRUE(),
+			                CONTAINSSTRING([TestName], "should pass") && [Passed] = TRUE, "✅ CORRECT",
+			                CONTAINSSTRING([TestName], "should fail") && [Passed] = FALSE, "✅ CORRECT",
+			                CONTAINSSTRING([TestName], "should pass") && [Passed] = FALSE, "❌ MISMATCH: Expected PASS but got FAIL",
+			                CONTAINSSTRING([TestName], "should fail") && [Passed] = TRUE, "❌ MISMATCH: Expected FAIL but got PASS",
+			                "⚠️ NO CLEAR EXPECTATION"
+			            )
+			    )
+			RETURN
+			    SELECTCOLUMNS(
+			        _ValidationResults,
+			        "TestName", [TestName],
+			        "Expected", [Expected],
+			        "Actual", [Actual] & " [" & [ValidationStatus] & "]",
+			        "Passed",
+			            SWITCH(
+			                TRUE(),
+			                CONTAINSSTRING([ValidationStatus], "MISMATCH"), FALSE,
+			                CONTAINSSTRING([ValidationStatus], "CORRECT"), TRUE,
+			                [Passed]
+			            )
+			    )
+
+/// Best-practice DAX expression rule tests. Registered so pql-test discovers it via RetrieveTestsV2.
+function 'BP.DAXExpressions.ANY.Tests' =
+		() =>
+			VAR _FullyQualifiedColumnRefs_Fail =
+			    ADDCOLUMNS(
+			        PQL.Assert.BP.ShouldUseFullyQualifiedColumnReferences(),
+			        "TestExpectation", "should fail"
+			    )
+			VAR _UseTreatAsInsteadOfIntersect_Fail =
+			    ADDCOLUMNS(
+			        PQL.Assert.BP.ShouldUseTreatAsInsteadOfIntersect(),
+			        "TestExpectation", "should fail"
+			    )
+			VAR _AllTests = UNION(
+			    _FullyQualifiedColumnRefs_Fail,
+			    _UseTreatAsInsteadOfIntersect_Fail
+			)
+			VAR _ValidationResults =
+			    ADDCOLUMNS(
+			        _AllTests,
+			        "ExpectedToPass",
+			            [TestExpectation] = "should pass",
+			        "ExpectedToFail",
+			            [TestExpectation] = "should fail",
+			        "HasExpectation",
+			            NOT(ISBLANK([TestExpectation])),
+			        "ValidationStatus",
+			            SWITCH(
+			                TRUE(),
+			                [TestExpectation] = "should pass" && [Passed] = TRUE, "✅ CORRECT",
+			                [TestExpectation] = "should fail" && [Passed] = FALSE, "✅ CORRECT",
+			                [TestExpectation] = "should pass" && [Passed] = FALSE, "❌ MISMATCH: Expected PASS but got FAIL",
+			                [TestExpectation] = "should fail" && [Passed] = TRUE, "❌ MISMATCH: Expected FAIL but got PASS",
+			                "⚠️ NO CLEAR EXPECTATION"
+			            )
+			    )
+			RETURN
+			    SELECTCOLUMNS(
+			        _ValidationResults,
+			        "TestName", [TestName],
+			        "Expected", [Expected],
+			        "Actual", [Actual] & " [" & [ValidationStatus] & "]",
+			        "Passed",
+			            SWITCH(
+			                TRUE(),
+			                CONTAINSSTRING([ValidationStatus], "MISMATCH"), FALSE,
+			                CONTAINSSTRING([ValidationStatus], "CORRECT"), TRUE,
+			                [Passed]
+			            )
+			    )
+
+/// Best-practice error prevention rule tests. Registered so pql-test discovers it via RetrieveTestsV2.
+function 'BP.ErrorPrevention.ANY.Tests' =
+		() =>
+			VAR _SameDataTypeInRelationships_Fail =
+			    ADDCOLUMNS(
+			        PQL.Assert.BP.ShouldHaveSameDataTypeInRelationships(),
+			        "TestExpectation", "should fail"
+			    )
+			VAR _ValidationResults =
+			    ADDCOLUMNS(
+			        _SameDataTypeInRelationships_Fail,
+			        "ExpectedToPass",
+			            [TestExpectation] = "should pass",
+			        "ExpectedToFail",
+			            [TestExpectation] = "should fail",
+			        "HasExpectation",
+			            NOT(ISBLANK([TestExpectation])),
+			        "ValidationStatus",
+			            SWITCH(
+			                TRUE(),
+			                [TestExpectation] = "should pass" && [Passed] = TRUE, "✅ CORRECT",
+			                [TestExpectation] = "should fail" && [Passed] = FALSE, "✅ CORRECT",
+			                [TestExpectation] = "should pass" && [Passed] = FALSE, "❌ MISMATCH: Expected PASS but got FAIL",
+			                [TestExpectation] = "should fail" && [Passed] = TRUE, "❌ MISMATCH: Expected FAIL but got PASS",
+			                "⚠️ NO CLEAR EXPECTATION"
+			            )
+			    )
+			RETURN
+			    SELECTCOLUMNS(
+			        _ValidationResults,
+			        "TestName", [TestName],
+			        "Expected", [Expected],
+			        "Actual", [Actual] & " [" & [ValidationStatus] & "]",
+			        "Passed",
+			            SWITCH(
+			                TRUE(),
+			                CONTAINSSTRING([ValidationStatus], "MISMATCH"), FALSE,
+			                CONTAINSSTRING([ValidationStatus], "CORRECT"), TRUE,
+			                [Passed]
+			            )
+			    )
+
+/// Best-practice formatting rule tests. Registered so pql-test discovers it via RetrieveTestsV2.
+function 'BP.Formatting.ANY.Tests' =
+		() =>
+			VAR _ProvideFormatStringForMeasures_Fail =
+			    ADDCOLUMNS(
+			        PQL.Assert.BP.ShouldProvideFormatStringForMeasures(),
+			        "TestExpectation", "should fail"
+			    )
+			VAR _NotSummarizeNumericColumns_Fail =
+			    ADDCOLUMNS(
+			        PQL.Assert.BP.ShouldNotSummarizeNumericColumns(),
+			        "TestExpectation", "should fail"
+			    )
+			VAR _MarkRowLabels_Fail =
+			    ADDCOLUMNS(
+			        PQL.Assert.BP.ShouldMarkRowLabels(),
+			        "TestExpectation", "should fail"
+			    )
+			VAR _MarkPrimaryKeys_Fail =
+			    ADDCOLUMNS(
+			        PQL.Assert.BP.ShouldMarkPrimaryKeys(),
+			        "TestExpectation", "should fail"
+			    )
+			VAR _HideFactTableColumns_Fail =
+			    ADDCOLUMNS(
+			        PQL.Assert.BP.ShouldHideFactTableColumns(),
+			        "TestExpectation", "should fail"
+			    )
+			VAR _AllTests = UNION(
+			    _ProvideFormatStringForMeasures_Fail,
+			    _NotSummarizeNumericColumns_Fail,
+			    _MarkRowLabels_Fail,
+			    _MarkPrimaryKeys_Fail,
+			    _HideFactTableColumns_Fail
+			)
+			VAR _ValidationResults =
+			    ADDCOLUMNS(
+			        _AllTests,
+			        "ExpectedToPass",
+			            [TestExpectation] = "should pass",
+			        "ExpectedToFail",
+			            [TestExpectation] = "should fail",
+			        "HasExpectation",
+			            NOT(ISBLANK([TestExpectation])),
+			        "ValidationStatus",
+			            SWITCH(
+			                TRUE(),
+			                [TestExpectation] = "should pass" && [Passed] = TRUE, "✅ CORRECT",
+			                [TestExpectation] = "should fail" && [Passed] = FALSE, "✅ CORRECT",
+			                [TestExpectation] = "should pass" && [Passed] = FALSE, "❌ MISMATCH: Expected PASS but got FAIL",
+			                [TestExpectation] = "should fail" && [Passed] = TRUE, "❌ MISMATCH: Expected FAIL but got PASS",
+			                "⚠️ NO CLEAR EXPECTATION"
+			            )
+			    )
+			RETURN
+			    SELECTCOLUMNS(
+			        _ValidationResults,
+			        "TestName", [TestName],
+			        "Expected", [Expected],
+			        "Actual", [Actual] & " [" & [ValidationStatus] & "]",
+			        "Passed",
+			            SWITCH(
+			                TRUE(),
+			                CONTAINSSTRING([ValidationStatus], "MISMATCH"), FALSE,
+			                CONTAINSSTRING([ValidationStatus], "CORRECT"), TRUE,
+			                [Passed]
+			            )
+			    )
+
+/// Best-practice maintenance rule tests. Registered so pql-test discovers it via RetrieveTestsV2.
+function 'BP.Maintenance.ANY.Tests' =
+		() =>
+			VAR _UnnecessaryMeasures_Pass =
+			    ADDCOLUMNS(
+			        PQL.Assert.BP.ShouldRemoveUnnecessaryMeasures(),
+			        "TestExpectation", "should pass"
+			    )
+			VAR _UnnecessaryColumns_Fail =
+			    ADDCOLUMNS(
+			        PQL.Assert.BP.ShouldRemoveUnnecessaryColumns(),
+			        "TestExpectation", "should fail"
+			    )
+			VAR _ObjectDescriptions_Fail =
+			    ADDCOLUMNS(
+			        PQL.Assert.BP.ShouldHaveObjectDescriptions(),
+			        "TestExpectation", "should fail"
+			    )
+			VAR _AllTests = UNION(
+			    _UnnecessaryMeasures_Pass,
+			    _UnnecessaryColumns_Fail,
+			    _ObjectDescriptions_Fail
+			)
+			VAR _ValidationResults =
+			    ADDCOLUMNS(
+			        _AllTests,
+			        "ValidationStatus",
+			            SWITCH(
+			                TRUE(),
+			                [TestExpectation] = "should pass" && [Passed] = TRUE, "CORRECT",
+			                [TestExpectation] = "should fail" && [Passed] = FALSE, "CORRECT",
+			                [TestExpectation] = "should pass" && [Passed] = FALSE, "MISMATCH",
+			                [TestExpectation] = "should fail" && [Passed] = TRUE, "MISMATCH",
+			                "NO EXPECTATION"
+			            )
+			    )
+			RETURN
+			    SELECTCOLUMNS(
+			        _ValidationResults,
+			        "TestName", [TestName],
+			        "Expected", [Expected],
+			        "Actual", [Actual] & " [" & [ValidationStatus] & "]",
+			        "Passed",
+			            SWITCH(
+			                TRUE(),
+			                CONTAINSSTRING([ValidationStatus], "MISMATCH"), FALSE,
+			                CONTAINSSTRING([ValidationStatus], "CORRECT"), TRUE,
+			                [Passed]
+			            )
+			    )
+
+/// Best-practice performance rule tests. Registered so pql-test discovers it via RetrieveTestsV2.
+function 'BP.Performance.ANY.Tests' =
+		() =>
+			VAR _AvoidBiDir_Fail =
+			    ADDCOLUMNS(
+			        PQL.Assert.BP.ShouldAvoidBiDirectionalOnHighCardinalityColumn(),
+			        "TestExpectation", "should fail"
+			    )
+			VAR _RemoveAutoDate_Fail =
+			    ADDCOLUMNS(
+			        PQL.Assert.BP.ShouldRemoveAutoDateTable(),
+			        "TestExpectation", "should fail"
+			    )
+			VAR _AvoidFloatingPoint_Fail =
+			    ADDCOLUMNS(
+			        PQL.Assert.BP.ShouldAvoidFloatingPointDataTypes(),
+			        "TestExpectation", "should fail"
+			    )
+			VAR _SetIsAvailableInMdxFalse_Fail =
+			    ADDCOLUMNS(
+			        PQL.Assert.BP.ShouldSetIsAvailableInMdxFalseOnNonAttributeColumns(),
+			        "TestExpectation", "should fail"
+			    )
+			VAR _AllTests = UNION(
+			    _AvoidBiDir_Fail,
+			    _RemoveAutoDate_Fail,
+			    _AvoidFloatingPoint_Fail,
+			    _SetIsAvailableInMdxFalse_Fail
+			)
+			VAR _ValidationResults =
+			    ADDCOLUMNS(
+			        _AllTests,
+			        "ExpectedToPass",
+			            [TestExpectation] = "should pass",
+			        "ExpectedToFail",
+			            [TestExpectation] = "should fail",
+			        "HasExpectation",
+			            NOT(ISBLANK([TestExpectation])),
+			        "ValidationStatus",
+			            SWITCH(
+			                TRUE(),
+			                [TestExpectation] = "should pass" && [Passed] = TRUE, "✅ CORRECT",
+			                [TestExpectation] = "should fail" && [Passed] = FALSE, "✅ CORRECT",
+			                [TestExpectation] = "should pass" && [Passed] = FALSE, "❌ MISMATCH: Expected PASS but got FAIL",
+			                [TestExpectation] = "should fail" && [Passed] = TRUE, "❌ MISMATCH: Expected FAIL but got PASS",
+			                "⚠️ NO CLEAR EXPECTATION"
+			            )
+			    )
+			RETURN
+			    SELECTCOLUMNS(
+			        _ValidationResults,
+			        "TestName", [TestName],
+			        "Expected", [Expected],
+			        "Actual", [Actual] & " [" & [ValidationStatus] & "]",
+			        "Passed",
+			            SWITCH(
+			                TRUE(),
+			                CONTAINSSTRING([ValidationStatus], "MISMATCH"), FALSE,
+			                CONTAINSSTRING([ValidationStatus], "CORRECT"), TRUE,
+			                [Passed]
+			            )
+			    )
+
+/// Test discovery (RetrieveTests*) tests. Registered so pql-test discovers it via RetrieveTestsV2.
+function 'Assert.Discovery.ANY.Tests' =
+		() =>
+			VAR _AllTests = PQL.Assert.RetrieveTestsV2()
+			VAR _AllTestsCount = COUNTROWS(_AllTests)
+			VAR _RetrieveTests_HasResults =
+			    ROW(
+			        "TestName", "Discovery: RetrieveTestsV2 should return test functions",
+			        "Expected", "Count > 0",
+			        "Actual", "Count = " & FORMAT(_AllTestsCount, "0"),
+			        "Passed", _AllTestsCount > 0
+			    )
+			VAR _DevTests = PQL.Assert.RetrieveTestsByEnvironmentV2("DEV")
+			VAR _DevTestsCount = COUNTROWS(_DevTests)
+			VAR _RetrieveTestsByEnvironment_DEV =
+			    ROW(
+			        "TestName", "Discovery: RetrieveTestsByEnvironmentV2('DEV') should return .DEV. and .ANY. tests",
+			        "Expected", "Count > 0",
+			        "Actual", "Count = " & FORMAT(_DevTestsCount, "0"),
+			        "Passed", _DevTestsCount > 0
+			    )
+			VAR _TestTests = PQL.Assert.RetrieveTestsByEnvironmentV2("TEST")
+			VAR _TestTestsCount = COUNTROWS(_TestTests)
+			VAR _RetrieveTestsByEnvironment_TEST =
+			    ROW(
+			        "TestName", "Discovery: RetrieveTestsByEnvironmentV2('TEST') should return .TEST. and .ANY. tests",
+			        "Expected", "Count > 0",
+			        "Actual", "Count = " & FORMAT(_TestTestsCount, "0"),
+			        "Passed", _TestTestsCount > 0
+			    )
+			VAR _ProdTests = PQL.Assert.RetrieveTestsByEnvironmentV2("PROD")
+			VAR _ProdTestsCount = COUNTROWS(_ProdTests)
+			VAR _RetrieveTestsByEnvironment_PROD =
+			    ROW(
+			        "TestName", "Discovery: RetrieveTestsByEnvironmentV2('PROD') should return .PROD. and .ANY. tests",
+			        "Expected", "Count > 0",
+			        "Actual", "Count = " & FORMAT(_ProdTestsCount, "0"),
+			        "Passed", _ProdTestsCount > 0
+			    )
+			VAR _BlankEnvTests = PQL.Assert.RetrieveTestsByEnvironmentV2("")
+			VAR _BlankEnvTestsCount = COUNTROWS(_BlankEnvTests)
+			VAR _RetrieveTestsByEnvironment_Blank =
+			    ROW(
+			        "TestName", "Discovery: RetrieveTestsByEnvironmentV2('') should return all tests",
+			        "Expected", "Count = " & FORMAT(_AllTestsCount, "0"),
+			        "Actual", "Count = " & FORMAT(_BlankEnvTestsCount, "0"),
+			        "Passed", _BlankEnvTestsCount = _AllTestsCount
+			    )
+			VAR _NoParamTests = PQL.Assert.RetrieveTestsByEnvironmentV2()
+			VAR _NoParamTestsCount = COUNTROWS(_NoParamTests)
+			VAR _RetrieveTestsByEnvironment_NoParam =
+			    ROW(
+			        "TestName", "Discovery: RetrieveTestsByEnvironmentV2() with no parameter should return all tests",
+			        "Expected", "Count = " & FORMAT(_AllTestsCount, "0"),
+			        "Actual", "Count = " & FORMAT(_NoParamTestsCount, "0"),
+			        "Passed", _NoParamTestsCount = _AllTestsCount
+			    )
+			VAR _RetrieveTestsByEnvironment_NoParam_EqualsBlank =
+			    ROW(
+			        "TestName", "Discovery: RetrieveTestsByEnvironmentV2() should equal RetrieveTestsByEnvironmentV2('')",
+			        "Expected", "Counts equal",
+			        "Actual", "No param: " & FORMAT(_NoParamTestsCount, "0") & ", Blank: " & FORMAT(_BlankEnvTestsCount, "0"),
+			        "Passed", _NoParamTestsCount = _BlankEnvTestsCount
+			    )
+			VAR _LowercaseDevTests = PQL.Assert.RetrieveTestsByEnvironmentV2("dev")
+			VAR _LowercaseDevTestsCount = COUNTROWS(_LowercaseDevTests)
+			VAR _RetrieveTestsByEnvironment_CaseInsensitive =
+			    ROW(
+			        "TestName", "Discovery: RetrieveTestsByEnvironmentV2 is case-insensitive",
+			        "Expected", "'dev' should equal 'DEV'",
+			        "Actual", "dev count = " & FORMAT(_LowercaseDevTestsCount, "0") & ", DEV count = " & FORMAT(_DevTestsCount, "0"),
+			        "Passed", _LowercaseDevTestsCount = _DevTestsCount
+			    )
+			VAR _RLSAnyTests = FILTER(_AllTests, [Name] = "RLS.ANY.Tests")
+			VAR _RLSAnyTestsCount = COUNTROWS(_RLSAnyTests)
+			VAR _RetrieveTests_RLSAnyTests_Present =
+			    ROW(
+			        "TestName", "Discovery: RetrieveTestsV2 should include RLS.ANY.Tests",
+			        "Expected", "Count = 1",
+			        "Actual", "Count = " & FORMAT(_RLSAnyTestsCount, "0"),
+			        "Passed", _RLSAnyTestsCount = 1
+			    )
+			VAR _RLSImpersonatedUser = MAXX(_RLSAnyTests, [PQLAssert_ImpersonatedUserName])
+			VAR _RetrieveTests_ImpersonatedUser_Atlas =
+			    ROW(
+			        "TestName", "Discovery: RLS.ANY.Tests ImpersonatedUserName should be atlas.kerski@cftechnologiesllc.com",
+			        "Expected", "atlas.kerski@cftechnologiesllc.com",
+			        "Actual", IF(ISBLANK(_RLSImpersonatedUser), "(blank)", _RLSImpersonatedUser),
+			        "Passed", _RLSImpersonatedUser = "atlas.kerski@cftechnologiesllc.com"
+			    )
+			VAR _RLSRoleName = MAXX(_RLSAnyTests, [PQLAssert_RoleName])
+			VAR _RetrieveTests_RoleName_West =
+			    ROW(
+			        "TestName", "Discovery: RLS.ANY.Tests RoleName should be West",
+			        "Expected", "West",
+			        "Actual", IF(ISBLANK(_RLSRoleName), "(blank)", _RLSRoleName),
+			        "Passed", _RLSRoleName = "West"
+			    )
+			VAR _PATests = PQL.Assert.RetrieveTests()
+			VAR _PATestsCount = COUNTROWS(_PATests)
+			VAR _RetrieveTests_PA_HasResults =
+			    ROW(
+			        "TestName", "Discovery [PA]: RetrieveTests should return test functions",
+			        "Expected", "Count > 0",
+			        "Actual", "Count = " & FORMAT(_PATestsCount, "0"),
+			        "Passed", _PATestsCount > 0
+			    )
+			VAR _RetrieveTests_PA_SameCount =
+			    ROW(
+			        "TestName", "Discovery [PA]: RetrieveTests count should match RetrieveTestsV2 count",
+			        "Expected", "Count = " & FORMAT(_AllTestsCount, "0"),
+			        "Actual", "Count = " & FORMAT(_PATestsCount, "0"),
+			        "Passed", _PATestsCount = _AllTestsCount
+			    )
+			VAR _PATestsWithBlankName = FILTER(_PATests, ISBLANK([Name]))
+			VAR _RetrieveTests_PA_NoBlankNames =
+			    ROW(
+			        "TestName", "Discovery [PA]: RetrieveTests Name column should have no blanks",
+			        "Expected", "0 rows with blank Name",
+			        "Actual", FORMAT(COUNTROWS(_PATestsWithBlankName), "0") & " rows with blank Name",
+			        "Passed", COUNTROWS(_PATestsWithBlankName) = 0
+			    )
+			VAR _PADevTests = PQL.Assert.RetrieveTestsByEnvironment("DEV")
+			VAR _PADevTestsCount = COUNTROWS(_PADevTests)
+			VAR _RetrieveTestsByEnv_PA_DEV =
+			    ROW(
+			        "TestName", "Discovery [PA]: RetrieveTestsByEnvironment('DEV') should return .DEV. and .ANY. tests",
+			        "Expected", "Count > 0",
+			        "Actual", "Count = " & FORMAT(_PADevTestsCount, "0"),
+			        "Passed", _PADevTestsCount > 0
+			    )
+			VAR _RetrieveTestsByEnv_PA_DEV_SameCount =
+			    ROW(
+			        "TestName", "Discovery [PA]: RetrieveTestsByEnvironment('DEV') count should match RetrieveTestsByEnvironmentV2 count",
+			        "Expected", "Count = " & FORMAT(_DevTestsCount, "0"),
+			        "Actual", "Count = " & FORMAT(_PADevTestsCount, "0"),
+			        "Passed", _PADevTestsCount = _DevTestsCount
+			    )
+			VAR _PATestTests = PQL.Assert.RetrieveTestsByEnvironment("TEST")
+			VAR _PATestTestsCount = COUNTROWS(_PATestTests)
+			VAR _RetrieveTestsByEnv_PA_TEST =
+			    ROW(
+			        "TestName", "Discovery [PA]: RetrieveTestsByEnvironment('TEST') should return .TEST. and .ANY. tests",
+			        "Expected", "Count > 0",
+			        "Actual", "Count = " & FORMAT(_PATestTestsCount, "0"),
+			        "Passed", _PATestTestsCount > 0
+			    )
+			VAR _PALowercaseDev = PQL.Assert.RetrieveTestsByEnvironment("dev")
+			VAR _PALowercaseDevCount = COUNTROWS(_PALowercaseDev)
+			VAR _RetrieveTestsByEnv_PA_CaseInsensitive =
+			    ROW(
+			        "TestName", "Discovery [PA]: RetrieveTestsByEnvironment is case-insensitive",
+			        "Expected", "'dev' should equal 'DEV'",
+			        "Actual", "dev count = " & FORMAT(_PALowercaseDevCount, "0") & ", DEV count = " & FORMAT(_PADevTestsCount, "0"),
+			        "Passed", _PALowercaseDevCount = _PADevTestsCount
+			    )
+			VAR _PABlankEnvTests = PQL.Assert.RetrieveTestsByEnvironment("")
+			VAR _PABlankEnvTestsCount = COUNTROWS(_PABlankEnvTests)
+			VAR _RetrieveTestsByEnv_PA_Blank =
+			    ROW(
+			        "TestName", "Discovery [PA]: RetrieveTestsByEnvironment('') should return all tests",
+			        "Expected", "Count = " & FORMAT(_PATestsCount, "0"),
+			        "Actual", "Count = " & FORMAT(_PABlankEnvTestsCount, "0"),
+			        "Passed", _PABlankEnvTestsCount = _PATestsCount
+			    )
+			VAR _PANoParamTests = PQL.Assert.RetrieveTestsByEnvironment()
+			VAR _PANoParamTestsCount = COUNTROWS(_PANoParamTests)
+			VAR _RetrieveTestsByEnv_PA_NoParam =
+			    ROW(
+			        "TestName", "Discovery [PA]: RetrieveTestsByEnvironment() with no parameter should return all tests",
+			        "Expected", "Count = " & FORMAT(_PATestsCount, "0"),
+			        "Actual", "Count = " & FORMAT(_PANoParamTestsCount, "0"),
+			        "Passed", _PANoParamTestsCount = _PATestsCount
+			    )
+			VAR _RetrieveTestsByEnv_PA_NoParam_EqualsBlank =
+			    ROW(
+			        "TestName", "Discovery [PA]: RetrieveTestsByEnvironment() should equal RetrieveTestsByEnvironment('')",
+			        "Expected", "Counts equal",
+			        "Actual", "No param: " & FORMAT(_PANoParamTestsCount, "0") & ", Blank: " & FORMAT(_PABlankEnvTestsCount, "0"),
+			        "Passed", _PANoParamTestsCount = _PABlankEnvTestsCount
+			    )
+			VAR _AllDiscoveryTests = UNION(
+			    _RetrieveTests_HasResults,
+			    _RetrieveTestsByEnvironment_DEV,
+			    _RetrieveTestsByEnvironment_TEST,
+			    _RetrieveTestsByEnvironment_PROD,
+			    _RetrieveTestsByEnvironment_Blank,
+			    _RetrieveTestsByEnvironment_NoParam,
+			    _RetrieveTestsByEnvironment_NoParam_EqualsBlank,
+			    _RetrieveTestsByEnvironment_CaseInsensitive,
+			    _RetrieveTests_RLSAnyTests_Present,
+			    _RetrieveTests_ImpersonatedUser_Atlas,
+			    _RetrieveTests_RoleName_West,
+			    _RetrieveTests_PA_HasResults,
+			    _RetrieveTests_PA_SameCount,
+			    _RetrieveTests_PA_NoBlankNames,
+			    _RetrieveTestsByEnv_PA_DEV,
+			    _RetrieveTestsByEnv_PA_DEV_SameCount,
+			    _RetrieveTestsByEnv_PA_TEST,
+			    _RetrieveTestsByEnv_PA_CaseInsensitive,
+			    _RetrieveTestsByEnv_PA_Blank,
+			    _RetrieveTestsByEnv_PA_NoParam,
+			    _RetrieveTestsByEnv_PA_NoParam_EqualsBlank
+			)
+			RETURN
+			    _AllDiscoveryTests
+
+/// PQL.Assert.Partitions assertion tests (service only: needs the incremental refresh policy applied). Registered so pql-test discovers it via RetrieveTestsV2.
+function 'Partition.SVC.Tests' =
+		() =>
+			VAR _Table = "Test Import 1 & 3"
+			VAR _D = TODAY()
+			VAR _Y = YEAR(_D)
+			VAR _YearStart = DATE(_Y, 1, 1)
+			VAR _QuarterStart = DATE(_Y, (QUARTER(_D) - 1) * 3 + 1, 1)
+			VAR _MonthStart = DATE(_Y, MONTH(_D), 1)
+			VAR _QuarterCount = QUARTER(_D) - 1
+			VAR _MonthCount = MOD(MONTH(_D) - 1, 3)
+			VAR _DayCount = DAY(_D)
+			VAR _Total = 1 + _QuarterCount + _MonthCount + _DayCount
+			VAR _Test1 = PQL.Assert.Partitions.ShouldExist(
+			    "Partitions.ShouldExist: Test Import 1 & 3 should have partitions (no date filter)",
+			    _Table
+			)
+			VAR _Test2 = PQL.Assert.Partitions.ShouldBe(
+			    "Partitions.ShouldBe: total should be 1 year + " & _QuarterCount & " quarters + " & _MonthCount & " months + " & _DayCount & " days",
+			    _Table, _Total
+			)
+			VAR _Test3 = PQL.Assert.Partitions.ShouldBeAtLeast(
+			    "Partitions.ShouldBeAtLeast: total should be >= 2 (policy applied)",
+			    _Table, 2
+			)
+			VAR _Test4 = PQL.Assert.Partitions.ShouldBe(
+			    "Partitions.ShouldBe: none should end before the rolling window starts",
+			    _Table, 0, BLANK(), DATE(_Y - 1, 12, 31)
+			)
+			VAR _Test5 = PQL.Assert.Partitions.ShouldBe(
+			    "Partitions.ShouldBe: end <= Jan 1 this year should be the 1 year partition",
+			    _Table, 1, BLANK(), _YearStart
+			)
+			VAR _Test6 = PQL.Assert.Partitions.ShouldBe(
+			    "Partitions.ShouldBe: finished quarters this year should be " & _QuarterCount,
+			    _Table, _QuarterCount, _YearStart, _QuarterStart
+			)
+			VAR _Test7 = PQL.Assert.Partitions.ShouldBe(
+			    "Partitions.ShouldBe: finished months this quarter should be " & _MonthCount,
+			    _Table, _MonthCount, _QuarterStart, _MonthStart
+			)
+			VAR _Test8 = PQL.Assert.Partitions.ShouldBe(
+			    "Partitions.ShouldBe: day partitions this month should be " & _DayCount,
+			    _Table, _DayCount, _MonthStart
+			)
+			VAR _Test9 = PQL.Assert.Partitions.ShouldExist(
+			    "Partitions.ShouldExist: today's incremental partition should exist",
+			    _Table, _D
+			)
+			VAR _Test10 = PQL.Assert.Partitions.ShouldBe(
+			    "Partitions.ShouldBe: none should start after today",
+			    _Table, 0, _D + 1
+			)
+			VAR _Test11 = PQL.Assert.Partitions.ShouldBeAtLeast(
+			    "Partitions.ShouldBeAtLeast: start >= Jan 1 this year should be >= " & (_Total - 1),
+			    _Table, _Total - 1, _YearStart
+			)
+			VAR _Test12 = PQL.Assert.Partitions.ShouldBe(
+			    "Partitions.ShouldBe: NonExistentTable should return count = 0",
+			    "NonExistentTable", 0
+			)
+			RETURN UNION(
+			    _Test1, _Test2, _Test3, _Test4, _Test5, _Test6,
+			    _Test7, _Test8, _Test9, _Test10, _Test11, _Test12
+			)
+
+/// PQL.Assert.Perspective assertion tests. Registered so pql-test discovers it via RetrieveTestsV2.
+function 'Perspective.ANY.Tests' =
+		() =>
+			VAR _Test1 = PQL.Assert.Perspective.ShouldExist(
+			    "Perspective.ShouldExist: 'Just SharePoint' should exist",
+			    "Just SharePoint"
+			)
+			VAR _Test2 = PQL.Assert.Perspective.ShouldContain(
+			    "Perspective.ShouldContain: 'Just SharePoint' contains expected objects",
+			    "Just SharePoint",
+			    "Test Import 1 & 3,Mock-Fact",
+			    "Test Import 1 & 3[project_name],Mock-Fact[Date ID]",
+			    "Test Import 1 & 3[Row Count]"
+			)
+			VAR _Test3 = PQL.Assert.Perspective.ShouldMatchSchema(
+			    "Perspective.ShouldMatchSchema: 'Just SharePoint' should match expected schema",
+			    "Just SharePoint",
+			    "Test Import 1 & 3,Mock-Fact",
+			    "Test Import 1 & 3[project_name],Test Import 1 & 3[project_description],Test Import 1 & 3[start_date],Test Import 1 & 3[end_date],Test Import 1 & 3[project_manager],Test Import 1 & 3[project_budget],Test Import 1 & 3[project_status],Test Import 1 & 3[client_name],Test Import 1 & 3[client_email],Test Import 1 & 3[client_phone],Mock-Fact[Date ID]",
+			    "Test Import 1 & 3[Row Count]"
+			)
+			RETURN UNION(
+			    _Test1,
+			    _Test2,
+			    _Test3
+			)
 

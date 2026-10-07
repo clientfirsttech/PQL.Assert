@@ -1,0 +1,29 @@
+{
+  "expected_failures": {
+    "ShouldFail.TEST.Tests": "Asserts 4 < 4 to prove a failing assertion is reported as failed.",
+    "ShouldFailSchema.DEV.Tests": "Returns a non-assertion schema to prove a malformed suite is reported as failed."
+  },
+  "env_checks": {
+    "ANY": {
+      "TestingModel": [
+        "Assert.ANY.Tests",
+        "Assert.Discovery.ANY.Tests",
+        "BP.DAXExpressions.ANY.Tests",
+        "BP.ErrorPrevention.ANY.Tests",
+        "BP.Formatting.ANY.Tests",
+        "BP.Maintenance.ANY.Tests",
+        "BP.Performance.ANY.Tests",
+        "Col.ANY.Tests",
+        "Example.ANY.Tests",
+        "Perspective.ANY.Tests",
+        "RLS.ANY.Tests",
+        "Tbl.ANY.Tests"
+      ],
+      "RLS_Model": [
+        "OLS_East.ANY.Tests",
+        "OLS_West.ANY.Tests",
+        "RLS.ANY.Tests"
+      ]
+    }
+  }
+}

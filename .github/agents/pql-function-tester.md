@@ -37,6 +37,11 @@ tools: ["read", "edit", "agent","search", "powerbi-modeling-mcp/*"]
     - MUST return complete DAX queries (not fragments)
     - MUST use descriptive, human-readable TestName values
     - MUST follow test naming format: [Area].[Environment].Test(s)
+    - MUST register every test suite as a UDF in the model's definition/functions.tmdl, named [Area].[Environment].Tests,
+      and keep the matching DAXQueries/<same name>.dax as `DEFINE FUNCTION <name> = () => ... EVALUATE <name>()`.
+      pql-test only runs suites that PQL.Assert.RetrieveTestsV2() returns from the live model; query-only .dax files never run in CI
+    - MUST return the 4-column schema (TestName, Expected, Actual, Passed) from each suite UDF; for "should fail" cases,
+      Passed must mean the assertion behaved as expected (see Col.ANY.Tests for the validation pattern)
     - MUST combine multiple assertions using UNION
     - MUST run tests after creating them and verify they pass
     - MUST NOT modify production model tables or relationships

@@ -82,11 +82,11 @@ createOrReplace
 					"RuleDescription", "Columns used in a relationship should be of the same data type. Ideally, they will be of integer data type. Having columns within a relationship which are of different data types may lead to various issues including slower performance and unexpected query results. Severity: High (3)."
 				)	
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.6.2
+		annotation DAXLIB_PackageVersion = 0.7.0
 	/// Runs all error prevention best practice checks.
 	/// This function executes all error prevention validation rules and returns combined results.
 	function 'PQL.Assert.BP.CheckErrorPrevention' =
 			() =>
 				PQL.Assert.BP.ShouldHaveSameDataTypeInRelationships()
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.6.2
+		annotation DAXLIB_PackageVersion = 0.7.0

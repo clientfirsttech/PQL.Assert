@@ -9,6 +9,27 @@ match the `version` value in [src/manifest.daxlib](src/manifest.daxlib) and the
 
 ---
 
+## [0.7.0] - 2026-10-07
+
+### Added
+- Text prefix, suffix, and containment column assertions. DAX has no `STARTSWITH`/`ENDSWITH`
+  functions, so these use `LEFT()` and `RIGHT()`:
+  - `PQL.Assert.Col.ShouldStartWith(testName, columnRef, prefix, [matchCase])`
+  - `PQL.Assert.Col.ShouldNotStartWith(testName, columnRef, prefix, [matchCase])`
+  - `PQL.Assert.Col.ShouldEndWith(testName, columnRef, suffix, [matchCase])`
+  - `PQL.Assert.Col.ShouldNotEndWith(testName, columnRef, suffix, [matchCase])`
+  - `PQL.Assert.Col.ShouldContainString(testName, columnRef, substring, [matchCase])`
+  - `PQL.Assert.Col.ShouldNotContainString(testName, columnRef, substring, [matchCase])`
+- Optional `matchCase` argument on each of the six new assertions. Omit it for case-insensitive
+  comparison, or pass `"Y"`/`"YES"`/`"TRUE"`/`"1"` for case-sensitive comparison.
+- TestingModel fixture columns `TestData[Order Code]` (`ORD-001-US` … `ORD-005-US`),
+  `TestData[Sparse Code]` (the same codes with blanks on even rows) and `TestData[Short Text]`
+  (`"x"`, `""`, `"Error - Timeout"`, `"Err"`, blank), plus 38 pass/fail cases in `Col.Tests.dax`.
+  The cases cover the omitted and explicit `matchCase` argument, blank values (skipped), values shorter
+  than the prefix/suffix (where `LEFT()`/`RIGHT()` go past the end of the value), and an empty prefix/suffix.
+
+---
+
 ## [0.6.2] - 2026-09-08
 
 ### Added

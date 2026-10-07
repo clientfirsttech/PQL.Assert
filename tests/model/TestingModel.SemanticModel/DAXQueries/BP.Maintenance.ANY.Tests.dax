@@ -1,0 +1,76 @@
+DEFINE
+	FUNCTION BP.Maintenance.ANY.Tests = () =>
+		// --------------------------------------------------
+		// Test: ShouldRemoveUnnecessaryMeasures
+		// TestingModel has no hidden unreferenced measures
+		// --------------------------------------------------
+		VAR _UnnecessaryMeasures_Pass =
+		    ADDCOLUMNS(
+		        PQL.Assert.BP.ShouldRemoveUnnecessaryMeasures(),
+		        "TestExpectation", "should pass"
+		    )
+
+		// --------------------------------------------------
+		// Test: ShouldRemoveUnnecessaryColumns
+		// TestingModel has hidden unreferenced columns on system date tables
+		// --------------------------------------------------
+		VAR _UnnecessaryColumns_Fail =
+		    ADDCOLUMNS(
+		        PQL.Assert.BP.ShouldRemoveUnnecessaryColumns(),
+		        "TestExpectation", "should fail"
+		    )
+
+		// --------------------------------------------------
+		// Test: ShouldHaveObjectDescriptions
+		// TestingModel has objects without descriptions
+		// --------------------------------------------------
+		VAR _ObjectDescriptions_Fail =
+		    ADDCOLUMNS(
+		        PQL.Assert.BP.ShouldHaveObjectDescriptions(),
+		        "TestExpectation", "should fail"
+		    )
+
+		// --------------------------------------------------
+		// Combine all tests
+		// --------------------------------------------------
+		VAR _AllTests = UNION(
+		    _UnnecessaryMeasures_Pass,
+		    _UnnecessaryColumns_Fail,
+		    _ObjectDescriptions_Fail
+		)
+
+		// --------------------------------------------------
+		// Validation Layer
+		// --------------------------------------------------
+		VAR _ValidationResults =
+		    ADDCOLUMNS(
+		        _AllTests,
+		        "ValidationStatus",
+		            SWITCH(
+		                TRUE(),
+		                [TestExpectation] = "should pass" && [Passed] = TRUE, "CORRECT",
+		                [TestExpectation] = "should fail" && [Passed] = FALSE, "CORRECT",
+		                [TestExpectation] = "should pass" && [Passed] = FALSE, "MISMATCH",
+		                [TestExpectation] = "should fail" && [Passed] = TRUE, "MISMATCH",
+		                "NO EXPECTATION"
+		            )
+		    )
+		RETURN
+		    // One row per assertion: Passed means it behaved as its name says
+		    // ("should pass" / "should fail"). Assertions without an expectation keep their own result.
+		    SELECTCOLUMNS(
+		        _ValidationResults,
+		        "TestName", [TestName],
+		        "Expected", [Expected],
+		        "Actual", [Actual] & " [" & [ValidationStatus] & "]",
+		        "Passed",
+		            SWITCH(
+		                TRUE(),
+		                CONTAINSSTRING([ValidationStatus], "MISMATCH"), FALSE,
+		                CONTAINSSTRING([ValidationStatus], "CORRECT"), TRUE,
+		                [Passed]
+		            )
+		    )
+
+EVALUATE BP.Maintenance.ANY.Tests()
+ORDER BY [Passed], [TestName]

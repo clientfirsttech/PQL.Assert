@@ -182,7 +182,7 @@ createOrReplace
                     "Passed", _Passed
                 )
         annotation DAXLIB_PackageId = PQL.Assert
-        annotation DAXLIB_PackageVersion = 0.6.2
+        annotation DAXLIB_PackageVersion = 0.7.0
 
     /// Asserts that a perspective exactly matches expected tables, columns, and measures from comma-separated lists.
     /// This is a schema-check style function aligned with other PQL.Assert schema assertions.
@@ -363,7 +363,7 @@ createOrReplace
                     "Passed", _Passed
                 )
         annotation DAXLIB_PackageId = PQL.Assert
-        annotation DAXLIB_PackageVersion = 0.6.2
+        annotation DAXLIB_PackageVersion = 0.7.0
 
     /// Asserts that a perspective exists in the semantic model.
     /// @param {STRING} testName - Description of the test being performed
@@ -383,4 +383,4 @@ createOrReplace
                     "Passed", _Exists
                 )
         annotation DAXLIB_PackageId = PQL.Assert
-        annotation DAXLIB_PackageVersion = 0.6.2
+        annotation DAXLIB_PackageVersion = 0.7.0

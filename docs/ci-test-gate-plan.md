@@ -131,7 +131,7 @@ If (1) or (2) fails, the next option is a Fabric trial capacity or the smallest 
 |---|---|---|
 | RLS_Model `RLS.ANY.Tests` | `ImpersonatedUserName = atlas.kerski@…` | Add `PQLAssert_RoleName = West` |
 | RLS_Model `OLS_West.ANY.Tests` / `OLS_East.ANY.Tests` | none, so the run isn't impersonated and the OLS "hidden" assertions would fail | Add `PQLAssert_RoleName = West` / `East` |
-| TestingModel `RLS.ANY.Tests` | `RoleName = WestSales` | **The model's roles are `West` and `Dynamic`; `WestSales` doesn't exist.** Fix it, or add it to the expected-failure list if it's deliberate |
+| TestingModel `RLS.ANY.Tests` | `RoleName = WestSales`, a role that doesn't exist | **Fixed:** changed to `West`, and the matching assertion in `Assert.Discovery.Tests.dax` updated |
 
 **Still open in Phase 0:** the JSON results shape (needs the models open in Desktop), the PPU checks, the D3 binding, and timing.
 
@@ -171,7 +171,7 @@ If (1) or (2) fails, the next option is a Fabric trial capacity or the smallest 
 ### Phase 4 – Test and gate
 
 - [ ] RLS_Model: resync the library from `src/lib`. Add `PQLAssert_RoleName` annotations to `RLS.ANY.Tests` (West), `OLS_West.ANY.Tests` (West) and `OLS_East.ANY.Tests` (East). Confirm that `Roles=` works for the service principal on PPU.
-- [ ] TestingModel: fix `RLS.ANY.Tests` `PQLAssert_RoleName = WestSales`, a role that doesn't exist, or list it as an expected failure.
+- [x] TestingModel: changed `RLS.ANY.Tests` `PQLAssert_RoleName` from `WestSales` to `West`, and updated `Assert.Discovery.Tests.dax` to match.
 - [ ] Run `run-tests` for each model with `--output` and `--log-format github`, using `continue-on-error` so that the evaluator makes the final call.
 - [ ] `ci/evaluate_results.py` fails on any of the following:
   - an unexpected failure

@@ -120,12 +120,12 @@ VAR _RetrieveTests_ImpersonatedUser_Atlas =
     )
 
 VAR _RLSRoleName = MAXX(_RLSAnyTests, [PQLAssert_RoleName])
-VAR _RetrieveTests_RoleName_WestSales =
+VAR _RetrieveTests_RoleName_West =
     ROW(
-        "TestName", "Discovery: RLS.ANY.Tests RoleName should be WestSales",
-        "Expected", "WestSales",
+        "TestName", "Discovery: RLS.ANY.Tests RoleName should be West",
+        "Expected", "West",
         "Actual", IF(ISBLANK(_RLSRoleName), "(blank)", _RLSRoleName),
-        "Passed", _RLSRoleName = "WestSales"
+        "Passed", _RLSRoleName = "West"
     )
 
 // ============================================
@@ -249,7 +249,7 @@ VAR _AllDiscoveryTests = UNION(
     _RetrieveTestsByEnvironment_CaseInsensitive,
     _RetrieveTests_RLSAnyTests_Present,
     _RetrieveTests_ImpersonatedUser_Atlas,
-    _RetrieveTests_RoleName_WestSales,
+    _RetrieveTests_RoleName_West,
     _RetrieveTests_PA_HasResults,
     _RetrieveTests_PA_SameCount,
     _RetrieveTests_PA_NoBlankNames,

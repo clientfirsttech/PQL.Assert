@@ -2993,7 +2993,7 @@ function 'RLS.ANY.Tests' =
 
 	annotation PQLAssert_ImpersonatedUserName = atlas.kerski@cftechnologiesllc.com
 
-	annotation PQLAssert_RoleName = WestSales
+	annotation PQLAssert_RoleName = West
 
 /// Retrieves all test functions with full metadata (Description, RLS ImpersonatedUserName, RoleName).
 /// Uses INFO.USERDEFINEDFUNCTIONS and INFO.ANNOTATIONS - NOT compatible with Power Automate REST API.

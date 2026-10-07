@@ -31,6 +31,8 @@ pql-test only runs suites that are **UDFs in the model** (`PQL.Assert.RetrieveTe
 - Keep `DAXQueries/<same name>.dax` as `DEFINE FUNCTION <name> = () => … EVALUATE <name>()` for DAX query view.
 - For deliberate "should fail" cases, follow the validation pattern in `Col.ANY.Tests`: `Passed` means the assertion behaved as its name says.
 
+Suites that only hold in the service use `SVC` as their environment, e.g. `Partition.SVC.Tests`. It needs the incremental refresh policy applied, which Desktop never does, so it fails in local runs by design.
+
 ## Running the tests locally
 
 With TestingModel open in Power BI Desktop:

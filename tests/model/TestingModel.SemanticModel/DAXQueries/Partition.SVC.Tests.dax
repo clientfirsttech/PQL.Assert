@@ -1,0 +1,82 @@
+DEFINE
+	FUNCTION Partition.SVC.Tests = () =>
+		// ============================================
+		// Partition Assertion Test Suite (service only)
+		// Target: 'Test Import 1 & 3' after a refresh that applies its incremental
+		// refresh policy (rolling window 1 year, incremental 1 day). Power BI Desktop
+		// keeps a single partition, so run this against the published model.
+		//
+		// Expected layout for refresh date D:
+		//   1 year partition (previous year)
+		//   QUARTER(D) - 1 quarter partitions (finished quarters this year)
+		//   MOD(MONTH(D) - 1, 3) month partitions (finished months this quarter)
+		//   DAY(D) day partitions (this month up to and including D)
+		// RangeEnd is the start of the next period. Filters: RangeStart >= start, RangeEnd <= end.
+		// ============================================
+		VAR _Table = "Test Import 1 & 3"
+		VAR _D = TODAY()
+		VAR _Y = YEAR(_D)
+		VAR _YearStart = DATE(_Y, 1, 1)
+		VAR _QuarterStart = DATE(_Y, (QUARTER(_D) - 1) * 3 + 1, 1)
+		VAR _MonthStart = DATE(_Y, MONTH(_D), 1)
+		VAR _QuarterCount = QUARTER(_D) - 1
+		VAR _MonthCount = MOD(MONTH(_D) - 1, 3)
+		VAR _DayCount = DAY(_D)
+		VAR _Total = 1 + _QuarterCount + _MonthCount + _DayCount
+
+		VAR _Test1 = PQL.Assert.Partitions.ShouldExist(
+		    "Partitions.ShouldExist: Test Import 1 & 3 should have partitions (no date filter)",
+		    _Table
+		)
+		VAR _Test2 = PQL.Assert.Partitions.ShouldBe(
+		    "Partitions.ShouldBe: total should be 1 year + " & _QuarterCount & " quarters + " & _MonthCount & " months + " & _DayCount & " days",
+		    _Table, _Total
+		)
+		VAR _Test3 = PQL.Assert.Partitions.ShouldBeAtLeast(
+		    "Partitions.ShouldBeAtLeast: total should be >= 2 (policy applied)",
+		    _Table, 2
+		)
+		VAR _Test4 = PQL.Assert.Partitions.ShouldBe(
+		    "Partitions.ShouldBe: none should end before the rolling window starts",
+		    _Table, 0, BLANK(), DATE(_Y - 1, 12, 31)
+		)
+		VAR _Test5 = PQL.Assert.Partitions.ShouldBe(
+		    "Partitions.ShouldBe: end <= Jan 1 this year should be the 1 year partition",
+		    _Table, 1, BLANK(), _YearStart
+		)
+		VAR _Test6 = PQL.Assert.Partitions.ShouldBe(
+		    "Partitions.ShouldBe: finished quarters this year should be " & _QuarterCount,
+		    _Table, _QuarterCount, _YearStart, _QuarterStart
+		)
+		VAR _Test7 = PQL.Assert.Partitions.ShouldBe(
+		    "Partitions.ShouldBe: finished months this quarter should be " & _MonthCount,
+		    _Table, _MonthCount, _QuarterStart, _MonthStart
+		)
+		VAR _Test8 = PQL.Assert.Partitions.ShouldBe(
+		    "Partitions.ShouldBe: day partitions this month should be " & _DayCount,
+		    _Table, _DayCount, _MonthStart
+		)
+		VAR _Test9 = PQL.Assert.Partitions.ShouldExist(
+		    "Partitions.ShouldExist: today's incremental partition should exist",
+		    _Table, _D
+		)
+		VAR _Test10 = PQL.Assert.Partitions.ShouldBe(
+		    "Partitions.ShouldBe: none should start after today",
+		    _Table, 0, _D + 1
+		)
+		VAR _Test11 = PQL.Assert.Partitions.ShouldBeAtLeast(
+		    "Partitions.ShouldBeAtLeast: start >= Jan 1 this year should be >= " & (_Total - 1),
+		    _Table, _Total - 1, _YearStart
+		)
+		VAR _Test12 = PQL.Assert.Partitions.ShouldBe(
+		    "Partitions.ShouldBe: NonExistentTable should return count = 0",
+		    "NonExistentTable", 0
+		)
+
+		RETURN UNION(
+		    _Test1, _Test2, _Test3, _Test4, _Test5, _Test6,
+		    _Test7, _Test8, _Test9, _Test10, _Test11, _Test12
+		)
+
+EVALUATE Partition.SVC.Tests()
+ORDER BY [Passed], [TestName]

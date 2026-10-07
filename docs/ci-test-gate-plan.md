@@ -192,7 +192,8 @@ Step-by-step instructions: **[ci-setup.md](ci-setup.md)**.
   - all results skipped
 - [x] D8: run `pql-test retrieve-tests <model> --env ANY` for both models (expected lists in `ci/gate.json`) and check that only the expected `*.ANY.Tests` suites come back.
 - [x] The step summary shows a table of passed, failed, expected-failure and skipped counts per model, and the JSON is uploaded as the `pql-test-results` artifact.
-- [ ] **D9:** open TestingModel in Desktop, confirm the 11 new suite UDFs load, and run `pql-test run-tests local/TestingModel`. Fix any suite whose rows fail. Note that `Partition.ANY.Tests` hard-codes partition counts by date, which will drift as the incremental refresh policy rolls forward.
+- [x] **D9:** ran `pql-test run-tests local/TestingModel`: 316 of 327 passed. Fixed `Tbl.ShouldNotHaveExtraColumns`, which predated the conversion (TestingModel's `TestData` table had gained 4 columns).
+- [x] `Partition.ANY.Tests` → **`Partition.SVC.Tests`** (service only). Desktop keeps a single partition, and the old exact counts were fixed to 2026-05-31. Expected counts are now computed from `TODAY()` using the policy's layout: 1 year, plus `QUARTER-1` quarters, plus `MOD(MONTH-1,3)` months, plus `DAY` days. This layout reproduces every old value for that date. It **fails in Desktop by design**, and the gate runs it against the refreshed service model.
 - [ ] Optional: file a pql-test issue for D5 (`--exclude` / `--expect-fail`).
 - [x] Fork PRs on `pull_request` **fail** (not skip) with instructions, because GitHub counts a skipped required check as passing.
 - [ ] Open a pql-test issue requesting `--exclude` and `--expect-fail` (D5).

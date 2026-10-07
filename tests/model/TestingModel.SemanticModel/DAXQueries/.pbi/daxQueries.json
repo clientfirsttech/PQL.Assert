@@ -19,7 +19,7 @@
     "Tbl.ANY.Tests",
     "Col.ANY.Tests",
     "RLS.ANY.Tests",
-    "Partition.ANY.Tests",
+    "Partition.SVC.Tests",
     "Perspective.ANY.Tests",
     "Query 1"
   ],

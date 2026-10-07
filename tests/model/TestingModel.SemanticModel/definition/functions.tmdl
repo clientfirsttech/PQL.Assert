@@ -4839,97 +4839,70 @@ function 'Assert.Discovery.ANY.Tests' =
 			RETURN
 			    _AllDiscoveryTests
 
-/// PQL.Assert.Partitions assertion tests. Registered so pql-test discovers it via RetrieveTestsV2.
-function 'Partition.ANY.Tests' =
+/// PQL.Assert.Partitions assertion tests (service only: needs the incremental refresh policy applied). Registered so pql-test discovers it via RetrieveTestsV2.
+function 'Partition.SVC.Tests' =
 		() =>
+			VAR _Table = "Test Import 1 & 3"
+			VAR _D = TODAY()
+			VAR _Y = YEAR(_D)
+			VAR _YearStart = DATE(_Y, 1, 1)
+			VAR _QuarterStart = DATE(_Y, (QUARTER(_D) - 1) * 3 + 1, 1)
+			VAR _MonthStart = DATE(_Y, MONTH(_D), 1)
+			VAR _QuarterCount = QUARTER(_D) - 1
+			VAR _MonthCount = MOD(MONTH(_D) - 1, 3)
+			VAR _DayCount = DAY(_D)
+			VAR _Total = 1 + _QuarterCount + _MonthCount + _DayCount
 			VAR _Test1 = PQL.Assert.Partitions.ShouldExist(
-			    "Partitions.ShouldExist: Test Import 1 & 3 should have at least one partition (no date filter)",
-			    "Test Import 1 & 3"
+			    "Partitions.ShouldExist: Test Import 1 & 3 should have partitions (no date filter)",
+			    _Table
 			)
-			VAR _Test2 = PQL.Assert.Partitions.ShouldBeAtLeast(
-			    "Partitions.ShouldBeAtLeast: Test Import 1 & 3 count should be >= 1 (no date filter)",
-			    "Test Import 1 & 3",
-			    1
+			VAR _Test2 = PQL.Assert.Partitions.ShouldBe(
+			    "Partitions.ShouldBe: total should be 1 year + " & _QuarterCount & " quarters + " & _MonthCount & " months + " & _DayCount & " days",
+			    _Table, _Total
 			)
 			VAR _Test3 = PQL.Assert.Partitions.ShouldBeAtLeast(
-			    "Partitions.ShouldBeAtLeast: Inclusive start >= 2020-01-01 should return count >= 30",
-			    "Test Import 1 & 3",
-			    30,
-			    DATE(2020, 1, 1),
-			    BLANK()
+			    "Partitions.ShouldBeAtLeast: total should be >= 2 (policy applied)",
+			    _Table, 2
 			)
 			VAR _Test4 = PQL.Assert.Partitions.ShouldBe(
-			    "Partitions.ShouldBe: Inclusive end <= 2026-04-30 should return count = 2",
-			    "Test Import 1 & 3",
-			    2,
-			    BLANK(),
-			   DATE(2026, 4, 30)
+			    "Partitions.ShouldBe: none should end before the rolling window starts",
+			    _Table, 0, BLANK(), DATE(_Y - 1, 12, 31)
 			)
 			VAR _Test5 = PQL.Assert.Partitions.ShouldBe(
-			    "Partitions.ShouldBe: Inclusive end <= 2025-12-31 should return count = 0",
-			    "Test Import 1 & 3",
-			    0,
-			    BLANK(),
-			    DATE(2025, 12, 31)
+			    "Partitions.ShouldBe: end <= Jan 1 this year should be the 1 year partition",
+			    _Table, 1, BLANK(), _YearStart
 			)
-			VAR _Test6 = PQL.Assert.Partitions.ShouldBeAtLeast(
-			    "Partitions.ShouldBeAtLeast: Inclusive end <= 2027-12-31 should return count >= 34",
-			    "Test Import 1 & 3",
-			    34,
-			    BLANK(),
-			    DATE(2027, 12, 31)
+			VAR _Test6 = PQL.Assert.Partitions.ShouldBe(
+			    "Partitions.ShouldBe: finished quarters this year should be " & _QuarterCount,
+			    _Table, _QuarterCount, _YearStart, _QuarterStart
 			)
 			VAR _Test7 = PQL.Assert.Partitions.ShouldBe(
-			    "Partitions.ShouldBe: Inclusive range 2023-01-01..2024-12-31 should return count = 0",
-			    "Test Import 1 & 3",
-			    0,
-			    DATE(2023, 1, 1),
-			    DATE(2024, 12, 31)
+			    "Partitions.ShouldBe: finished months this quarter should be " & _MonthCount,
+			    _Table, _MonthCount, _QuarterStart, _MonthStart
 			)
 			VAR _Test8 = PQL.Assert.Partitions.ShouldBe(
-			    "Partitions.ShouldBe: Inclusive range 2026-01-01..2026-04-01 should return count = 1",
-			    "Test Import 1 & 3",
-			    1,
-			    DATE(2026, 1, 1),
-			    DATE(2026, 4, 1)
+			    "Partitions.ShouldBe: day partitions this month should be " & _DayCount,
+			    _Table, _DayCount, _MonthStart
 			)
-			VAR _Test9 = PQL.Assert.Partitions.ShouldBeAtLeast(
-			    "Partitions.ShouldBeAtLeast: Inclusive range 2026-01-01..2027-01-01 should return count >= 33",
-			    "Test Import 1 & 3",
-			    33,
-			    DATE(2026, 1, 1),
-			    DATE(2027, 1, 1)
+			VAR _Test9 = PQL.Assert.Partitions.ShouldExist(
+			    "Partitions.ShouldExist: today's incremental partition should exist",
+			    _Table, _D
 			)
 			VAR _Test10 = PQL.Assert.Partitions.ShouldBe(
-			    "Partitions.ShouldBe: Explicit BLANK boundaries should return count = 34",
-			    "Test Import 1 & 3",
-			    34,
-			    BLANK(),
-			    BLANK()
+			    "Partitions.ShouldBe: none should start after today",
+			    _Table, 0, _D + 1
 			)
-			VAR _Test11 = PQL.Assert.Partitions.ShouldBe(
-			    "Partitions.ShouldBe: NonExistentTable should return count = 0",
-			    "NonExistentTable",
-			    0
+			VAR _Test11 = PQL.Assert.Partitions.ShouldBeAtLeast(
+			    "Partitions.ShouldBeAtLeast: start >= Jan 1 this year should be >= " & (_Total - 1),
+			    _Table, _Total - 1, _YearStart
 			)
 			VAR _Test12 = PQL.Assert.Partitions.ShouldBe(
-			    "Partitions.ShouldBe: Test Import 1 & 3 baseline should return count = 34",
-			    "Test Import 1 & 3",
-			    34
+			    "Partitions.ShouldBe: NonExistentTable should return count = 0",
+			    "NonExistentTable", 0
 			)
 			RETURN UNION(
-			    _Test1,
-			    _Test2,
-			    _Test3,
-			    _Test4,
-			    _Test5,
-			    _Test6,
-			    _Test7,
-			    _Test8,
-			    _Test9,
-			    _Test10,
-			    _Test11,
-			    _Test12
+			    _Test1, _Test2, _Test3, _Test4, _Test5, _Test6,
+			    _Test7, _Test8, _Test9, _Test10, _Test11, _Test12
 			)
 
 /// PQL.Assert.Perspective assertion tests. Registered so pql-test discovers it via RetrieveTestsV2.

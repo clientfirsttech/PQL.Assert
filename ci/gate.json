@@ -15,7 +15,6 @@
         "BP.Performance.ANY.Tests",
         "Col.ANY.Tests",
         "Example.ANY.Tests",
-        "Partition.ANY.Tests",
         "Perspective.ANY.Tests",
         "RLS.ANY.Tests",
         "Tbl.ANY.Tests"

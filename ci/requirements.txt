@@ -1,0 +1,2 @@
+pql-test==0.1.19
+fabric-cicd==1.4.0

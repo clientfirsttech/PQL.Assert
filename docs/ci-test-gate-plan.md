@@ -57,7 +57,7 @@ pull_request → main   (concurrency group: pql-assert-ci-workspace, no cancel)
 │   6. Refresh:           ci/refresh_models.py → POST /refreshes, poll until Completed/Failed
 │   7. Prereqs:           pql-test check-prereqs
 │   8. Test (per model):  pql-test run-tests <stage path> --output results-<model>.json --log-format github
-│   9. Evaluate:          ci/evaluate_results.py results-*.json ci/expected-failures.json
+│   9. Evaluate:          ci/evaluate_results.py --results-dir ci-results   (rules in ci/gate.json)
 │   10. Always:           upload results artifacts, write $GITHUB_STEP_SUMMARY table
 │   (Coverage is out of scope for now. See D7)
 │
@@ -68,14 +68,14 @@ pull_request → main   (concurrency group: pql-assert-ci-workspace, no cancel)
 
 | Path | Purpose |
 |---|---|
-| `.github/workflows/pr-gate.yml` | The workflow above |
-| `ci/requirements.txt` | Pinned `pql-test`, `fabric-cicd` and `azure-identity` |
+| `.github/workflows/pr-gate.yml` | The workflow above. **Written, not yet run** |
+| `ci/requirements.txt` | Pinned `pql-test==0.1.19` and `fabric-cicd==1.4.0` (`azure-identity` and `requests` come with them). **Done** |
 | `ci/parameter.yml` | fabric-cicd parameterization, only if `SharePoint_URL` needs a CI value. The connection binding is **not** here (see D3) |
 | `ci/build_stage.py` | `check` (drift), `sync` (write `src/lib` into the models) and `stage` (copy the PBIPs with the merged library to `_stage/`). **Done** |
-| `ci/deploy.py` | Deploys both models with `FabricWorkspace` + `publish_all_items` |
-| `ci/refresh_models.py` | Runs an enhanced refresh through the Power BI REST API and polls it (uses `azure-identity`, already a pql-test dependency) |
-| `ci/evaluate_results.py` | Gate logic: unexpected failures and expected failures that unexpectedly passed both fail the job |
-| `ci/expected-failures.json` | The allowlist (`ShouldFail.TEST.Tests`, `ShouldFailSchema.DEV.Tests`, …) |
+| `ci/deploy.py` | Deploys both models with `FabricWorkspace` + `publish_all_items`. Never unpublishes. **Written, not yet run** |
+| `ci/refresh_models.py` | Checks the connection binding, then runs an enhanced refresh through the Power BI REST API and polls it. **Written, not yet run** |
+| `ci/evaluate_results.py` | Gate logic over the pql-test JSON files (matched on `suite_name`), plus the `--env` check. **Done**, tested against synthetic results |
+| `ci/gate.json` | Expected-failure suites, and the suites each `--env` filter must return. **Done** |
 | `ci/README.md` | How to run the same pipeline locally in a venv. **Started** |
 | `docs/ci-setup.md` | One-time setup for Entra, the tenant, the workspace, the connection and the repo. **Done** |
 
@@ -91,7 +91,7 @@ Scripts that publish to the DaxLib fork stay in `scripts/`. Everything specific 
 | **D2** | Capacity | **Premium Per User (PPU)** | See *PPU caveats* below. These are the biggest unknown in Phase 0. |
 | **D3** | SharePoint source in `Test Import 1 & 3` | **Shareable cloud connection** (OAuth, owned by a CI identity), **bound once by hand** in the workspace | No gateway is needed (SharePoint Online is a cloud source), and there is no connection-ID variable in CI. After the first deploy, map the model's SharePoint source to the connection under *Gateway and cloud connections*. Later in-place deploys keep the binding. `refresh_models.py` checks the binding before refreshing and fails with a re-bind message if it's gone. The incremental refresh policy stays real (`applyRefreshPolicy: true`). Moving to `semantic_model_binding` in fabric-cicd remains an option if re-binding becomes a chore. |
 | **D4** | `src/lib` drift | **Inject into the staged copy and fail on drift** | `ci/build_stage.py` writes the built library into `_stage/`, diffs it against the checked-in `functions.tmdl`, and fails with a message saying how to sync. |
-| **D5** | Expected-failure suites | **Allowlist plus an evaluator script** | `ci/expected-failures.json` and `ci/evaluate_results.py`. Also open a pql-test issue requesting `--exclude` and `--expect-fail` options. |
+| **D5** | Expected-failure suites | **Allowlist plus an evaluator script** | `ci/gate.json` and `ci/evaluate_results.py`. Also open a pql-test issue requesting `--exclude` and `--expect-fail` options. |
 | **D6** | PRs from forks | **A maintainer label starts the run** | Fork PRs on `pull_request` get a skip notice. A `safe-to-test` label starts a `pull_request_target` job that takes workflow and scripts from `main` and only `src/` and `tests/` from the PR head. The label is removed when new commits are pushed. |
 | **D7** | Coverage | **Skip for now** | No `code-coverage` step. Revisit in a later PR. |
 | **D8** | Gated suites | **All suites, plus one `--env ANY` check** | One full run per model. Then a `retrieve-tests --env ANY` assertion on the suite count, so environment filtering is covered too. |
@@ -134,7 +134,11 @@ If (1) or (2) fails, the next option is a Fabric trial capacity or the smallest 
 | RLS_Model `OLS_West.ANY.Tests` / `OLS_East.ANY.Tests` | none, so the run isn't impersonated and the OLS "hidden" assertions would fail | Add `PQLAssert_RoleName = West` / `East` |
 | TestingModel `RLS.ANY.Tests` | `RoleName = WestSales`, a role that doesn't exist | **Fixed:** changed to `West`, and the matching assertion in `Assert.Discovery.Tests.dax` updated |
 
-**Still open in Phase 0:** the JSON results shape (needs the models open in Desktop), the PPU checks, the D3 binding, and timing.
+**JSON results shape (from the pql-test 0.1.19 source):** `{model_path, passed, failed, skipped, total, results: [{test_name, suite_name, expected, actual, passed, skipped, error, duration_ms}]}`. `suite_name` is present, so expected failures are matched by suite.
+
+**⚠ Gap: `.dax` query-file suites don't run against a deployed model.** With a live connection, pql-test discovers suites only through `RetrieveTestsV2()`, which returns model UDFs, and it filters them to names declared locally. It reads `DAXQueries/*.Tests.dax` files **only** when there is no connection, and then every result is skipped. As a result, these TestingModel suites, which are the core library tests, **would not run in CI**: `Assert.Tests`, `Assert.Discovery.Tests`, `Col.Tests`, `Tbl.Tests`, `Partition.Tests`, `Perspective.Tests` and all six `BP.*.Tests`. Only the 7 model-UDF suites would run. **Decision D9 is needed.**
+
+**Still open in Phase 0:** D9, the PPU checks, the D3 binding, and timing.
 
 ## Phased work plan
 
@@ -168,10 +172,10 @@ Step-by-step instructions: **[ci-setup.md](ci-setup.md)**.
 
 ### Phase 3 – Deploy and refresh
 
-- [ ] `ci/deploy.py`: call `FabricWorkspace(workspace_id, repository_directory="_stage", item_type_in_scope=["SemanticModel","Report"], token_credential=ClientSecretCredential(...))`, then `publish_all_items`. Check that the reports' `byPath` dataset reference gets rewritten.
+- [x] `ci/deploy.py`: call `FabricWorkspace(workspace_id, repository_directory="_stage", item_type_in_scope=["SemanticModel","Report"], token_credential=ClientSecretCredential(...))`, then `publish_all_items`. Check that the reports' `byPath` dataset reference gets rewritten.
 - [ ] `ci/parameter.yml`: only needed if `SharePoint_URL` differs in CI. No connection binding (D3).
-- [ ] Binding preflight in `ci/refresh_models.py`: `GET .../datasets/{id}/datasources`. If the SharePoint source has no bound connection, fail with "Re-bind the SharePoint connection (docs/ci-setup.md)" before starting the refresh.
-- [ ] `ci/refresh_models.py`: look up the dataset IDs by name, then `POST .../datasets/{id}/refreshes` with `{"type":"full","commitMode":"transactional","applyRefreshPolicy":true}`. Poll the `Location` URL with backoff and a timeout of about 15 minutes. If the refresh fails, fail with its error details.
+- [x] Binding preflight in `ci/refresh_models.py`: uses the Fabric *List Item Connections* API (`GET /v1/workspaces/{ws}/items/{id}/connections`) and requires `connectivityType = ShareableCloud` for SharePoint sources. **Check the real response in Phase 0.** If the SharePoint source has no bound connection, fail with "Re-bind the SharePoint connection (docs/ci-setup.md)" before starting the refresh.
+- [x] `ci/refresh_models.py`: look up the dataset IDs by name, then `POST .../datasets/{id}/refreshes` with `{"type":"full","commitMode":"transactional","applyRefreshPolicy":true}`. Poll the `Location` URL with backoff and a timeout of about 15 minutes. If the refresh fails, fail with its error details.
 
 ### Phase 4 – Test and gate
 
@@ -179,14 +183,15 @@ Step-by-step instructions: **[ci-setup.md](ci-setup.md)**.
 - [ ] Open RLS_Model in Power BI Desktop to confirm that the resynced `functions.tmdl` loads, then run its suites locally with `pql-test run-tests local/RLS_Model`.
 - [ ] Confirm that `Roles=` works for the service principal on PPU.
 - [x] TestingModel: changed `RLS.ANY.Tests` `PQLAssert_RoleName` from `WestSales` to `West`, and updated `Assert.Discovery.Tests.dax` to match.
-- [ ] Run `run-tests` for each model with `--output` and `--log-format github`, using `continue-on-error` so that the evaluator makes the final call.
-- [ ] `ci/evaluate_results.py` fails on any of the following:
+- [x] Run `run-tests` for each model with `--output` and `--log-format github`. The step ends with `exit 0` so that the evaluator makes the final call.
+- [x] `ci/evaluate_results.py` fails on any of the following:
   - an unexpected failure
   - an expected failure that passed
   - zero tests discovered for a model
   - all results skipped
-- [ ] D8: run `pql-test retrieve-tests <TestingModel> --env ANY` and check that only the expected `*.ANY.Tests` suites come back.
-- [ ] The step summary shows a table of passed, failed and skipped counts per model, with links to the uploaded JSON artifacts.
+- [x] D8: run `pql-test retrieve-tests <model> --env ANY` for both models (expected lists in `ci/gate.json`) and check that only the expected `*.ANY.Tests` suites come back.
+- [x] The step summary shows a table of passed, failed, expected-failure and skipped counts per model, and the JSON is uploaded as the `pql-test-results` artifact.
+- [x] Fork PRs on `pull_request` **fail** (not skip) with instructions, because GitHub counts a skipped required check as passing.
 - [ ] Open a pql-test issue requesting `--exclude` and `--expect-fail` (D5).
 
 ### Phase 5 – Forks and enforcement

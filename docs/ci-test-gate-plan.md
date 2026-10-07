@@ -70,7 +70,7 @@ pull_request → main   (concurrency group: pql-assert-ci-workspace, no cancel)
 |---|---|
 | `.github/workflows/pr-gate.yml` | The workflow above |
 | `ci/requirements.txt` | Pinned `pql-test`, `fabric-cicd` and `azure-identity` |
-| `ci/parameter.yml` | fabric-cicd parameterization: `SharePoint_URL`, connection binding |
+| `ci/parameter.yml` | fabric-cicd parameterization, only if `SharePoint_URL` needs a CI value. The connection binding is **not** here (see D3) |
 | `ci/build_stage.ps1` | Builds the library, stages the PBIPs, injects `functions.tmdl` and checks for drift |
 | `ci/deploy.py` | Deploys both models with `FabricWorkspace` + `publish_all_items` |
 | `ci/refresh_models.py` | Runs an enhanced refresh through the Power BI REST API and polls it (uses `azure-identity`, already a pql-test dependency) |
@@ -88,7 +88,7 @@ Scripts that publish to the DaxLib fork stay in `scripts/`. Everything specific 
 |---|---|---|---|
 | **D1** | CI workspace | **One shared workspace** (`PQL.Assert-CI`) | `concurrency: { group: pql-assert-ci-workspace, cancel-in-progress: false }`. Model names stay fixed. |
 | **D2** | Capacity | **Premium Per User (PPU)** | See *PPU caveats* below. These are the biggest unknown in Phase 0. |
-| **D3** | SharePoint source in `Test Import 1 & 3` | **Shareable cloud connection** (OAuth, owned by a CI identity) | Create the connection in Phase 1. Bind it on every deploy through `semantic_model_binding` in `ci/parameter.yml`. The incremental refresh policy stays real (`applyRefreshPolicy: true`). |
+| **D3** | SharePoint source in `Test Import 1 & 3` | **Shareable cloud connection** (OAuth, owned by a CI identity), **bound once by hand** in the workspace | No gateway is needed (SharePoint Online is a cloud source), and there is no connection-ID variable in CI. After the first deploy, map the model's SharePoint source to the connection under *Gateway and cloud connections*. Later in-place deploys keep the binding. `refresh_models.py` checks the binding before refreshing and fails with a re-bind message if it's gone. The incremental refresh policy stays real (`applyRefreshPolicy: true`). Moving to `semantic_model_binding` in fabric-cicd remains an option if re-binding becomes a chore. |
 | **D4** | `src/lib` drift | **Inject into the staged copy and fail on drift** | `ci/build_stage.ps1` writes the built library into `_stage/`, diffs it against the checked-in `functions.tmdl`, and fails with a message saying how to sync. |
 | **D5** | Expected-failure suites | **Allowlist plus an evaluator script** | `ci/expected-failures.json` and `ci/evaluate_results.py`. Also open a pql-test issue requesting `--exclude` and `--expect-fail` options. |
 | **D6** | PRs from forks | **A maintainer label starts the run** | Fork PRs on `pull_request` get a skip notice. A `safe-to-test` label starts a `pull_request_target` job that takes workflow and scripts from `main` and only `src/` and `tests/` from the PR head. The label is removed when new commits are pushed. |
@@ -146,7 +146,7 @@ If (1) or (2) fails, the next option is a Fabric trial capacity or the smallest 
 - [x] Check whether `tests/model/.../functions.tmdl` equals the combined `src/lib` plus replaced placeholders. List any functions that only exist in tests and must be kept during injection. *(See findings above)*
 - [ ] **PPU check 1:** run `pql-test run-tests` as the service principal against a model in a PPU workspace, including one `ImpersonateRole` suite.
 - [ ] **PPU check 2:** deploy TestingModel by hand with fabric-cicd to a scratch PPU workspace. If the item APIs reject it, prototype the XMLA deploy fallback.
-- [ ] **D3 check:** bind a test shareable cloud connection (OAuth) to the SharePoint source, then run an enhanced refresh with `applyRefreshPolicy: true` as the service principal.
+- [ ] **D3 check:** bind a shareable cloud connection (OAuth) to the SharePoint source by hand, then run an enhanced refresh with `applyRefreshPolicy: true` as the service principal. **Redeploy with fabric-cicd and confirm that the binding survives**, since D3 depends on it.
 - [ ] Time a full deploy and refresh of both models (the `LargeTableOneMillion*` tables) to estimate how long the gate takes.
 
 ### Phase 1 – Azure and Fabric setup (requires an admin)
@@ -154,7 +154,8 @@ If (1) or (2) fails, the next option is a Fabric trial capacity or the smallest 
 - [ ] Create an Entra app registration (service principal) and a client secret. Store the expiry date somewhere it will be seen.
 - [ ] In tenant settings, allow service principals to use Fabric/Power BI APIs (scoped to a security group). Turn on XMLA endpoints (read/write is needed for deployment).
 - [ ] Create the `PQL.Assert-CI` workspace on **PPU** and add the service principal as **Member**. Contributor may be enough for deploy plus refresh, so verify. Admin is only needed for `ImpersonateUser`, and `ImpersonateRole` should be used instead.
-- [ ] Create a CI identity with read access to `https://kerski.sharepoint.com/sites/DocLibTest`. Create a **shareable cloud connection** (SharePoint, OAuth) as that identity and share it with the service principal as *User*. Record the connection ID for `ci/parameter.yml`.
+- [ ] Create a CI identity with read access to `https://kerski.sharepoint.com/sites/DocLibTest`. Create a **shareable cloud connection** (SharePoint, OAuth) as that identity and add the service principal as *User*.
+- [ ] After the first CI deploy, bind the connection by hand: open the TestingModel settings, go to *Gateway and cloud connections*, and map the SharePoint source to the connection. Redo this only if the model is ever deleted or recreated, or `SharePoint_URL` changes.
 - [ ] Add GitHub secrets and variables: `PQL_TENANT_ID`, `PQL_CLIENT_ID`, `PQL_CLIENT_SECRET` (secrets), `PQL_WORKSPACE_ID` (variable). Use a `ci` GitHub environment if approval gates are wanted.
 
 ### Phase 2 – Build and stage
@@ -165,7 +166,8 @@ If (1) or (2) fails, the next option is a Fabric trial capacity or the smallest 
 ### Phase 3 – Deploy and refresh
 
 - [ ] `ci/deploy.py`: call `FabricWorkspace(workspace_id, repository_directory="_stage", item_type_in_scope=["SemanticModel","Report"], token_credential=ClientSecretCredential(...))`, then `publish_all_items`. Check that the reports' `byPath` dataset reference gets rewritten.
-- [ ] `ci/parameter.yml`: `semantic_model_binding` maps `TestingModel` to the connection ID from Phase 1, plus `SharePoint_URL` if it differs in CI.
+- [ ] `ci/parameter.yml`: only needed if `SharePoint_URL` differs in CI. No connection binding (D3).
+- [ ] Binding preflight in `ci/refresh_models.py`: `GET .../datasets/{id}/datasources`. If the SharePoint source has no bound connection, fail with "Re-bind the SharePoint connection (docs/ci-setup.md)" before starting the refresh.
 - [ ] `ci/refresh_models.py`: look up the dataset IDs by name, then `POST .../datasets/{id}/refreshes` with `{"type":"full","commitMode":"transactional","applyRefreshPolicy":true}`. Poll the `Location` URL with backoff and a timeout of about 15 minutes. If the refresh fails, fail with its error details.
 
 ### Phase 4 – Test and gate
@@ -203,6 +205,7 @@ If (1) or (2) fails, the next option is a Fabric trial capacity or the smallest 
 |---|---|
 | PPU blocks the service principal over XMLA or blocks the fabric-cicd item APIs | Phase 0 PPU checks. Fallbacks: XMLA deploy, Fabric trial, or F2 |
 | The shareable cloud connection's OAuth token expires, or the CI identity loses SharePoint access | Nightly run (Phase 6) catches it. Document who owns the CI identity |
+| The manual binding is lost (model deleted or recreated, or `SharePoint_URL` changed) | The binding preflight fails fast with re-bind instructions. Never delete or rename CI models by hand |
 | Concurrent PRs overwrite each other in the shared workspace | `concurrency` group with `cancel-in-progress: false` |
 | Secrets exposed to PRs from forks | D6: run scripts from `main` only, behind a maintainer label |
 | A refresh hangs | Polling timeout and a clear error |

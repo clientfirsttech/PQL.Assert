@@ -1,8 +1,10 @@
-/// DAX Assertion Library Functions
-/// Publisher: PQL (Power Query Lint)
-/// These functions provide a standardized way to write unit tests for DAX models
-/// Basic Assertions - PQL.Assert namespace
 /// Asserts that a perspective exactly matches expected tables, columns, and measures from comma-separated lists.
+/// This is a schema-check style function aligned with other PQL.Assert schema assertions.
+/// @param {STRING} testName - Description of the test being performed
+/// @param {STRING} perspectiveName - Name of the perspective to validate
+/// @param {STRING} expectedTablesList - Comma-separated table names
+/// @param {STRING} expectedColumnsList - Comma-separated column refs in Table[Column] format
+/// @param {STRING} expectedMeasuresList - Comma-separated measure refs in Table[Measure] format
 function 'PQL.Assert.Perspective.ShouldMatchSchema' =
 		(testName: STRING, perspectiveName: STRING, expectedTablesList: STRING, expectedColumnsList: STRING, expectedMeasuresList: STRING) =>
 		    VAR _Perspective =
@@ -180,6 +182,10 @@ function 'PQL.Assert.Perspective.ShouldMatchSchema' =
 
 	annotation DAXLIB_PackageVersion = 0.7.0
 
+/// DAX Assertion Library Functions
+/// Publisher: PQL (Power Query Lint)
+/// These functions provide a standardized way to write unit tests for DAX models
+/// Basic Assertions - PQL.Assert namespace
 function 'PQL.Assert.ShouldBeTrue' =
 		(testName : STRING, actualCondition : BOOLEAN) =>
 		    VAR _Passed = actualCondition = TRUE
@@ -741,32 +747,49 @@ function 'PQL.Assert.Relationship.ShouldExist' =
 		    toCardinality : STRING = "",
 		    securityFilteringBehavior : STRING = ""
 		) =>
+		    // Existence check using INFO.VIEW.RELATIONSHIPS (human-readable table/column names)
 		    VAR _ViewRels = INFO.VIEW.RELATIONSHIPS()
 		    VAR _Found = COUNTROWS(FILTER(_ViewRels,
 		        [FromTable] = fromTable && [FromColumn] = fromColumn &&
 		        [ToTable] = toTable && [ToColumn] = toColumn)) > 0
+
+		    // Resolve table and column IDs to join with INFO.RELATIONSHIPS for cardinality and security filtering
 		    VAR _InfoTables = INFO.TABLES()
 		    VAR _InfoCols = INFO.COLUMNS()
 		    VAR _InfoRels = INFO.RELATIONSHIPS()
+
 		    VAR _FromTableID = MAXX(FILTER(_InfoTables, [Name] = fromTable), [ID])
 		    VAR _ToTableID = MAXX(FILTER(_InfoTables, [Name] = toTable), [ID])
 		    VAR _FromColID = MAXX(FILTER(_InfoCols, [TableID] = _FromTableID && [ExplicitName] = fromColumn), [ID])
 		    VAR _ToColID = MAXX(FILTER(_InfoCols, [TableID] = _ToTableID && [ExplicitName] = toColumn), [ID])
+
+		    // Find the matching relationship in INFO.RELATIONSHIPS (numeric cardinality and security values)
 		    VAR _MatchingRel = FILTER(_InfoRels,
 		        [FromTableID] = _FromTableID && [FromColumnID] = _FromColID &&
 		        [ToTableID] = _ToTableID && [ToColumnID] = _ToColID)
+
+		    // FromCardinality / ToCardinality: 1 = One, 2 = Many
 		    VAR _ActualFromCard = MAXX(_MatchingRel, SWITCH([FromCardinality], 1, "One", 2, "Many", "Unknown"))
 		    VAR _ActualToCard = MAXX(_MatchingRel, SWITCH([ToCardinality], 1, "One", 2, "Many", "Unknown"))
+
+		    // SecurityFilteringBehavior: 1 = OneDirection, 2 = BothDirections
 		    VAR _ActualSecFiltering = MAXX(_MatchingRel, SWITCH([SecurityFilteringBehavior], 1, "OneDirection", 2, "BothDirections", "Unknown"))
+
+		    // Evaluate optional checks (skip when parameter is "" or relationship not found)
 		    VAR _FromCardOk = IF(fromCardinality = "" || NOT _Found, TRUE, UPPER(_ActualFromCard) = UPPER(fromCardinality))
 		    VAR _ToCardOk = IF(toCardinality = "" || NOT _Found, TRUE, UPPER(_ActualToCard) = UPPER(toCardinality))
 		    VAR _SecFilterOk = IF(securityFilteringBehavior = "" || NOT _Found, TRUE, UPPER(_ActualSecFiltering) = UPPER(securityFilteringBehavior))
+
 		    VAR _Passed = _Found && _FromCardOk && _ToCardOk && _SecFilterOk
+
+		    // Build descriptive Expected message
 		    VAR _RelKey = fromTable & "[" & fromColumn & "] -> " & toTable & "[" & toColumn & "]"
 		    VAR _ExpectedSuffix =
 		        IF(fromCardinality <> "", " | FromCardinality: " & fromCardinality, "") &
 		        IF(toCardinality <> "", " | ToCardinality: " & toCardinality, "") &
 		        IF(securityFilteringBehavior <> "", " | SecurityFiltering: " & securityFilteringBehavior, "")
+
+		    // Build Actual message showing values for each checked attribute
 		    VAR _ActualDetails =
 		        IF(
 		            _Found,
@@ -775,6 +798,7 @@ function 'PQL.Assert.Relationship.ShouldExist' =
 		            IF(securityFilteringBehavior <> "", " | SecurityFiltering: " & IF(ISBLANK(_ActualSecFiltering), "N/A", _ActualSecFiltering), ""),
 		            ""
 		        )
+
 		    RETURN ROW(
 		        "TestName", testName,
 		        "Expected", "Relationship '" & _RelKey & "' exists" & _ExpectedSuffix,
@@ -1072,7 +1096,7 @@ function 'PQL.Assert.BP.ShouldHaveSameDataTypeInRelationships' =
 		() =>
 		    VAR _Relationships = INFO.VIEW.RELATIONSHIPS()
 		    VAR _Columns = INFO.VIEW.COLUMNS()
-		
+
 		    // Create a lookup for column data types
 		    VAR _ColumnDataTypes =
 		        SUMMARIZE(
@@ -1081,7 +1105,7 @@ function 'PQL.Assert.BP.ShouldHaveSameDataTypeInRelationships' =
 		            [Name],
 		            [DataType]
 		        )
-		
+
 		    // Check each relationship for data type mismatches
 		    VAR _ViolatingRelationships =
 		        FILTER(
@@ -1090,7 +1114,7 @@ function 'PQL.Assert.BP.ShouldHaveSameDataTypeInRelationships' =
 		            VAR _FromColumn = [FromColumn]
 		            VAR _ToTable = [ToTable]
 		            VAR _ToColumn = [ToColumn]
-		
+
 		            // Get data type of FromColumn
 		            VAR _FromDataType =
 		                MAXX(
@@ -1100,7 +1124,7 @@ function 'PQL.Assert.BP.ShouldHaveSameDataTypeInRelationships' =
 		                    ),
 		                    [DataType]
 		                )
-		
+
 		            // Get data type of ToColumn
 		            VAR _ToDataType =
 		                MAXX(
@@ -1110,16 +1134,16 @@ function 'PQL.Assert.BP.ShouldHaveSameDataTypeInRelationships' =
 		                    ),
 		                    [DataType]
 		                )
-		
+
 		            // Check if data types are different
 		            RETURN
 		                NOT ISBLANK(_FromDataType)
 		                && NOT ISBLANK(_ToDataType)
 		                && _FromDataType <> _ToDataType
 		        )
-		
+
 		    VAR _ViolationCount = COUNTROWS(_ViolatingRelationships)
-		
+
 		    VAR _RelationshipsList =
 		        CONCATENATEX(
 		            _ViolatingRelationships,
@@ -1128,16 +1152,16 @@ function 'PQL.Assert.BP.ShouldHaveSameDataTypeInRelationships' =
 		            [FromTable], ASC,
 		            [FromColumn], ASC
 		        )
-		
+
 		    VAR _Passed = _ViolationCount = 0
-		
+
 		    VAR _ActualMessage =
 		        IF(
 		            _ViolationCount > 0,
 		            "RELATIONSHIPS WITH MISMATCHED DATA TYPES FOUND (" & FORMAT(_ViolationCount, "0") & "): " & _RelationshipsList,
 		            "ALL RELATIONSHIP COLUMNS HAVE MATCHING DATA TYPES"
 		        )
-		
+
 		    RETURN ROW(
 		        "TestName", "[Error Prevention] Relationship columns should be of the same data type",
 		        "Expected", "All relationship columns should have matching data types",
@@ -1222,21 +1246,21 @@ function 'PQL.Assert.BP.ShouldProvideFormatStringForMeasures' =
 		    VAR _ViewMeasures = INFO.VIEW.MEASURES()
 		    VAR _Measures = INFO.MEASURES()
 		    VAR _Tables = INFO.VIEW.TABLES()
-		
+
 		    // Create a lookup for hidden tables
 		    VAR _HiddenTables =
 		        FILTER(
 		            _Tables,
 		            [IsHidden] = TRUE
 		        )
-		
+
 		    // Check measures for missing format strings
 		    VAR _ViolatingMeasures =
 		        FILTER(
 		            _ViewMeasures,
 		            VAR _TableName = [Table]
 		            VAR _MeasureID = [ID]
-		
+
 		            // Get FormatString from INFO.MEASURES()
 		            VAR _FormatString =
 		                MAXX(
@@ -1246,7 +1270,7 @@ function 'PQL.Assert.BP.ShouldProvideFormatStringForMeasures' =
 		                    ),
 		                    [FormatString]
 		                )
-		
+
 		            // Check if table is hidden
 		            VAR _TableIsHidden =
 		                COUNTROWS(
@@ -1255,15 +1279,15 @@ function 'PQL.Assert.BP.ShouldProvideFormatStringForMeasures' =
 		                        [Name] = _TableName
 		                    )
 		                ) > 0
-		
+
 		            // Measure is on a visible table and has no format string
 		            RETURN
 		                NOT _TableIsHidden
 		                && (ISBLANK(_FormatString) || _FormatString = "")
 		        )
-		
+
 		    VAR _ViolationCount = COUNTROWS(_ViolatingMeasures)
-		
+
 		    VAR _MeasuresList =
 		        CONCATENATEX(
 		            _ViolatingMeasures,
@@ -1272,16 +1296,16 @@ function 'PQL.Assert.BP.ShouldProvideFormatStringForMeasures' =
 		            [Table], ASC,
 		            [Name], ASC
 		        )
-		
+
 		    VAR _Passed = _ViolationCount = 0
-		
+
 		    VAR _ActualMessage =
 		        IF(
 		            _ViolationCount > 0,
 		            "MEASURES WITHOUT FORMAT STRING FOUND (" & FORMAT(_ViolationCount, "0") & "): " & _MeasuresList,
 		            "ALL VISIBLE MEASURES HAVE FORMAT STRINGS ASSIGNED"
 		        )
-		
+
 		    RETURN ROW(
 		        "TestName", "[Formatting] Provide format string for measures",
 		        "Expected", "All visible measures should have format strings assigned",
@@ -1301,14 +1325,14 @@ function 'PQL.Assert.BP.ShouldNotSummarizeNumericColumns' =
 		() =>
 		    VAR _Columns = INFO.VIEW.COLUMNS()
 		    VAR _Tables = INFO.VIEW.TABLES()
-		
+
 		    // Create a lookup for hidden tables
 		    VAR _HiddenTables =
 		        FILTER(
 		            _Tables,
 		            [IsHidden] = TRUE
 		        )
-		
+
 		    // Check numeric columns with SummarizeBy not set to None
 		    VAR _ViolatingColumns =
 		        FILTER(
@@ -1317,7 +1341,7 @@ function 'PQL.Assert.BP.ShouldNotSummarizeNumericColumns' =
 		            VAR _DataType = [DataType]
 		            VAR _IsHidden = [IsHidden]
 		            VAR _SummarizeBy = [SummarizeBy]
-		
+
 		            // Check if table is hidden
 		            VAR _TableIsHidden =
 		                COUNTROWS(
@@ -1326,13 +1350,13 @@ function 'PQL.Assert.BP.ShouldNotSummarizeNumericColumns' =
 		                        [Name] = _TableName
 		                    )
 		                ) > 0
-		
+
 		            // Column is numeric (Int64, Decimal, or Double)
 		            VAR _IsNumeric =
 		                _DataType = "Integer"
 		                || _DataType = "Currency"
 		                || _DataType = "Number"
-		
+
 		            // Check if SummarizeBy is not set to None
 		            RETURN
 		                _IsNumeric
@@ -1340,9 +1364,9 @@ function 'PQL.Assert.BP.ShouldNotSummarizeNumericColumns' =
 		                && NOT _TableIsHidden
 		                && _SummarizeBy <> "None"
 		        )
-		
+
 		    VAR _ViolationCount = COUNTROWS(_ViolatingColumns)
-		
+
 		    VAR _ColumnsList =
 		        CONCATENATEX(
 		            _ViolatingColumns,
@@ -1351,16 +1375,16 @@ function 'PQL.Assert.BP.ShouldNotSummarizeNumericColumns' =
 		            [Table], ASC,
 		            [Name], ASC
 		        )
-		
+
 		    VAR _Passed = _ViolationCount = 0
-		
+
 		    VAR _ActualMessage =
 		        IF(
 		            _ViolationCount > 0,
 		            "NUMERIC COLUMNS WITH SUMMARIZE BY FOUND (" & FORMAT(_ViolationCount, "0") & "): " & _ColumnsList,
 		            "ALL NUMERIC COLUMNS HAVE SUMMARIZE BY SET TO NONE"
 		        )
-		
+
 		    RETURN ROW(
 		        "TestName", "[Formatting] Do not summarize numeric columns",
 		        "Expected", "Numeric columns should have SummarizeBy set to None",
@@ -1429,28 +1453,28 @@ function 'PQL.Assert.BP.ShouldRemoveUnnecessaryMeasures' =
 		    VAR _Measures = INFO.MEASURES()
 		    VAR _Tables = INFO.TABLES()
 		    VAR _Columns = INFO.COLUMNS()
-		
+
 		    // Get hidden table IDs
 		    VAR _HiddenTableIDs =
 		        SELECTCOLUMNS(
 		            FILTER(_Tables, [IsHidden]),
 		            "@ID", VALUE([ID])
 		        )
-		
+
 		    // Get all measure expressions for reference checking
 		    VAR _AllMeasureExpressions =
 		        SELECTCOLUMNS(
 		            _Measures,
 		            "@Expr", [Expression]
 		        )
-		
+
 		    // Get calculated column expressions for reference checking
 		    VAR _CalcColumnExpressions =
 		        SELECTCOLUMNS(
 		            FILTER(_Columns, [Type] = 2),
 		            "@Expr", [Expression]
 		        )
-		
+
 		    // Find hidden measures not referenced by any expression
 		    VAR _ViolatingMeasures =
 		        ADDCOLUMNS(
@@ -1459,7 +1483,7 @@ function 'PQL.Assert.BP.ShouldRemoveUnnecessaryMeasures' =
 		                VAR _MeasureName = [Name]
 		                VAR _IsHidden = [IsHidden]
 		                VAR _TableID = VALUE([TableID])
-		
+
 		                // Check if table is hidden
 		                VAR _TableIsHidden =
 		                    COUNTROWS(
@@ -1468,10 +1492,10 @@ function 'PQL.Assert.BP.ShouldRemoveUnnecessaryMeasures' =
 		                            [@ID] = _TableID
 		                        )
 		                    ) > 0
-		
+
 		                // Measure must be hidden (directly or via table)
 		                VAR _IsHiddenMeasure = _IsHidden || _TableIsHidden
-		
+
 		                // Check if measure name appears in any other measure expression
 		                VAR _SearchPattern = "[" & _MeasureName & "]"
 		                VAR _ReferencedInMeasures =
@@ -1481,7 +1505,7 @@ function 'PQL.Assert.BP.ShouldRemoveUnnecessaryMeasures' =
 		                            CONTAINSSTRING([@Expr], _SearchPattern)
 		                        )
 		                    )
-		
+
 		                // Check if measure name appears in any calculated column expression
 		                VAR _ReferencedInColumns =
 		                    COUNTROWS(
@@ -1490,9 +1514,9 @@ function 'PQL.Assert.BP.ShouldRemoveUnnecessaryMeasures' =
 		                            CONTAINSSTRING([@Expr], _SearchPattern)
 		                        )
 		                    )
-		
+
 		                VAR _IsReferenced = (_ReferencedInMeasures + _ReferencedInColumns) > 0
-		
+
 		                RETURN _IsHiddenMeasure && NOT _IsReferenced
 		            ),
 		            "@TableName",
@@ -1506,9 +1530,9 @@ function 'PQL.Assert.BP.ShouldRemoveUnnecessaryMeasures' =
 		                        [Name]
 		                    )
 		        )
-		
+
 		    VAR _ViolationCount = COUNTROWS(_ViolatingMeasures)
-		
+
 		    VAR _MeasuresList =
 		        CONCATENATEX(
 		            _ViolatingMeasures,
@@ -1517,16 +1541,16 @@ function 'PQL.Assert.BP.ShouldRemoveUnnecessaryMeasures' =
 		            [@TableName], ASC,
 		            [Name], ASC
 		        )
-		
+
 		    VAR _Passed = _ViolationCount = 0
-		
+
 		    VAR _ActualMessage =
 		        IF(
 		            _ViolationCount > 0,
 		            "UNNECESSARY HIDDEN MEASURES FOUND (" & FORMAT(_ViolationCount, "0") & "): " & _MeasuresList,
 		            "NO UNNECESSARY HIDDEN MEASURES FOUND"
 		        )
-		
+
 		    RETURN ROW(
 		        "TestName", "[Maintenance] Remove unnecessary measures",
 		        "Expected", "Hidden measures not referenced by any DAX expression should be removed",
@@ -1550,14 +1574,14 @@ function 'PQL.Assert.BP.ShouldHaveObjectDescriptions' =
 		    VAR _Tables = INFO.TABLES()
 		    VAR _Measures = INFO.MEASURES()
 		    VAR _Columns = INFO.COLUMNS()
-		
+
 		    // Get hidden table IDs for lookup
 		    VAR _HiddenTableIDs =
 		        SELECTCOLUMNS(
 		            FILTER(_Tables, [IsHidden]),
 		            "@ID", VALUE([ID])
 		        )
-		
+
 		    // Visible tables without description (exclude system tables)
 		    VAR _TablesWithoutDesc =
 		        FILTER(
@@ -1567,7 +1591,7 @@ function 'PQL.Assert.BP.ShouldHaveObjectDescriptions' =
 		            && NOT CONTAINSSTRING([Name], "LocalDateTable")
 		            && (ISBLANK([Description]) || [Description] = "")
 		        )
-		
+
 		    // Visible measures without description (on visible tables)
 		    VAR _MeasuresWithoutDesc =
 		        ADDCOLUMNS(
@@ -1598,7 +1622,7 @@ function 'PQL.Assert.BP.ShouldHaveObjectDescriptions' =
 		                        [Name]
 		                    )
 		        )
-		
+
 		    // Visible columns without description (types 1, 2, 4 on visible tables)
 		    VAR _ColumnsWithoutDesc =
 		        ADDCOLUMNS(
@@ -1632,12 +1656,12 @@ function 'PQL.Assert.BP.ShouldHaveObjectDescriptions' =
 		                        [Name]
 		                    )
 		        )
-		
+
 		    VAR _TableCount = COUNTROWS(_TablesWithoutDesc)
 		    VAR _MeasureCount = COUNTROWS(_MeasuresWithoutDesc)
 		    VAR _ColumnCount = COUNTROWS(_ColumnsWithoutDesc)
 		    VAR _ViolationCount = _TableCount + _MeasureCount + _ColumnCount
-		
+
 		    VAR _TablesList =
 		        CONCATENATEX(
 		            _TablesWithoutDesc,
@@ -1645,7 +1669,7 @@ function 'PQL.Assert.BP.ShouldHaveObjectDescriptions' =
 		            ", ",
 		            [Name], ASC
 		        )
-		
+
 		    VAR _MeasuresList =
 		        CONCATENATEX(
 		            _MeasuresWithoutDesc,
@@ -1654,7 +1678,7 @@ function 'PQL.Assert.BP.ShouldHaveObjectDescriptions' =
 		            [@TableName], ASC,
 		            [Name], ASC
 		        )
-		
+
 		    VAR _ColumnsList =
 		        CONCATENATEX(
 		            _ColumnsWithoutDesc,
@@ -1663,9 +1687,9 @@ function 'PQL.Assert.BP.ShouldHaveObjectDescriptions' =
 		            [@TableName], ASC,
 		            [ExplicitName], ASC
 		        )
-		
+
 		    VAR _Passed = _ViolationCount = 0
-		
+
 		    VAR _ActualMessage =
 		        IF(
 		            _ViolationCount > 0,
@@ -1675,7 +1699,7 @@ function 'PQL.Assert.BP.ShouldHaveObjectDescriptions' =
 		                & IF(_ColumnCount > 0, " | Columns (" & FORMAT(_ColumnCount, "0") & "): " & _ColumnsList, ""),
 		            "ALL VISIBLE OBJECTS HAVE DESCRIPTIONS"
 		        )
-		
+
 		    RETURN ROW(
 		        "TestName", "[Maintenance] Visible objects with no description",
 		        "Expected", "All visible tables, measures, and columns should have descriptions",
@@ -1697,14 +1721,14 @@ function 'PQL.Assert.BP.ShouldRemoveUnnecessaryColumns' =
 		    VAR _Tables = INFO.TABLES()
 		    VAR _Dependencies = INFO.CALCDEPENDENCY()
 		    VAR _TablePermissions = INFO.TABLEPERMISSIONS()
-		
+
 		    // Get hidden table IDs
 		    VAR _HiddenTableIDs =
 		        SELECTCOLUMNS(
 		            FILTER(_Tables, [IsHidden]),
 		            "@ID", VALUE([ID])
 		        )
-		
+
 		    // All columns referenced by anything (measures, calc columns, relationships, hierarchies)
 		    // REFERENCED_OBJECT_TYPE: COLUMN, CALC_COLUMN for direct refs; ATTRIBUTE_HIERARCHY for hierarchy levels
 		    VAR _ReferencedColumns =
@@ -1720,7 +1744,7 @@ function 'PQL.Assert.BP.ShouldRemoveUnnecessaryColumns' =
 		                "@RefColumn", [REFERENCED_OBJECT]
 		            )
 		        )
-		
+
 		    // Columns used as SortBy target (SortByColumnID references)
 		    VAR _SortByColumnIDs =
 		        DISTINCT(
@@ -1729,14 +1753,14 @@ function 'PQL.Assert.BP.ShouldRemoveUnnecessaryColumns' =
 		                "@SortByID", [SortByColumnID]
 		            )
 		        )
-		
+
 		    // RLS filter expressions (if any roles exist)
 		    VAR _RLSExpressions =
 		        SELECTCOLUMNS(
 		            FILTER(_TablePermissions, NOT ISBLANK([FilterExpression]) && [FilterExpression] <> ""),
 		            "@FilterExpr", [FilterExpression]
 		        )
-		
+
 		    // Find hidden columns not referenced by anything
 		    VAR _ViolatingColumns =
 		        ADDCOLUMNS(
@@ -1747,10 +1771,10 @@ function 'PQL.Assert.BP.ShouldRemoveUnnecessaryColumns' =
 		                VAR _TableID = VALUE([TableID])
 		                VAR _ColumnID = VALUE([ID])
 		                VAR _ColumnName = [ExplicitName]
-		
+
 		                // Scope: DataColumn (1), CalculatedColumn (2), CalculatedTableColumn (4)
 		                VAR _IsInScope = _ColumnType = 1 || _ColumnType = 2 || _ColumnType = 4
-		
+
 		                // Check if table is hidden
 		                VAR _TableIsHidden =
 		                    COUNTROWS(
@@ -1759,17 +1783,17 @@ function 'PQL.Assert.BP.ShouldRemoveUnnecessaryColumns' =
 		                            [@ID] = _TableID
 		                        )
 		                    ) > 0
-		
+
 		                // Column or table must be hidden
 		                VAR _IsHiddenColumn = _IsHidden || _TableIsHidden
-		
+
 		                // Get table name for reference matching
 		                VAR _TableName =
 		                    MAXX(
 		                        FILTER(_Tables, VALUE([ID]) = _TableID),
 		                        [Name]
 		                    )
-		
+
 		                // Check if referenced by any DAX, relationship, or hierarchy
 		                VAR _IsReferenced =
 		                    COUNTROWS(
@@ -1778,13 +1802,13 @@ function 'PQL.Assert.BP.ShouldRemoveUnnecessaryColumns' =
 		                            [@RefTable] = _TableName && [@RefColumn] = _ColumnName
 		                        )
 		                    ) > 0
-		
+
 		                // Check if used as SortBy target by another column
 		                VAR _UsedInSortBy =
 		                    COUNTROWS(
 		                        FILTER(_SortByColumnIDs, [@SortByID] = _ColumnID)
 		                    ) > 0
-		
+
 		                // Check if referenced in RLS filter expressions
 		                VAR _SearchPattern1 = _TableName & "[" & _ColumnName & "]"
 		                VAR _SearchPattern2 = "'" & _TableName & "'[" & _ColumnName & "]"
@@ -1796,7 +1820,7 @@ function 'PQL.Assert.BP.ShouldRemoveUnnecessaryColumns' =
 		                            || CONTAINSSTRING([@FilterExpr], _SearchPattern2)
 		                        )
 		                    ) > 0
-		
+
 		                RETURN
 		                    _IsInScope
 		                    && _IsHiddenColumn
@@ -1815,9 +1839,9 @@ function 'PQL.Assert.BP.ShouldRemoveUnnecessaryColumns' =
 		                        [Name]
 		                    )
 		        )
-		
+
 		    VAR _ViolationCount = COUNTROWS(_ViolatingColumns)
-		
+
 		    VAR _ColumnsList =
 		        CONCATENATEX(
 		            _ViolatingColumns,
@@ -1826,16 +1850,16 @@ function 'PQL.Assert.BP.ShouldRemoveUnnecessaryColumns' =
 		            [@TableName], ASC,
 		            [ExplicitName], ASC
 		        )
-		
+
 		    VAR _Passed = _ViolationCount = 0
-		
+
 		    VAR _ActualMessage =
 		        IF(
 		            _ViolationCount > 0,
 		            "UNNECESSARY HIDDEN COLUMNS FOUND (" & FORMAT(_ViolationCount, "0") & "): " & _ColumnsList,
 		            "NO UNNECESSARY HIDDEN COLUMNS FOUND"
 		        )
-		
+
 		    RETURN ROW(
 		        "TestName", "[Maintenance] Remove unnecessary columns",
 		        "Expected", "Hidden columns not referenced by any DAX expression, relationship, hierarchy, or SortBy should be removed",
@@ -1871,7 +1895,7 @@ function 'PQL.Assert.BP.ShouldMarkRowLabels' =
 		() =>
 		    VAR _Columns = INFO.COLUMNS()
 		    VAR _Tables = INFO.TABLES()
-		
+
 		    // Get visible tables (excluding hidden and system tables)
 		    VAR _VisibleTables =
 		        FILTER(
@@ -1880,7 +1904,7 @@ function 'PQL.Assert.BP.ShouldMarkRowLabels' =
 		            && NOT CONTAINSSTRING([Name], "DateTableTemplate")
 		            && NOT CONTAINSSTRING([Name], "LocalDateTable")
 		        )
-		
+
 		    // Check each visible table for row labels
 		    VAR _TablesWithoutRowLabels =
 		        ADDCOLUMNS(
@@ -1898,15 +1922,15 @@ function 'PQL.Assert.BP.ShouldMarkRowLabels' =
 		                    )
 		                RETURN _RowLabelCount > 0
 		        )
-		
+
 		    VAR _ViolatingTables =
 		        FILTER(
 		            _TablesWithoutRowLabels,
 		            [@HasRowLabel] = FALSE
 		        )
-		
+
 		    VAR _ViolationCount = COUNTROWS(_ViolatingTables)
-		
+
 		    VAR _TablesList =
 		        CONCATENATEX(
 		            _ViolatingTables,
@@ -1914,16 +1938,16 @@ function 'PQL.Assert.BP.ShouldMarkRowLabels' =
 		            ", ",
 		            [Name], ASC
 		        )
-		
+
 		    VAR _Passed = _ViolationCount = 0
-		
+
 		    VAR _ActualMessage =
 		        IF(
 		            _ViolationCount > 0,
 		            "TABLES WITHOUT ROW LABELS FOUND (" & FORMAT(_ViolationCount, "0") & "): " & _TablesList,
 		            "ALL TABLES HAVE ROW LABELS ASSIGNED"
 		        )
-		
+
 		    RETURN ROW(
 		        "TestName", "[Formatting] Mark row labels",
 		        "Expected", "Tables should have at least one column marked as a row label",
@@ -1944,7 +1968,7 @@ function 'PQL.Assert.BP.ShouldMarkPrimaryKeys' =
 		    VAR _Columns = INFO.COLUMNS()
 		    VAR _Tables = INFO.TABLES()
 		    VAR _Relationships = INFO.RELATIONSHIPS()
-		
+
 		    // Get columns that are on the "One" side of relationships (primary keys)
 		    // ToCardinality is Int64: 1 = One, 2 = Many
 		    VAR _PrimaryKeyColumns =
@@ -1956,7 +1980,7 @@ function 'PQL.Assert.BP.ShouldMarkPrimaryKeys' =
 		            "@ToTableID", [ToTableID],
 		            "@ToColumnID", [ToColumnID]
 		        )
-		
+
 		    // Find columns that should be marked as keys but aren't
 		    VAR _ViolatingColumns =
 		        FILTER(
@@ -1965,7 +1989,7 @@ function 'PQL.Assert.BP.ShouldMarkPrimaryKeys' =
 		            VAR _TableID = [TableID]
 		            VAR _IsHidden = [IsHidden]
 		            VAR _IsKey = [IsKey]
-		
+
 		            // Get table information
 		            VAR _TableIsHidden =
 		                COUNTROWS(
@@ -1975,7 +1999,7 @@ function 'PQL.Assert.BP.ShouldMarkPrimaryKeys' =
 		                        && [IsHidden] = TRUE
 		                    )
 		                ) > 0
-		
+
 		            VAR _TableDataCategory =
 		                MAXX(
 		                    FILTER(
@@ -1984,7 +2008,7 @@ function 'PQL.Assert.BP.ShouldMarkPrimaryKeys' =
 		                    ),
 		                    [DataCategory]
 		                )
-		
+
 		            // Check if this column is a primary key in any relationship
 		            VAR _IsPrimaryKey =
 		                COUNTROWS(
@@ -1993,7 +2017,7 @@ function 'PQL.Assert.BP.ShouldMarkPrimaryKeys' =
 		                        [@ToColumnID] = _ColumnID
 		                    )
 		                ) > 0
-		
+
 		            // Return true if column should be marked as key but isn't
 		            RETURN
 		                _IsPrimaryKey
@@ -2002,9 +2026,9 @@ function 'PQL.Assert.BP.ShouldMarkPrimaryKeys' =
 		                && NOT _TableIsHidden
 		                && (_TableDataCategory <> "Time" || ISBLANK(_TableDataCategory))
 		        )
-		
+
 		    VAR _ViolationCount = COUNTROWS(_ViolatingColumns)
-		
+
 		    // Build detailed list with table and column names
 		    VAR _ColumnsList =
 		        CONCATENATEX(
@@ -2021,16 +2045,16 @@ function 'PQL.Assert.BP.ShouldMarkPrimaryKeys' =
 		            RETURN _TableName & "[" & [ExplicitName] & "]",
 		            ", "
 		        )
-		
+
 		    VAR _Passed = _ViolationCount = 0
-		
+
 		    VAR _ActualMessage =
 		        IF(
 		            _ViolationCount > 0,
 		            "PRIMARY KEY COLUMNS NOT MARKED AS KEYS FOUND (" & FORMAT(_ViolationCount, "0") & "): " & _ColumnsList,
 		            "ALL PRIMARY KEY COLUMNS ARE MARKED AS KEYS"
 		        )
-		
+
 		    RETURN ROW(
 		        "TestName", "[Formatting] Mark primary keys",
 		        "Expected", "Columns on the 'One' side of relationships should have IsKey = true",
@@ -2673,7 +2697,6 @@ function 'PQL.Assert.Col.IsAvailableInMDX' =
 				"Passed", _ColumnExists && _IsMDXActive,
 				"IsMDXActive", _IsMDXActive
 			)
-
 	annotation DAXLIB_PackageId = PQL.Assert
 
 	annotation DAXLIB_PackageVersion = 0.7.0
@@ -2700,7 +2723,6 @@ function 'PQL.Assert.Col.ShouldStartWith' =
 				"Actual", IF(_Passed, "ALL START WITH PREFIX (" & FORMAT(_TotalCount, "0") & " rows)", "NON-MATCHING VALUES (" & FORMAT(_NonMatchingCount, "0") & " of " & FORMAT(_TotalCount, "0") & ")"),
 				"Passed", _Passed
 			)
-
 	annotation DAXLIB_PackageId = PQL.Assert
 
 	annotation DAXLIB_PackageVersion = 0.7.0
@@ -2727,7 +2749,6 @@ function 'PQL.Assert.Col.ShouldNotStartWith' =
 				"Actual", IF(_Passed, "NONE START WITH PREFIX (" & FORMAT(_TotalCount, "0") & " rows)", "MATCHING VALUES (" & FORMAT(_MatchingCount, "0") & " of " & FORMAT(_TotalCount, "0") & ")"),
 				"Passed", _Passed
 			)
-
 	annotation DAXLIB_PackageId = PQL.Assert
 
 	annotation DAXLIB_PackageVersion = 0.7.0
@@ -2754,7 +2775,6 @@ function 'PQL.Assert.Col.ShouldEndWith' =
 				"Actual", IF(_Passed, "ALL END WITH SUFFIX (" & FORMAT(_TotalCount, "0") & " rows)", "NON-MATCHING VALUES (" & FORMAT(_NonMatchingCount, "0") & " of " & FORMAT(_TotalCount, "0") & ")"),
 				"Passed", _Passed
 			)
-
 	annotation DAXLIB_PackageId = PQL.Assert
 
 	annotation DAXLIB_PackageVersion = 0.7.0
@@ -2781,7 +2801,6 @@ function 'PQL.Assert.Col.ShouldNotEndWith' =
 				"Actual", IF(_Passed, "NONE END WITH SUFFIX (" & FORMAT(_TotalCount, "0") & " rows)", "MATCHING VALUES (" & FORMAT(_MatchingCount, "0") & " of " & FORMAT(_TotalCount, "0") & ")"),
 				"Passed", _Passed
 			)
-
 	annotation DAXLIB_PackageId = PQL.Assert
 
 	annotation DAXLIB_PackageVersion = 0.7.0
@@ -2806,7 +2825,6 @@ function 'PQL.Assert.Col.ShouldContainString' =
 				"Actual", IF(_Passed, "ALL CONTAIN TEXT (" & FORMAT(_TotalCount, "0") & " rows)", "NON-MATCHING VALUES (" & FORMAT(_NonMatchingCount, "0") & " of " & FORMAT(_TotalCount, "0") & ")"),
 				"Passed", _Passed
 			)
-
 	annotation DAXLIB_PackageId = PQL.Assert
 
 	annotation DAXLIB_PackageVersion = 0.7.0
@@ -2831,7 +2849,6 @@ function 'PQL.Assert.Col.ShouldNotContainString' =
 				"Actual", IF(_Passed, "NONE CONTAIN TEXT (" & FORMAT(_TotalCount, "0") & " rows)", "MATCHING VALUES (" & FORMAT(_MatchingCount, "0") & " of " & FORMAT(_TotalCount, "0") & ")"),
 				"Passed", _Passed
 			)
-
 	annotation DAXLIB_PackageId = PQL.Assert
 
 	annotation DAXLIB_PackageVersion = 0.7.0
@@ -2919,14 +2936,14 @@ function 'PQL.Assert.BP.ShouldHideFactTableColumns' =
 		    VAR _Tables = INFO.VIEW.TABLES()
 		    VAR _Measures = INFO.MEASURES()
 		    VAR _AllTables = INFO.TABLES()
-		
+
 		    // Get hidden tables for filtering
 		    VAR _HiddenTables =
 		        FILTER(
 		            _Tables,
 		            [IsHidden] = TRUE
 		        )
-		
+
 		    // Get visible numeric columns on visible tables
 		    VAR _NumericColumns =
 		        FILTER(
@@ -2934,7 +2951,7 @@ function 'PQL.Assert.BP.ShouldHideFactTableColumns' =
 		            VAR _TableName = [Table]
 		            VAR _DataType = [DataType]
 		            VAR _IsHidden = [IsHidden]
-		
+
 		            // Check if table is hidden
 		            VAR _TableIsHidden =
 		                COUNTROWS(
@@ -2943,25 +2960,25 @@ function 'PQL.Assert.BP.ShouldHideFactTableColumns' =
 		                        [Name] = _TableName
 		                    )
 		                ) > 0
-		
+
 		            RETURN
 		                NOT _IsHidden
 		                && NOT _TableIsHidden
 		                && (_DataType = "Integer" || _DataType = "Currency" || _DataType = "Number")
 		        )
-		
+
 		    // For each visible numeric column, check if any measure references it in an aggregation function
 		    VAR _ViolatingColumns =
 		        FILTER(
 		            _NumericColumns,
 		            VAR _ColName = [Name]
 		            VAR _TableName = [Table]
-		
+
 		            // Build column reference patterns
 		            VAR _QualifiedRef = "'" & _TableName & "'[" & _ColName & "]"
 		            VAR _UnqualifiedRef = _TableName & "[" & _ColName & "]"
 		            VAR _ShortRef = "[" & _ColName & "]"
-		
+
 		            // Check if any measure uses this column in an aggregation function
 		            VAR _IsAggregated =
 		                COUNTROWS(
@@ -3012,12 +3029,12 @@ function 'PQL.Assert.BP.ShouldHideFactTableColumns' =
 		                            ))
 		                    )
 		                ) > 0
-		
+
 		            RETURN _IsAggregated
 		        )
-		
+
 		    VAR _ViolationCount = COUNTROWS(_ViolatingColumns)
-		
+
 		    VAR _ColumnsList =
 		        CONCATENATEX(
 		            _ViolatingColumns,
@@ -3026,16 +3043,16 @@ function 'PQL.Assert.BP.ShouldHideFactTableColumns' =
 		            [Table], ASC,
 		            [Name], ASC
 		        )
-		
+
 		    VAR _Passed = _ViolationCount = 0
-		
+
 		    VAR _ActualMessage =
 		        IF(
 		            _ViolationCount > 0,
 		            "VISIBLE FACT TABLE COLUMNS USED IN AGGREGATIONS FOUND (" & FORMAT(_ViolationCount, "0") & "): " & _ColumnsList,
 		            "ALL FACT TABLE COLUMNS USED IN AGGREGATIONS ARE HIDDEN"
 		        )
-		
+
 		    RETURN ROW(
 		        "TestName", "[Formatting] Hide fact table columns",
 		        "Expected", "Numeric columns used in aggregation measures should be hidden",
@@ -3056,7 +3073,9 @@ function 'RLS.ANY.Tests' =
 
 	annotation PQLAssert_ImpersonatedUserName = atlas.kerski@cftechnologiesllc.com
 
-/// Retrieves all test functions with full metadata (Description, RLS ImpersonatedUserName).
+	annotation PQLAssert_RoleName = West
+
+/// Retrieves all test functions with full metadata (Description, RLS ImpersonatedUserName, RoleName).
 /// Uses INFO.USERDEFINEDFUNCTIONS and INFO.ANNOTATIONS - NOT compatible with Power Automate REST API.
 /// Use RetrieveTests for Power Automate compatibility.
 function 'PQL.Assert.RetrieveTestsV2' =
@@ -3097,6 +3116,25 @@ function 'PQL.Assert.RetrieveTestsV2' =
 		                    [Value]
 		                ),
 		                BLANK()
+		            ),
+		            "PQLAssert_RoleName",
+		            VAR _funcName = [Name]
+		            VAR _funcID =
+		                IFERROR(
+		                    MAXX(FILTER(INFO.USERDEFINEDFUNCTIONS(), [Name] = _funcName), [ID]),
+		                    BLANK()
+		                )
+		            RETURN
+		            IFERROR(
+		                MAXX(
+		                    FILTER(
+		                        INFO.ANNOTATIONS(),
+		                        [Name] = "PQLAssert_RoleName"
+		                            && [ObjectID] = _funcID
+		                    ),
+		                    [Value]
+		                ),
+		                BLANK()
 		            )
 		        )
 	lineageTag: f5e29a3c-8b14-4d7e-a62f-1c9053d87b40
@@ -3105,7 +3143,7 @@ function 'PQL.Assert.RetrieveTestsV2' =
 
 	annotation DAXLIB_PackageVersion = 0.7.0
 
-/// Retrieves tests filtered by environment with full metadata (Description, RLS ImpersonatedUserName).
+/// Retrieves tests filtered by environment with full metadata (Description, RLS ImpersonatedUserName, RoleName).
 /// Looks for .{ENV}. or .ANY. in function names. If environment is blank, returns all tests.
 /// Uses INFO.USERDEFINEDFUNCTIONS and INFO.ANNOTATIONS - NOT compatible with Power Automate REST API.
 /// Use RetrieveTestsByEnvironment for Power Automate compatibility.
@@ -3154,6 +3192,25 @@ function 'PQL.Assert.RetrieveTestsByEnvironmentV2' =
 		                    [Value]
 		                ),
 		                BLANK()
+		            ),
+		            "PQLAssert_RoleName",
+		            VAR _funcName = [Name]
+		            VAR _funcID =
+		                IFERROR(
+		                    MAXX(FILTER(INFO.USERDEFINEDFUNCTIONS(), [Name] = _funcName), [ID]),
+		                    BLANK()
+		                )
+		            RETURN
+		            IFERROR(
+		                MAXX(
+		                    FILTER(
+		                        INFO.ANNOTATIONS(),
+		                        [Name] = "PQLAssert_RoleName"
+		                            && [ObjectID] = _funcID
+		                    ),
+		                    [Value]
+		                ),
+		                BLANK()
 		            )
 		        )
 	lineageTag: 9c7f1d2e-4a83-4b5c-8d6f-2e30917ca5b8
@@ -3163,6 +3220,9 @@ function 'PQL.Assert.RetrieveTestsByEnvironmentV2' =
 	annotation DAXLIB_PackageVersion = 0.7.0
 
 /// Object Level Security (OLS) Assertions - PQL.Assert.OLS namespace
+/// Publisher: PQL (Power Query Lint)
+/// These functions test metadata visibility to verify OLS is properly configured.
+/// Use with "View as" role context in Power BI Desktop to validate security settings.
 /// Asserts that a table is hidden from metadata (OLS metadataPermission = none).
 /// Use this when a role should NOT have access to view or query a table.
 function 'PQL.Assert.OLS.TableShouldBeHidden' =
@@ -3244,6 +3304,8 @@ function 'OLS_West.ANY.Tests' =
 			)
 	lineageTag: ddaecaf7-43b9-4c74-a8ad-6a22c617ff83
 
+	annotation PQLAssert_RoleName = West
+
 function 'OLS_East.ANY.Tests' =
 		() =>
 			UNION(
@@ -3252,4 +3314,388 @@ function 'OLS_East.ANY.Tests' =
 				PQL.Assert.OLS.TableShouldBeVisible("East: Groups table should be visible", "Groups")
 			)
 	lineageTag: 199eb7b0-4ba8-49dc-8f03-c3b0cbde73ae
+
+	annotation PQLAssert_RoleName = East
+
+/// Partition Assertions - PQL.Assert.Partition namespace
+/// These functions validate partition configurations in semantic models
+/// Asserts that a table has the expected number of partitions, with optional date range filtering.
+/// Uses INFO.PARTITIONS() to check partition counts for data quality and model structure validation.
+/// @param {STRING} testName - Description of the test being performed
+/// @param {STRING} tableName - Name of the table to check partitions for
+/// @param {INT64} expectedCount - Expected number of partitions
+/// @param {DATETIME} [startDate] - Optional start date filter (filters by RangeStart >= startDate)
+/// @param {DATETIME} [endDate] - Optional end date filter (filters by RangeEnd <= endDate)
+function 'PQL.Assert.Partitions.ShouldBe' =
+		(testName: STRING, tableName: STRING, expectedCount: INT64, startDate: DATETIME = BLANK(), endDate: DATETIME = BLANK()) =>
+		    VAR _Partitions = INFO.PARTITIONS()
+		    VAR _Tables =
+		        SELECTCOLUMNS(
+		            INFO.TABLES(),
+		            "TableID", [ID],
+		            "TableName", [Name]
+		        )
+		    VAR _PartitionMetadata = NATURALLEFTOUTERJOIN(_Partitions, _Tables)
+		    VAR _PartitionMetadataWithDates =
+		        ADDCOLUMNS(
+		            _PartitionMetadata,
+		            "_RangeStartDate", IFERROR(DATEVALUE([RangeStart]), BLANK()),
+		            "_RangeEndDate", IFERROR(DATEVALUE([RangeEnd]), BLANK())
+		        )
+		    VAR _Filtered =
+		        FILTER(
+		            _PartitionMetadataWithDates,
+		            [TableName] = tableName
+		            && (
+		                ISBLANK(startDate)
+		                || (NOT ISBLANK([_RangeStartDate]) && [_RangeStartDate] >= startDate)
+		            )
+		            && (
+		                ISBLANK(endDate)
+		                || (NOT ISBLANK([_RangeEndDate]) && [_RangeEndDate] <= endDate)
+		            )
+		        )
+		    VAR _ActualCount = COUNTROWS(_Filtered)
+		    VAR _Passed = _ActualCount = expectedCount
+		    VAR _DateFilter =
+		        IF(
+		            NOT ISBLANK(startDate) || NOT ISBLANK(endDate),
+		            " (Inclusive date bounds: " &
+		            IF(NOT ISBLANK(startDate), "Start >= " & FORMAT(startDate, "yyyy-MM-dd"), "") &
+		            IF(NOT ISBLANK(startDate) && NOT ISBLANK(endDate), ", ", "") &
+		            IF(NOT ISBLANK(endDate), "End <= " & FORMAT(endDate, "yyyy-MM-dd"), "") &
+		            ")",
+		            ""
+		        )
+		    RETURN ROW(
+		        "TestName", testName,
+		        "Expected", "Partition count = " & FORMAT(expectedCount, "0") & _DateFilter,
+		        "Actual", "Partition count = " & FORMAT(_ActualCount, "0") & " for table '" & tableName & "'",
+		        "Passed", _Passed
+		    )
+	annotation DAXLIB_PackageId = PQL.Assert
+
+	annotation DAXLIB_PackageVersion = 0.7.0
+
+/// Asserts that at least one partition exists for the specified table, with optional date range filtering.
+/// Uses INFO.PARTITIONS() to verify partition existence for table-level and incremental-refresh checks.
+/// @param {STRING} testName - Description of the test being performed
+/// @param {STRING} tableName - Name of the table to check partitions for
+/// @param {DATETIME} [startDate] - Optional start date filter (filters by RangeStart >= startDate)
+/// @param {DATETIME} [endDate] - Optional end date filter (filters by RangeEnd <= endDate)
+function 'PQL.Assert.Partitions.ShouldExist' =
+		(testName: STRING, tableName: STRING, startDate: DATETIME = BLANK(), endDate: DATETIME = BLANK()) =>
+		    VAR _Partitions = INFO.PARTITIONS()
+		    VAR _Tables =
+		        SELECTCOLUMNS(
+		            INFO.TABLES(),
+		            "TableID", [ID],
+		            "TableName", [Name]
+		        )
+		    VAR _PartitionMetadata = NATURALLEFTOUTERJOIN(_Partitions, _Tables)
+		    VAR _PartitionMetadataWithDates =
+		        ADDCOLUMNS(
+		            _PartitionMetadata,
+		            "_RangeStartDate", IFERROR(DATEVALUE([RangeStart]), BLANK()),
+		            "_RangeEndDate", IFERROR(DATEVALUE([RangeEnd]), BLANK())
+		        )
+		    VAR _Filtered =
+		        FILTER(
+		            _PartitionMetadataWithDates,
+		            [TableName] = tableName
+		            && (
+		                ISBLANK(startDate)
+		                || (NOT ISBLANK([_RangeStartDate]) && [_RangeStartDate] >= startDate)
+		            )
+		            && (
+		                ISBLANK(endDate)
+		                || (NOT ISBLANK([_RangeEndDate]) && [_RangeEndDate] <= endDate)
+		            )
+		        )
+		    VAR _ActualCount = COUNTROWS(_Filtered)
+		    VAR _Passed = _ActualCount > 0
+		    VAR _DateFilter =
+		        IF(
+		            NOT ISBLANK(startDate) || NOT ISBLANK(endDate),
+		            " (Inclusive date bounds: " &
+		            IF(NOT ISBLANK(startDate), "Start >= " & FORMAT(startDate, "yyyy-MM-dd"), "") &
+		            IF(NOT ISBLANK(startDate) && NOT ISBLANK(endDate), ", ", "") &
+		            IF(NOT ISBLANK(endDate), "End <= " & FORMAT(endDate, "yyyy-MM-dd"), "") &
+		            ")",
+		            ""
+		        )
+		    RETURN ROW(
+		        "TestName", testName,
+		        "Expected", "At least 1 partition exists" & _DateFilter,
+		        "Actual", "Partition count = " & FORMAT(_ActualCount, "0") & " for table '" & tableName & "'",
+		        "Passed", _Passed
+		    )
+	annotation DAXLIB_PackageId = PQL.Assert
+
+	annotation DAXLIB_PackageVersion = 0.7.0
+
+/// Asserts that a table has at least a minimum number of partitions, with optional date range filtering.
+/// Uses INFO.PARTITIONS() to validate partition volume for incremental and rolling window partition strategies.
+/// @param {STRING} testName - Description of the test being performed
+/// @param {STRING} tableName - Name of the table to check partitions for
+/// @param {INT64} minimumCount - Minimum partition count threshold (actual must be greater than or equal to this value)
+/// @param {DATETIME} [startDate] - Optional start date filter (filters by RangeStart >= startDate)
+/// @param {DATETIME} [endDate] - Optional end date filter (filters by RangeEnd <= endDate)
+function 'PQL.Assert.Partitions.ShouldBeAtLeast' =
+		(testName: STRING, tableName: STRING, minimumCount: INT64, startDate: DATETIME = BLANK(), endDate: DATETIME = BLANK()) =>
+		    VAR _Partitions = INFO.PARTITIONS()
+		    VAR _Tables =
+		        SELECTCOLUMNS(
+		            INFO.TABLES(),
+		            "TableID", [ID],
+		            "TableName", [Name]
+		        )
+		    VAR _PartitionMetadata = NATURALLEFTOUTERJOIN(_Partitions, _Tables)
+		    VAR _PartitionMetadataWithDates =
+		        ADDCOLUMNS(
+		            _PartitionMetadata,
+		            "_RangeStartDate", IFERROR(DATEVALUE([RangeStart]), BLANK()),
+		            "_RangeEndDate", IFERROR(DATEVALUE([RangeEnd]), BLANK())
+		        )
+		    VAR _Filtered =
+		        FILTER(
+		            _PartitionMetadataWithDates,
+		            [TableName] = tableName
+		            && (
+		                ISBLANK(startDate)
+		                || (NOT ISBLANK([_RangeStartDate]) && [_RangeStartDate] >= startDate)
+		            )
+		            && (
+		                ISBLANK(endDate)
+		                || (NOT ISBLANK([_RangeEndDate]) && [_RangeEndDate] <= endDate)
+		            )
+		        )
+		    VAR _ActualCount = COUNTROWS(_Filtered)
+		    VAR _Passed = _ActualCount >= minimumCount
+		    VAR _DateFilter =
+		        IF(
+		            NOT ISBLANK(startDate) || NOT ISBLANK(endDate),
+		            " (Inclusive date bounds: " &
+		            IF(NOT ISBLANK(startDate), "Start >= " & FORMAT(startDate, "yyyy-MM-dd"), "") &
+		            IF(NOT ISBLANK(startDate) && NOT ISBLANK(endDate), ", ", "") &
+		            IF(NOT ISBLANK(endDate), "End <= " & FORMAT(endDate, "yyyy-MM-dd"), "") &
+		            ")",
+		            ""
+		        )
+		    RETURN ROW(
+		        "TestName", testName,
+		        "Expected", "Partition count >= " & FORMAT(minimumCount, "0") & _DateFilter,
+		        "Actual", "Partition count = " & FORMAT(_ActualCount, "0") & " for table '" & tableName & "'",
+		        "Passed", _Passed
+		    )
+	annotation DAXLIB_PackageId = PQL.Assert
+
+	annotation DAXLIB_PackageVersion = 0.7.0
+
+/// Perspective Assertions - PQL.Assert.Perspective namespace
+/// These functions validate perspective configurations and membership in semantic models
+/// Asserts that a perspective exists and contains expected tables, columns, and measures.
+/// Uses INFO.PERSPECTIVES() and related DMV functions to validate perspective membership.
+/// Model-independent: accepts comma-separated string lists instead of TABLE parameters.
+/// NOTE: List items should not contain commas. Use exact names without extra delimiters.
+/// @param {STRING} testName - Description of the test being performed
+/// @param {STRING} perspectiveName - Name of the perspective to validate
+/// @param {STRING} expectedTablesList - Comma-separated table names (empty string for no tables)
+/// @param {STRING} expectedColumnsList - Comma-separated column references in Table[Column] format (empty string for no columns)
+/// @param {STRING} expectedMeasuresList - Comma-separated measure references in Table[Measure] format (empty string for no measures)
+function 'PQL.Assert.Perspective.ShouldContain' =
+		(testName: STRING, perspectiveName: STRING, expectedTablesList: STRING, expectedColumnsList: STRING, expectedMeasuresList: STRING) =>
+		    VAR _Perspective =
+		        FILTER(
+		            INFO.PERSPECTIVES(),
+		            [Name] = perspectiveName
+		        )
+		    VAR _PerspectiveExists = COUNTROWS(_Perspective) > 0
+		    VAR _PerspectiveID = MAXX(_Perspective, [ID])
+		    VAR _PerspectiveTables =
+		        FILTER(
+		            INFO.PERSPECTIVETABLES(),
+		            [PerspectiveID] = _PerspectiveID
+		        )
+
+		    // Get actual tables in perspective
+		    VAR _ActualTables =
+		        SELECTCOLUMNS(
+		            NATURALINNERJOIN(
+		                SELECTCOLUMNS(
+		                    _PerspectiveTables,
+		                    "TableID", [TableID]
+		                ),
+		                SELECTCOLUMNS(
+		                    INFO.TABLES(),
+		                    "TableID", [ID],
+		                    "Name", [Name]
+		                )
+		            ),
+		            "Name", [Name]
+		        )
+
+		    // Get actual columns in perspective
+		    VAR _ActualColumns =
+		        SELECTCOLUMNS(
+		            NATURALINNERJOIN(
+		                NATURALINNERJOIN(
+		                    NATURALINNERJOIN(
+		                        SELECTCOLUMNS(
+		                            INFO.PERSPECTIVECOLUMNS(),
+		                            "PerspectiveTableID", [PerspectiveTableID],
+		                            "ColumnID", [ColumnID]
+		                        ),
+		                        SELECTCOLUMNS(
+		                            _PerspectiveTables,
+		                            "PerspectiveTableID", [ID],
+		                            "TableID", [TableID]
+		                        )
+		                    ),
+		                    SELECTCOLUMNS(
+		                        INFO.COLUMNS(),
+		                        "ColumnID", [ID],
+		                        "ColumnName", IF(NOT ISBLANK([ExplicitName]), [ExplicitName], [InferredName])
+		                    )
+		                ),
+		                SELECTCOLUMNS(
+		                    INFO.TABLES(),
+		                    "TableID", [ID],
+		                    "TableName", [Name]
+		                )
+		            ),
+		            "Name", [TableName] & "[" & [ColumnName] & "]"
+		        )
+
+		    // Get actual measures in perspective
+		    VAR _ActualMeasures =
+		        SELECTCOLUMNS(
+		            NATURALINNERJOIN(
+		                NATURALINNERJOIN(
+		                    NATURALINNERJOIN(
+		                        SELECTCOLUMNS(
+		                            INFO.PERSPECTIVEMEASURES(),
+		                            "PerspectiveTableID", [PerspectiveTableID],
+		                            "MeasureID", [MeasureID]
+		                        ),
+		                        SELECTCOLUMNS(
+		                            _PerspectiveTables,
+		                            "PerspectiveTableID", [ID]
+		                        )
+		                    ),
+		                    SELECTCOLUMNS(
+		                        INFO.MEASURES(),
+		                        "MeasureID", [ID],
+		                        "MeasureTableID", [TableID],
+		                        "MeasureName", [Name]
+		                    )
+		                ),
+		                SELECTCOLUMNS(
+		                    INFO.TABLES(),
+		                    "MeasureTableID", [ID],
+		                    "TableName", [Name]
+		                )
+		            ),
+		            "Name", [TableName] & "[" & [MeasureName] & "]"
+		        )
+
+		    // Calculate expected counts from comma-separated lists
+		    VAR _ExpectedTablesCount =
+		        IF(
+		            LEN(TRIM(expectedTablesList)) = 0,
+		            0,
+		            LEN(expectedTablesList) - LEN(SUBSTITUTE(expectedTablesList, ",", "")) + 1
+		        )
+		    VAR _ExpectedColumnsCount =
+		        IF(
+		            LEN(TRIM(expectedColumnsList)) = 0,
+		            0,
+		            LEN(expectedColumnsList) - LEN(SUBSTITUTE(expectedColumnsList, ",", "")) + 1
+		        )
+		    VAR _ExpectedMeasuresCount =
+		        IF(
+		            LEN(TRIM(expectedMeasuresList)) = 0,
+		            0,
+		            LEN(expectedMeasuresList) - LEN(SUBSTITUTE(expectedMeasuresList, ",", "")) + 1
+		        )
+
+		    // Prepare for case-insensitive string matching with proper delimiters to avoid substring false matches
+		    VAR _ExpectedTablesUpper = "," & UPPER(TRIM(expectedTablesList)) & ","
+		    VAR _ExpectedColumnsUpper = "," & UPPER(TRIM(expectedColumnsList)) & ","
+		    VAR _ExpectedMeasuresUpper = "," & UPPER(TRIM(expectedMeasuresList)) & ","
+
+		    // Count matched items using exact string matching (with delimiters to prevent substring matches)
+		    VAR _MatchedTablesCount =
+		        COUNTROWS(
+		            FILTER(
+		                _ActualTables,
+		                CONTAINSSTRING(_ExpectedTablesUpper, "," & TRIM(UPPER([Name])) & ",")
+		            )
+		        )
+		    VAR _MatchedColumnsCount =
+		        COUNTROWS(
+		            FILTER(
+		                _ActualColumns,
+		                CONTAINSSTRING(_ExpectedColumnsUpper, "," & TRIM(UPPER([Name])) & ",")
+		            )
+		        )
+		    VAR _MatchedMeasuresCount =
+		        COUNTROWS(
+		            FILTER(
+		                _ActualMeasures,
+		                CONTAINSSTRING(_ExpectedMeasuresUpper, "," & TRIM(UPPER([Name])) & ",")
+		            )
+		        )
+
+		    // Calculate missing counts
+		    VAR _MissingTablesCount = MAX(0, _ExpectedTablesCount - _MatchedTablesCount)
+		    VAR _MissingColumnsCount = MAX(0, _ExpectedColumnsCount - _MatchedColumnsCount)
+		    VAR _MissingMeasuresCount = MAX(0, _ExpectedMeasuresCount - _MatchedMeasuresCount)
+
+		    VAR _ExpectedCount = _ExpectedTablesCount + _ExpectedColumnsCount + _ExpectedMeasuresCount
+		    VAR _ActualCount = COUNTROWS(_ActualTables) + COUNTROWS(_ActualColumns) + COUNTROWS(_ActualMeasures)
+		    VAR _MissingCount = _MissingTablesCount + _MissingColumnsCount + _MissingMeasuresCount
+
+		    VAR _Passed = _PerspectiveExists && _MissingCount = 0
+		    VAR _Details =
+		        IF(
+		            NOT _PerspectiveExists,
+		            "Perspective not found",
+		            IF(
+		                _MissingCount > 0,
+		                "Missing " & FORMAT(_MissingCount, "0") & " of " & FORMAT(_ExpectedCount, "0") & " expected objects",
+		                "All expected objects present"
+		            )
+		        )
+
+		    RETURN ROW(
+		        "TestName", testName,
+		        "Expected", "Perspective '" & perspectiveName & "' with " & FORMAT(_ExpectedCount, "0") & " expected objects",
+		        "Actual", _Details & " (" & FORMAT(_ActualCount, "0") & " actual objects)",
+		        "Passed", _Passed
+		    )
+	annotation DAXLIB_PackageId = PQL.Assert
+
+	annotation DAXLIB_PackageVersion = 0.7.0
+
+/// Asserts that a perspective exists in the semantic model.
+/// @param {STRING} testName - Description of the test being performed
+/// @param {STRING} perspectiveName - Name of the perspective that should exist
+function 'PQL.Assert.Perspective.ShouldExist' =
+		(testName: STRING, perspectiveName: STRING) =>
+		    VAR _Perspective =
+		        FILTER(
+		            INFO.PERSPECTIVES(),
+		            [Name] = perspectiveName
+		        )
+		    VAR _Exists = COUNTROWS(_Perspective) > 0
+		    RETURN ROW(
+		        "TestName", testName,
+		        "Expected", "Perspective '" & perspectiveName & "' exists",
+		        "Actual", IF(_Exists, "EXISTS", "NOT FOUND"),
+		        "Passed", _Exists
+		    )
+	annotation DAXLIB_PackageId = PQL.Assert
+
+	annotation DAXLIB_PackageVersion = 0.7.0
 

@@ -71,12 +71,13 @@ pull_request → main   (concurrency group: pql-assert-ci-workspace, no cancel)
 | `.github/workflows/pr-gate.yml` | The workflow above |
 | `ci/requirements.txt` | Pinned `pql-test`, `fabric-cicd` and `azure-identity` |
 | `ci/parameter.yml` | fabric-cicd parameterization, only if `SharePoint_URL` needs a CI value. The connection binding is **not** here (see D3) |
-| `ci/build_stage.ps1` | Builds the library, stages the PBIPs, injects `functions.tmdl` and checks for drift |
+| `ci/build_stage.py` | `check` (drift), `sync` (write `src/lib` into the models) and `stage` (copy the PBIPs with the merged library to `_stage/`). **Done** |
 | `ci/deploy.py` | Deploys both models with `FabricWorkspace` + `publish_all_items` |
 | `ci/refresh_models.py` | Runs an enhanced refresh through the Power BI REST API and polls it (uses `azure-identity`, already a pql-test dependency) |
 | `ci/evaluate_results.py` | Gate logic: unexpected failures and expected failures that unexpectedly passed both fail the job |
 | `ci/expected-failures.json` | The allowlist (`ShouldFail.TEST.Tests`, `ShouldFailSchema.DEV.Tests`, …) |
-| `ci/README.md` | How to run the same pipeline locally in a venv |
+| `ci/README.md` | How to run the same pipeline locally in a venv. **Started** |
+| `docs/ci-setup.md` | One-time setup for Entra, the tenant, the workspace, the connection and the repo. **Done** |
 
 Scripts that publish to the DaxLib fork stay in `scripts/`. Everything specific to CI lives in `ci/`.
 
@@ -89,7 +90,7 @@ Scripts that publish to the DaxLib fork stay in `scripts/`. Everything specific 
 | **D1** | CI workspace | **One shared workspace** (`PQL.Assert-CI`) | `concurrency: { group: pql-assert-ci-workspace, cancel-in-progress: false }`. Model names stay fixed. |
 | **D2** | Capacity | **Premium Per User (PPU)** | See *PPU caveats* below. These are the biggest unknown in Phase 0. |
 | **D3** | SharePoint source in `Test Import 1 & 3` | **Shareable cloud connection** (OAuth, owned by a CI identity), **bound once by hand** in the workspace | No gateway is needed (SharePoint Online is a cloud source), and there is no connection-ID variable in CI. After the first deploy, map the model's SharePoint source to the connection under *Gateway and cloud connections*. Later in-place deploys keep the binding. `refresh_models.py` checks the binding before refreshing and fails with a re-bind message if it's gone. The incremental refresh policy stays real (`applyRefreshPolicy: true`). Moving to `semantic_model_binding` in fabric-cicd remains an option if re-binding becomes a chore. |
-| **D4** | `src/lib` drift | **Inject into the staged copy and fail on drift** | `ci/build_stage.ps1` writes the built library into `_stage/`, diffs it against the checked-in `functions.tmdl`, and fails with a message saying how to sync. |
+| **D4** | `src/lib` drift | **Inject into the staged copy and fail on drift** | `ci/build_stage.py` writes the built library into `_stage/`, diffs it against the checked-in `functions.tmdl`, and fails with a message saying how to sync. |
 | **D5** | Expected-failure suites | **Allowlist plus an evaluator script** | `ci/expected-failures.json` and `ci/evaluate_results.py`. Also open a pql-test issue requesting `--exclude` and `--expect-fail` options. |
 | **D6** | PRs from forks | **A maintainer label starts the run** | Fork PRs on `pull_request` get a skip notice. A `safe-to-test` label starts a `pull_request_target` job that takes workflow and scripts from `main` and only `src/` and `tests/` from the PR head. The label is removed when new commits are pushed. |
 | **D7** | Coverage | **Skip for now** | No `code-coverage` step. Revisit in a later PR. |
@@ -151,6 +152,8 @@ If (1) or (2) fails, the next option is a Fabric trial capacity or the smallest 
 
 ### Phase 1 – Azure and Fabric setup (requires an admin)
 
+Step-by-step instructions: **[ci-setup.md](ci-setup.md)**.
+
 - [ ] Create an Entra app registration (service principal) and a client secret. Store the expiry date somewhere it will be seen.
 - [ ] In tenant settings, allow service principals to use Fabric/Power BI APIs (scoped to a security group). Turn on XMLA endpoints (read/write is needed for deployment).
 - [ ] Create the `PQL.Assert-CI` workspace on **PPU** and add the service principal as **Member**. Contributor may be enough for deploy plus refresh, so verify. Admin is only needed for `ImpersonateUser`, and `ImpersonateRole` should be used instead.
@@ -160,7 +163,7 @@ If (1) or (2) fails, the next option is a Fabric trial capacity or the smallest 
 
 ### Phase 2 – Build and stage
 
-- [ ] `ci/build_stage.ps1`: reuse `Combine-TmdlFiles.ps1`, replace `__PLACEHOLDER_PACKAGE_ID__` and `__PLACEHOLDER_PACKAGE_VERSION__` from `src/manifest.daxlib`, **merge** into `_stage/<Model>.SemanticModel/definition/functions.tmdl` (replace the `PQL.Assert.*` UDFs and keep the suite UDFs), and check for drift (D4) while ignoring `lineageTag`, annotations, `///` and `//` comments, and whitespace.
+- [x] `ci/build_stage.py`: parses `src/lib/*.tmdl` directly, because the files mix tab and space indentation and `src/lib` has no placeholders to replace. It **merges** into `_stage/<Model>.SemanticModel/definition/functions.tmdl` (replace the `PQL.Assert.*` UDFs and keep the suite UDFs), and check for drift (D4) while ignoring `lineageTag`, annotations, `///` and `//` comments, and whitespace.
 - [x] Add `_stage/`, `.venv/` and `results-*.json` to `.gitignore`. Also remove the stray `temp-test-output.tmdl` from the repo root, or ignore it.
 
 ### Phase 3 – Deploy and refresh
@@ -172,7 +175,9 @@ If (1) or (2) fails, the next option is a Fabric trial capacity or the smallest 
 
 ### Phase 4 – Test and gate
 
-- [ ] RLS_Model: resync the library from `src/lib`. Add `PQLAssert_RoleName` annotations to `RLS.ANY.Tests` (West), `OLS_West.ANY.Tests` (West) and `OLS_East.ANY.Tests` (East). Confirm that `Roles=` works for the service principal on PPU.
+- [x] RLS_Model: resynced the library from `src/lib` (5 functions added, `RetrieveTests*V2` updated). Added `PQLAssert_RoleName` annotations to `RLS.ANY.Tests` (West), `OLS_West.ANY.Tests` (West) and `OLS_East.ANY.Tests` (East).
+- [ ] Open RLS_Model in Power BI Desktop to confirm that the resynced `functions.tmdl` loads, then run its suites locally with `pql-test run-tests local/RLS_Model`.
+- [ ] Confirm that `Roles=` works for the service principal on PPU.
 - [x] TestingModel: changed `RLS.ANY.Tests` `PQLAssert_RoleName` from `WestSales` to `West`, and updated `Assert.Discovery.Tests.dax` to match.
 - [ ] Run `run-tests` for each model with `--output` and `--log-format github`, using `continue-on-error` so that the evaluator makes the final call.
 - [ ] `ci/evaluate_results.py` fails on any of the following:

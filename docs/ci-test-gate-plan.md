@@ -1,6 +1,6 @@
 # Plan: PR Gate for `main` Using `pql-test`
 
-**Status:** Decisions made, Phase 0 next · **Branch:** `ci-cd` · **Created:** 2026-10-07
+**Status:** Gate green end to end (2026-10-07). Next: make it a required check · **Branch:** `ci-cd` · **Created:** 2026-10-07
 
 ## Goal
 
@@ -108,6 +108,14 @@ PPU is a supported host for XMLA, but three things need to be proven before Phas
 If (1) or (2) fails, the next option is a Fabric trial capacity or the smallest F SKU (F2) with pause and resume.
 
 ---
+
+## First CI runs (2026-10-07, PR #45)
+
+| Run | Result | What it showed |
+|---|---|---|
+| 1 | Refresh failed | Deploy works on PPU with the service principal. The SharePoint binding check was too strict, because credentials set on the model are fine. Check removed |
+| 2 | Gate failed | Refresh and tests work. All 4 suites that run under a role failed: role-impersonated queries (`Roles=`) need the caller to be a **member** of the role |
+| 3 | **Passed** | `sg-pql-assert-ci` added to TestingModel `West` and RLS_Model `West`/`East` (setup step 6.2). Role members survive redeploys. Results: TestingModel 325/327 (2 expected failures), RLS_Model 7/7 |
 
 ## Phase 0 findings (2026-10-07)
 

@@ -109,6 +109,17 @@ EVALUATE PQL.Assert.ShouldEqual("Test 1: 2+2 should equal 4", 4, 2+2)
 - `PQL.Assert.Col.TextCaseShouldBeLower(testName, columnRef)` - Asserts all text values are lowercase
 - `PQL.Assert.Col.TextLengthShouldBeInRange(testName, columnRef, minLen, maxLen)` - Asserts text lengths fall within the specified range
 
+#### Text Prefix, Suffix & Containment
+
+DAX has no `STARTSWITH`/`ENDSWITH` functions, so these assertions use `LEFT()` and `RIGHT()`. Each accepts an optional `matchCase` argument — pass `"Y"` (or `"YES"`/`"TRUE"`/`"1"`) for case-sensitive comparison. When omitted, comparison is case-insensitive. Blank values are ignored.
+
+- `PQL.Assert.Col.ShouldStartWith(testName, columnRef, prefix, [matchCase])` - Asserts every non-blank value starts with the prefix
+- `PQL.Assert.Col.ShouldNotStartWith(testName, columnRef, prefix, [matchCase])` - Asserts no non-blank value starts with the prefix
+- `PQL.Assert.Col.ShouldEndWith(testName, columnRef, suffix, [matchCase])` - Asserts every non-blank value ends with the suffix
+- `PQL.Assert.Col.ShouldNotEndWith(testName, columnRef, suffix, [matchCase])` - Asserts no non-blank value ends with the suffix
+- `PQL.Assert.Col.ShouldContainString(testName, columnRef, substring, [matchCase])` - Asserts every non-blank value contains the substring
+- `PQL.Assert.Col.ShouldNotContainString(testName, columnRef, substring, [matchCase])` - Asserts no non-blank value contains the substring
+
 #### Schema & Existence
 
 - `PQL.Assert.Col.ShouldExist(testName, tableName, columnName)` - Asserts column exists

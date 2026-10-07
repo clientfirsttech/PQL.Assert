@@ -49,7 +49,7 @@ createOrReplace
 			        "RuleDescription", "Using fully qualified column references makes it easier to distinguish between column and measure references, and also helps avoid certain errors. Reference: https://www.elegantbi.com/post/top10bestpractices. Severity: Medium (2)."
 			    )
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.6.2
+		annotation DAXLIB_PackageVersion = 0.7.0
 
 	/// Asserts that measures should use TREATAS instead of INTERSECT for virtual relationships.
 	/// The TREATAS function is more efficient and provides better performance than the INTERSECT function when used in virtual relationships.
@@ -93,7 +93,7 @@ createOrReplace
 			        "RuleDescription", "The TREATAS function is more efficient and provides better performance than the INTERSECT function when used in virtual relationships. Reference: https://www.sqlbi.com/articles/propagate-filters-using-treatas-in-dax/. Severity: Medium (2)."
 			    )
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.6.2
+		annotation DAXLIB_PackageVersion = 0.7.0
 
 	/// Runs all DAX expression best practice checks.
 	/// This function executes all DAX expression validation rules and returns combined results.
@@ -104,4 +104,4 @@ createOrReplace
 			        PQL.Assert.BP.ShouldUseTreatAsInsteadOfIntersect()
 			    )
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.6.2
+		annotation DAXLIB_PackageVersion = 0.7.0

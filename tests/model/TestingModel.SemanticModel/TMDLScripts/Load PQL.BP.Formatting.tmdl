@@ -78,7 +78,7 @@ createOrReplace
 			        "RuleDescription", "Visible measures should have their format string property assigned. Measures without format strings may display inconsistently and make reports harder to understand. Severity: High (3)."
 			    )	
 	    annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.6.2
+		annotation DAXLIB_PackageVersion = 0.7.0
 
 	/// Asserts that numeric columns should have SummarizeBy set to None.
 	/// Numeric columns with SummarizeBy enabled may cause accidental aggregation in reports. Users should create explicit measures instead.
@@ -154,7 +154,7 @@ createOrReplace
 			        "RuleDescription", "Numeric columns (Int64, Decimal, Double) should have their SummarizeBy property set to None to avoid accidental aggregation in Power BI. Users should create explicit measures instead. Severity: High (3)."
 			    )	
 	    annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.6.2
+		annotation DAXLIB_PackageVersion = 0.7.0
 
 	/// Asserts that tables should have at least one column marked as a row label (IsDefaultLabel = true).
 	/// Row labels help Power BI Copilot understand which columns represent the primary identifier for rows in a table.
@@ -224,7 +224,7 @@ createOrReplace
 			        "RuleDescription", "Set the 'RowLabel' property to 'True' for row label columns within the column properties. This helps Power BI Copilot understand which columns represent the primary identifier for rows in a table. Reference: https://blog.crossjoin.co.uk/2024/08/25/tuning-power-bi-copilot-with-row-labels-and-key-columns/. Severity: High (3)."
 			    )	
 	    annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.6.2
+		annotation DAXLIB_PackageVersion = 0.7.0
 
 	/// Asserts that columns on the "One" side of relationships should have the IsKey property set to true.
 	/// Marking primary keys helps Power BI understand table relationships and optimize query performance.
@@ -328,7 +328,7 @@ createOrReplace
 			        "RuleDescription", "Set the 'Key' property to 'True' for primary key columns within the column properties. This helps Power BI understand table relationships and optimize query performance. Severity: High (3)."
 			    )	
 	    annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.6.2
+		annotation DAXLIB_PackageVersion = 0.7.0
 
 	/// Runs all formatting best practice checks.
 	/// This function executes all formatting validation rules and returns combined results.
@@ -341,4 +341,4 @@ createOrReplace
 			        PQL.Assert.BP.ShouldMarkPrimaryKeys()
 			    )
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.6.2
+		annotation DAXLIB_PackageVersion = 0.7.0

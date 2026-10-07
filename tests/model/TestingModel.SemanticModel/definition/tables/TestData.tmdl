@@ -91,6 +91,30 @@ table TestData
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Fixture for text prefix/suffix/contains assertions: ORD-001-US ... ORD-005-US
+	column 'Order Code' = "ORD-" & FORMAT([ID], "000") & "-US"
+		dataType: string
+		lineageTag: 9c1f4a52-6d3e-4f0b-8a21-5b7c0d2e1f44
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Fixture for blank handling in text assertions: ORD-001-US, (blank), ORD-003-US, (blank), ORD-005-US
+	column 'Sparse Code' = IF(ISODD([ID]), "ORD-" & FORMAT([ID], "000") & "-US")
+		dataType: string
+		lineageTag: 3b8e6d21-7a4c-4f19-9e05-c2d1a6f8b730
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Fixture for values shorter than the LEFT()/RIGHT() length: "x", "", "Error - Timeout", "Err", (blank)
+	column 'Short Text' = SWITCH([ID], 1, "x", 2, "", 3, "Error - Timeout", 4, "Err", BLANK())
+		dataType: string
+		lineageTag: 6f2a9c47-1d8b-4e63-b5a0-8e7f3c2d914b
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
 	partition TestData = m
 		mode: import
 		source = ```

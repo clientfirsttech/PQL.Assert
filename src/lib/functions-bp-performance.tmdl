@@ -49,7 +49,7 @@ createOrReplace
 			        "RuleDescription", "Avoid bi-directional relationships on high-cardinality columns (>1M distinct values) for better performance. Severity: Medium (2)."
 			    )
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.6.2
+		annotation DAXLIB_PackageVersion = 0.7.0
 
 	/// Asserts that auto-date tables should be removed.
 	/// Auto-date tables (DateTableTemplate_* and LocalDateTable_*) consume memory and should be disabled.
@@ -72,7 +72,7 @@ createOrReplace
 			        "RuleDescription", "Avoid using auto-date tables. Turn off auto-date table in Power BI Desktop settings to save memory. Severity: Medium (2)."
 			    )
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.6.2
+		annotation DAXLIB_PackageVersion = 0.7.0
 
 	/// Asserts that no columns use floating point data types.
 	/// The "Double" floating point data type should be avoided to prevent unpredictable roundoff errors and performance issues.
@@ -108,7 +108,7 @@ createOrReplace
 			        "RuleDescription", "Avoid using Number floating point data type, as it can result in unpredictable roundoff errors and decreased performance. Use Int64 or Decimal where appropriate (Decimal limited to 4 digits after decimal). Severity: Medium (2)."
 			    )
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.6.2
+		annotation DAXLIB_PackageVersion = 0.7.0
 
 	/// Asserts that IsAvailableInMdx should be set to false on hidden non-attribute columns.
 	/// Hidden columns that still have IsAvailableInMdx = true cause unnecessary attribute hierarchy builds, consuming memory and slowing processing.
@@ -159,7 +159,7 @@ createOrReplace
 			        "RuleDescription", "To speed up processing time and conserve memory, attribute hierarchies should not be built for hidden columns. Set IsAvailableInMdx to false for better performance. Severity: Medium (2)."
 			    )
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.6.2
+		annotation DAXLIB_PackageVersion = 0.7.0
 
 	/// Runs all performance best practice checks.
 	/// This function executes all performance validation rules and returns combined results.
@@ -172,4 +172,4 @@ createOrReplace
 			        PQL.Assert.BP.ShouldSetIsAvailableInMdxFalseOnNonAttributeColumns()
 			    )
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.6.2
+		annotation DAXLIB_PackageVersion = 0.7.0

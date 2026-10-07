@@ -212,6 +212,71 @@ VAR _IsAvailableInMDX_Fail =
     )
 
 // ============================================
+// TEXT PREFIX / SUFFIX / CONTAINS
+// TestData[Order Code] = ORD-001-US ... ORD-005-US
+// TestData[Name] = Alpha, Beta, Gamma, Delta, Epsilon
+// ============================================
+
+// PQL.Assert.Col.ShouldStartWith
+VAR _StartsWith_Pass = PQL.Assert.Col.ShouldStartWith("Col.ShouldStartWith: Order Code starts with 'ORD-' should pass", 'TestData'[Order Code], "ORD-")
+VAR _StartsWith_Pass_IgnoreCase = PQL.Assert.Col.ShouldStartWith("Col.ShouldStartWith: Order Code starts with 'ord-' case-insensitive should pass", 'TestData'[Order Code], "ord-")
+VAR _StartsWith_Fail_CaseSensitive = PQL.Assert.Col.ShouldStartWith("Col.ShouldStartWith: Order Code starts with 'ord-' case-sensitive should fail", 'TestData'[Order Code], "ord-", "Y")
+VAR _StartsWith_Fail = PQL.Assert.Col.ShouldStartWith("Col.ShouldStartWith: Name starts with 'Al' should fail", 'TestData'[Name], "Al")
+
+// PQL.Assert.Col.ShouldNotStartWith
+VAR _NotStartsWith_Pass = PQL.Assert.Col.ShouldNotStartWith("Col.ShouldNotStartWith: Order Code starts with 'INV-' should pass", 'TestData'[Order Code], "INV-")
+VAR _NotStartsWith_Pass_CaseSensitive = PQL.Assert.Col.ShouldNotStartWith("Col.ShouldNotStartWith: Order Code starts with 'ord-' case-sensitive should pass", 'TestData'[Order Code], "ord-", "Y")
+VAR _NotStartsWith_Fail = PQL.Assert.Col.ShouldNotStartWith("Col.ShouldNotStartWith: Order Code starts with 'ORD-' should fail", 'TestData'[Order Code], "ORD-")
+
+// PQL.Assert.Col.ShouldEndWith
+VAR _EndsWith_Pass = PQL.Assert.Col.ShouldEndWith("Col.ShouldEndWith: Order Code ends with '-US' should pass", 'TestData'[Order Code], "-US")
+VAR _EndsWith_Pass_IgnoreCase = PQL.Assert.Col.ShouldEndWith("Col.ShouldEndWith: Order Code ends with '-us' case-insensitive should pass", 'TestData'[Order Code], "-us")
+VAR _EndsWith_Fail_CaseSensitive = PQL.Assert.Col.ShouldEndWith("Col.ShouldEndWith: Order Code ends with '-us' case-sensitive should fail", 'TestData'[Order Code], "-us", "Y")
+VAR _EndsWith_Fail = PQL.Assert.Col.ShouldEndWith("Col.ShouldEndWith: Name ends with 'a' should fail", 'TestData'[Name], "a")
+
+// PQL.Assert.Col.ShouldNotEndWith
+VAR _NotEndsWith_Pass = PQL.Assert.Col.ShouldNotEndWith("Col.ShouldNotEndWith: Order Code ends with '-CA' should pass", 'TestData'[Order Code], "-CA")
+VAR _NotEndsWith_Pass_CaseSensitive = PQL.Assert.Col.ShouldNotEndWith("Col.ShouldNotEndWith: Order Code ends with '-us' case-sensitive should pass", 'TestData'[Order Code], "-us", "Y")
+VAR _NotEndsWith_Fail = PQL.Assert.Col.ShouldNotEndWith("Col.ShouldNotEndWith: Order Code ends with '-US' should fail", 'TestData'[Order Code], "-US")
+
+// PQL.Assert.Col.ShouldContainString
+VAR _Contains_Pass = PQL.Assert.Col.ShouldContainString("Col.ShouldContainString: Order Code contains '-00' should pass", 'TestData'[Order Code], "-00")
+VAR _Contains_Pass_CaseSensitive = PQL.Assert.Col.ShouldContainString("Col.ShouldContainString: Order Code contains 'ORD' case-sensitive should pass", 'TestData'[Order Code], "ORD", "Y")
+VAR _Contains_Fail_CaseSensitive = PQL.Assert.Col.ShouldContainString("Col.ShouldContainString: Order Code contains 'ord' case-sensitive should fail", 'TestData'[Order Code], "ord", "Y")
+VAR _Contains_Fail = PQL.Assert.Col.ShouldContainString("Col.ShouldContainString: Name contains 'a' should fail", 'TestData'[Name], "a")
+
+// PQL.Assert.Col.ShouldNotContainString
+VAR _NotContains_Pass = PQL.Assert.Col.ShouldNotContainString("Col.ShouldNotContainString: Order Code contains 'XYZ' should pass", 'TestData'[Order Code], "XYZ")
+VAR _NotContains_Pass_CaseSensitive = PQL.Assert.Col.ShouldNotContainString("Col.ShouldNotContainString: Order Code contains 'ord' case-sensitive should pass", 'TestData'[Order Code], "ord", "Y")
+VAR _NotContains_Fail = PQL.Assert.Col.ShouldNotContainString("Col.ShouldNotContainString: Order Code contains 'ORD' should fail", 'TestData'[Order Code], "ORD")
+
+// Blank values are skipped
+// TestData[Sparse Code] = ORD-001-US, (blank), ORD-003-US, (blank), ORD-005-US
+VAR _StartsWith_Pass_SkipsBlanks = PQL.Assert.Col.ShouldStartWith("Col.ShouldStartWith: Sparse Code starts with 'ORD-' ignoring blanks should pass", 'TestData'[Sparse Code], "ORD-")
+VAR _NotStartsWith_Pass_SkipsBlanks = PQL.Assert.Col.ShouldNotStartWith("Col.ShouldNotStartWith: Sparse Code starts with 'INV-' ignoring blanks should pass", 'TestData'[Sparse Code], "INV-")
+VAR _EndsWith_Pass_SkipsBlanks = PQL.Assert.Col.ShouldEndWith("Col.ShouldEndWith: Sparse Code ends with '-US' ignoring blanks should pass", 'TestData'[Sparse Code], "-US")
+VAR _NotEndsWith_Pass_SkipsBlanks = PQL.Assert.Col.ShouldNotEndWith("Col.ShouldNotEndWith: Sparse Code ends with '-CA' ignoring blanks should pass", 'TestData'[Sparse Code], "-CA")
+VAR _Contains_Pass_SkipsBlanks = PQL.Assert.Col.ShouldContainString("Col.ShouldContainString: Sparse Code contains '-00' ignoring blanks should pass", 'TestData'[Sparse Code], "-00")
+VAR _NotContains_Pass_SkipsBlanks = PQL.Assert.Col.ShouldNotContainString("Col.ShouldNotContainString: Sparse Code contains 'XYZ' ignoring blanks should pass", 'TestData'[Sparse Code], "XYZ")
+
+// Values shorter than the prefix/suffix (LEFT/RIGHT past the end of the value)
+// TestData[Short Text] = "x", "", "Error - Timeout", "Err", (blank)
+// TestData[Category] = A, B, C
+VAR _StartsWith_Fail_ValueShorterThanPrefix = PQL.Assert.Col.ShouldStartWith("Col.ShouldStartWith: Short Text starts with 'Error - ' ('x' is shorter than prefix) should fail", 'TestData'[Short Text], "Error - ")
+VAR _NotStartsWith_Pass_PrefixLongerThanValue = PQL.Assert.Col.ShouldNotStartWith("Col.ShouldNotStartWith: Category starts with 'Error - ' (prefix longer than every value) should pass", 'TestData'[Category], "Error - ")
+VAR _NotStartsWith_Pass_ValueIsPrefixOfPrefix = PQL.Assert.Col.ShouldNotStartWith("Col.ShouldNotStartWith: Short Text starts with 'Error - Timeout - Retry' (value is only a prefix of the prefix) should pass", 'TestData'[Short Text], "Error - Timeout - Retry")
+VAR _NotStartsWith_Fail_ShortText = PQL.Assert.Col.ShouldNotStartWith("Col.ShouldNotStartWith: Short Text starts with 'Error - ' should fail", 'TestData'[Short Text], "Error - ")
+VAR _EndsWith_Fail_ValueShorterThanSuffix = PQL.Assert.Col.ShouldEndWith("Col.ShouldEndWith: Short Text ends with ' - Timeout' ('x' is shorter than suffix) should fail", 'TestData'[Short Text], " - Timeout")
+VAR _NotEndsWith_Pass_SuffixLongerThanValue = PQL.Assert.Col.ShouldNotEndWith("Col.ShouldNotEndWith: Category ends with ' - Error' (suffix longer than every value) should pass", 'TestData'[Category], " - Error")
+VAR _NotEndsWith_Pass_ValueIsSuffixOfSuffix = PQL.Assert.Col.ShouldNotEndWith("Col.ShouldNotEndWith: Short Text ends with 'Big Error - Timeout' (value is only a suffix of the suffix) should pass", 'TestData'[Short Text], "Big Error - Timeout")
+VAR _Contains_Fail_ValueShorterThanSearch = PQL.Assert.Col.ShouldContainString("Col.ShouldContainString: Short Text contains 'Error - ' ('x' is shorter than search text) should fail", 'TestData'[Short Text], "Error - ")
+VAR _NotContains_Pass_SearchLongerThanValue = PQL.Assert.Col.ShouldNotContainString("Col.ShouldNotContainString: Category contains 'Error - ' (search text longer than every value) should pass", 'TestData'[Category], "Error - ")
+
+// Empty prefix/suffix matches every value
+VAR _StartsWith_Pass_EmptyPrefix = PQL.Assert.Col.ShouldStartWith("Col.ShouldStartWith: Short Text starts with '' (empty prefix) should pass", 'TestData'[Short Text], "")
+VAR _NotEndsWith_Fail_EmptySuffix = PQL.Assert.Col.ShouldNotEndWith("Col.ShouldNotEndWith: Short Text ends with '' (empty suffix) should fail", 'TestData'[Short Text], "")
+
+// ============================================
 // Combine All Test Results
 // ============================================
 VAR _AllTests = UNION(
@@ -289,7 +354,47 @@ VAR _AllTests = UNION(
     _TextLen_Pass,
     _TextLen_Fail,
     _IsAvailableInMDX_Pass,
-    _IsAvailableInMDX_Fail
+    _IsAvailableInMDX_Fail,
+
+    // Text Prefix / Suffix / Contains
+    _StartsWith_Pass,
+    _StartsWith_Pass_IgnoreCase,
+    _StartsWith_Fail_CaseSensitive,
+    _StartsWith_Fail,
+    _NotStartsWith_Pass,
+    _NotStartsWith_Pass_CaseSensitive,
+    _NotStartsWith_Fail,
+    _EndsWith_Pass,
+    _EndsWith_Pass_IgnoreCase,
+    _EndsWith_Fail_CaseSensitive,
+    _EndsWith_Fail,
+    _NotEndsWith_Pass,
+    _NotEndsWith_Pass_CaseSensitive,
+    _NotEndsWith_Fail,
+    _Contains_Pass,
+    _Contains_Pass_CaseSensitive,
+    _Contains_Fail_CaseSensitive,
+    _Contains_Fail,
+    _NotContains_Pass,
+    _NotContains_Pass_CaseSensitive,
+    _NotContains_Fail,
+    _StartsWith_Pass_SkipsBlanks,
+    _NotStartsWith_Pass_SkipsBlanks,
+    _EndsWith_Pass_SkipsBlanks,
+    _NotEndsWith_Pass_SkipsBlanks,
+    _Contains_Pass_SkipsBlanks,
+    _NotContains_Pass_SkipsBlanks,
+    _StartsWith_Fail_ValueShorterThanPrefix,
+    _NotStartsWith_Pass_PrefixLongerThanValue,
+    _NotStartsWith_Pass_ValueIsPrefixOfPrefix,
+    _NotStartsWith_Fail_ShortText,
+    _EndsWith_Fail_ValueShorterThanSuffix,
+    _NotEndsWith_Pass_SuffixLongerThanValue,
+    _NotEndsWith_Pass_ValueIsSuffixOfSuffix,
+    _Contains_Fail_ValueShorterThanSearch,
+    _NotContains_Pass_SearchLongerThanValue,
+    _StartsWith_Pass_EmptyPrefix,
+    _NotEndsWith_Fail_EmptySuffix
 )
 
 // ============================================

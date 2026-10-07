@@ -1,14 +1,14 @@
 {
   "version": "1.0.0",
   "tabOrder": [
-    "Assert.Tests",
-    "Assert.Discovery.Tests",
-    "BP.DAXExpressions.Tests",
-    "BP.ErrorPrevention.Tests",
-    "BP.Formatting.Tests",
-    "BP.Performance.Tests",
-    "BP.Maintenance.Tests",
-    "BP.DEV.Tests",
+    "Assert.ANY.Tests",
+    "Assert.Discovery.ANY.Tests",
+    "BP.DAXExpressions.ANY.Tests",
+    "BP.ErrorPrevention.ANY.Tests",
+    "BP.Formatting.ANY.Tests",
+    "BP.Performance.ANY.Tests",
+    "BP.Maintenance.ANY.Tests",
+    "BP.DEV.Checks",
     "Example.ANY.Tests",
     "Table.DEV.Test",
     "ShouldFail.TEST.Tests",
@@ -16,12 +16,12 @@
     "Example.Myenv.Tests",
     "Retrieve Tests",
     "Example.prod.tests",
-    "Tbl.Tests",
-    "Col.Tests",
-    "RLS.Tests",
-    "Partition.Tests",
-    "Perspective.Tests",
+    "Tbl.ANY.Tests",
+    "Col.ANY.Tests",
+    "RLS.ANY.Tests",
+    "Partition.ANY.Tests",
+    "Perspective.ANY.Tests",
     "Query 1"
   ],
-  "defaultTab": "Perspective.Tests"
+  "defaultTab": "Perspective.ANY.Tests"
 }

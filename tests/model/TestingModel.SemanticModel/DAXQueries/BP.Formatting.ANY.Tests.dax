@@ -1,0 +1,105 @@
+DEFINE
+	FUNCTION BP.Formatting.ANY.Tests = () =>
+		// ============================================
+		// Formatting Validation Test Suite
+		// Tests for formatting best practices
+		// ============================================
+
+		// PQL.Assert.BP.ShouldProvideFormatStringForMeasures
+		// Tests that all visible measures have format strings assigned
+		// Test includes: 'Measure Without Format' measure (should fail)
+		VAR _ProvideFormatStringForMeasures_Fail =
+		    ADDCOLUMNS(
+		        PQL.Assert.BP.ShouldProvideFormatStringForMeasures(),
+		        "TestExpectation", "should fail"
+		    )
+
+		// PQL.Assert.BP.ShouldNotSummarizeNumericColumns
+		// Tests that numeric columns should have SummarizeBy set to None
+		// Test includes: TestData.Value, TestData-Fact.Value, TestData.'Fixed Decimal' with SummarizeBy = sum (should fail)
+		VAR _NotSummarizeNumericColumns_Fail =
+		    ADDCOLUMNS(
+		        PQL.Assert.BP.ShouldNotSummarizeNumericColumns(),
+		        "TestExpectation", "should fail"
+		    )
+
+		// PQL.Assert.BP.ShouldMarkRowLabels
+		// Tests that tables should have at least one column marked as a row label (IsDefaultLabel = true)
+		// Test model tables do not have row labels set (should fail)
+		VAR _MarkRowLabels_Fail =
+		    ADDCOLUMNS(
+		        PQL.Assert.BP.ShouldMarkRowLabels(),
+		        "TestExpectation", "should fail"
+		    )
+
+		// PQL.Assert.BP.ShouldMarkPrimaryKeys
+		// Tests that columns on the "One" side of relationships should have IsKey = true
+		// Test model primary key columns do not have IsKey set (should fail)
+		VAR _MarkPrimaryKeys_Fail =
+		    ADDCOLUMNS(
+		        PQL.Assert.BP.ShouldMarkPrimaryKeys(),
+		        "TestExpectation", "should fail"
+		    )
+
+		// PQL.Assert.BP.ShouldHideFactTableColumns
+		// Tests that visible numeric columns used in aggregation measures should be hidden
+		// Test includes: Mock-Fact[Total] used in SUM('Mock-Fact'[Total]), TestData-Fact[Value] used in SUM (should fail)
+		VAR _HideFactTableColumns_Fail =
+		    ADDCOLUMNS(
+		        PQL.Assert.BP.ShouldHideFactTableColumns(),
+		        "TestExpectation", "should fail"
+		    )
+
+		// ============================================
+		// Combine All Test Results
+		// ============================================
+		VAR _AllTests = UNION(
+		    _ProvideFormatStringForMeasures_Fail,
+		    _NotSummarizeNumericColumns_Fail,
+		    _MarkRowLabels_Fail,
+		    _MarkPrimaryKeys_Fail,
+		    _HideFactTableColumns_Fail
+		)
+
+		// ============================================
+		// TEST VALIDATION LAYER
+		// Checks if TestExpectation matches actual results
+		// ============================================
+		VAR _ValidationResults =
+		    ADDCOLUMNS(
+		        _AllTests,
+		        "ExpectedToPass",
+		            [TestExpectation] = "should pass",
+		        "ExpectedToFail",
+		            [TestExpectation] = "should fail",
+		        "HasExpectation",
+		            NOT(ISBLANK([TestExpectation])),
+		        "ValidationStatus",
+		            SWITCH(
+		                TRUE(),
+		                [TestExpectation] = "should pass" && [Passed] = TRUE, "✅ CORRECT",
+		                [TestExpectation] = "should fail" && [Passed] = FALSE, "✅ CORRECT",
+		                [TestExpectation] = "should pass" && [Passed] = FALSE, "❌ MISMATCH: Expected PASS but got FAIL",
+		                [TestExpectation] = "should fail" && [Passed] = TRUE, "❌ MISMATCH: Expected FAIL but got PASS",
+		                "⚠️ NO CLEAR EXPECTATION"
+		            )
+		    )
+		RETURN
+		    // One row per assertion: Passed means it behaved as its name says
+		    // ("should pass" / "should fail"). Assertions without an expectation keep their own result.
+		    SELECTCOLUMNS(
+		        _ValidationResults,
+		        "TestName", [TestName],
+		        "Expected", [Expected],
+		        "Actual", [Actual] & " [" & [ValidationStatus] & "]",
+		        "Passed",
+		            SWITCH(
+		                TRUE(),
+		                CONTAINSSTRING([ValidationStatus], "MISMATCH"), FALSE,
+		                CONTAINSSTRING([ValidationStatus], "CORRECT"), TRUE,
+		                [Passed]
+		            )
+		    )
+
+EVALUATE BP.Formatting.ANY.Tests()
+ORDER BY [Passed], [TestName]

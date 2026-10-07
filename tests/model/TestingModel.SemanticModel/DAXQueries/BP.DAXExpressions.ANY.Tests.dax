@@ -1,0 +1,75 @@
+DEFINE
+	FUNCTION BP.DAXExpressions.ANY.Tests = () =>
+		// ============================================
+		// DAX Expressions Validation Test Suite
+		// Tests for DAX expression best practices
+		// ============================================
+
+		// PQL.Assert.BP.ShouldUseFullyQualifiedColumnReferences
+		// Tests that all column references in measures are fully qualified (Table[Column])
+		// Test includes: 'Total Value Unqualified' measure (should fail)
+		VAR _FullyQualifiedColumnRefs_Fail =
+		    ADDCOLUMNS(
+		        PQL.Assert.BP.ShouldUseFullyQualifiedColumnReferences(),
+		        "TestExpectation", "should fail"
+		    )
+
+		// PQL.Assert.BP.ShouldUseTreatAsInsteadOfIntersect
+		// Tests that measures should use TREATAS instead of INTERSECT for virtual relationships
+		// Test includes: 'Test INTERSECT Usage' measure (should fail - uses INTERSECT instead of TREATAS)
+		VAR _UseTreatAsInsteadOfIntersect_Fail =
+		    ADDCOLUMNS(
+		        PQL.Assert.BP.ShouldUseTreatAsInsteadOfIntersect(),
+		        "TestExpectation", "should fail"
+		    )
+
+		// ============================================
+		// Combine All Test Results
+		// ============================================
+		VAR _AllTests = UNION(
+		    _FullyQualifiedColumnRefs_Fail,
+		    _UseTreatAsInsteadOfIntersect_Fail
+		)
+
+		// ============================================
+		// TEST VALIDATION LAYER
+		// Checks if TestExpectation matches actual results
+		// ============================================
+		VAR _ValidationResults =
+		    ADDCOLUMNS(
+		        _AllTests,
+		        "ExpectedToPass",
+		            [TestExpectation] = "should pass",
+		        "ExpectedToFail",
+		            [TestExpectation] = "should fail",
+		        "HasExpectation",
+		            NOT(ISBLANK([TestExpectation])),
+		        "ValidationStatus",
+		            SWITCH(
+		                TRUE(),
+		                [TestExpectation] = "should pass" && [Passed] = TRUE, "✅ CORRECT",
+		                [TestExpectation] = "should fail" && [Passed] = FALSE, "✅ CORRECT",
+		                [TestExpectation] = "should pass" && [Passed] = FALSE, "❌ MISMATCH: Expected PASS but got FAIL",
+		                [TestExpectation] = "should fail" && [Passed] = TRUE, "❌ MISMATCH: Expected FAIL but got PASS",
+		                "⚠️ NO CLEAR EXPECTATION"
+		            )
+		    )
+		RETURN
+		    // One row per assertion: Passed means it behaved as its name says
+		    // ("should pass" / "should fail"). Assertions without an expectation keep their own result.
+		    SELECTCOLUMNS(
+		        _ValidationResults,
+		        "TestName", [TestName],
+		        "Expected", [Expected],
+		        "Actual", [Actual] & " [" & [ValidationStatus] & "]",
+		        "Passed",
+		            SWITCH(
+		                TRUE(),
+		                CONTAINSSTRING([ValidationStatus], "MISMATCH"), FALSE,
+		                CONTAINSSTRING([ValidationStatus], "CORRECT"), TRUE,
+		                [Passed]
+		            )
+		    )
+
+EVALUATE BP.DAXExpressions.ANY.Tests()
+ORDER BY [Passed], [TestName]

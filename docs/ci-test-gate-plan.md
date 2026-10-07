@@ -95,7 +95,7 @@ Scripts that publish to the DaxLib fork stay in `scripts/`. Everything specific 
 | **D6** | PRs from forks | **A maintainer label starts the run** | Fork PRs on `pull_request` get a skip notice. A `safe-to-test` label starts a `pull_request_target` job that takes workflow and scripts from `main` and only `src/` and `tests/` from the PR head. The label is removed when new commits are pushed. |
 | **D7** | Coverage | **Skip for now** | No `code-coverage` step. Revisit in a later PR. |
 | **D8** | Gated suites | **All suites, plus one `--env ANY` check** | One full run per model. Then a `retrieve-tests --env ANY` assertion on the suite count, so environment filtering is covered too. |
-| **D9** | `.dax` query-file suites | **Fix in pql-test** | When connected, pql-test should also run `DAXQueries/*.Tests.dax` files that aren't model UDFs. Ship it in pql-test 0.1.20, then bump the pin in `ci/requirements.txt`. **Don't enforce the gate (Phase 5) until this ships**, or it would pass without the core library tests. |
+| **D9** | `.dax` query-file suites | **Register them as model UDFs** (stay on pql-test 0.1.19) | Each suite becomes `[Area].ANY.Tests` in TestingModel's `functions.tmdl`, and the `.dax` file is renamed to match as `DEFINE FUNCTION … EVALUATE`. Each suite returns one row per assertion, where `Passed` means it behaved as its name says ("should pass" / "should fail"). **Done 2026-10-07.** |
 
 ### PPU caveats to clear in Phase 0
 
@@ -137,7 +137,7 @@ If (1) or (2) fails, the next option is a Fabric trial capacity or the smallest 
 
 **JSON results shape (from the pql-test 0.1.19 source):** `{model_path, passed, failed, skipped, total, results: [{test_name, suite_name, expected, actual, passed, skipped, error, duration_ms}]}`. `suite_name` is present, so expected failures are matched by suite.
 
-**⚠ Gap: `.dax` query-file suites don't run against a deployed model.** With a live connection, pql-test discovers suites only through `RetrieveTestsV2()`, which returns model UDFs, and it filters them to names declared locally. It reads `DAXQueries/*.Tests.dax` files **only** when there is no connection, and then every result is skipped. As a result, these TestingModel suites, which are the core library tests, **would not run in CI**: `Assert.Tests`, `Assert.Discovery.Tests`, `Col.Tests`, `Tbl.Tests`, `Partition.Tests`, `Perspective.Tests` and all six `BP.*.Tests`. Only the 7 model-UDF suites would run. **Decided (D9): fix it in pql-test.**
+**⚠ Gap: `.dax` query-file suites don't run against a deployed model.** With a live connection, pql-test discovers suites only through `RetrieveTestsV2()`, which returns model UDFs, and it filters them to names declared locally. It reads `DAXQueries/*.Tests.dax` files **only** when there is no connection, and then every result is skipped. As a result, these TestingModel suites, which are the core library tests, **would not run in CI**: `Assert.Tests`, `Assert.Discovery.Tests`, `Col.Tests`, `Tbl.Tests`, `Partition.Tests`, `Perspective.Tests` and all six `BP.*.Tests`. Only the 7 model-UDF suites would run. **Decided (D9): register the suites as model UDFs. Done.** 11 suites converted (`Assert`, `Assert.Discovery`, `Col`, `Tbl`, `Partition`, `Perspective`, `BP.DAXExpressions`, `BP.ErrorPrevention`, `BP.Formatting`, `BP.Maintenance`, `BP.Performance`). `RLS.Tests.dax` was renamed to `RLS.ANY.Tests.dax`. `BP.DEV.Tests.dax` became `BP.DEV.Checks.dax`, because it holds raw `BP.Check*()` calls that fail by design on TestingModel and isn't a suite.
 
 **Still open in Phase 0:** the PPU checks, the D3 binding, and timing.
 
@@ -192,8 +192,8 @@ Step-by-step instructions: **[ci-setup.md](ci-setup.md)**.
   - all results skipped
 - [x] D8: run `pql-test retrieve-tests <model> --env ANY` for both models (expected lists in `ci/gate.json`) and check that only the expected `*.ANY.Tests` suites come back.
 - [x] The step summary shows a table of passed, failed, expected-failure and skipped counts per model, and the JSON is uploaded as the `pql-test-results` artifact.
-- [ ] **D9:** after pql-test 0.1.20 ships, bump `ci/requirements.txt` and confirm both models' results include the `.dax` suites (`Assert.Tests`, `Col.Tests`, `Tbl.Tests`, `BP.*`, …). Recheck the `--env ANY` lists in `ci/gate.json`, since `.dax` suites might now match env filters by file stem.
-- [ ] File the pql-test issues: D9 (run `.dax` suites when connected) and D5 (`--exclude` / `--expect-fail`).
+- [ ] **D9:** open TestingModel in Desktop, confirm the 11 new suite UDFs load, and run `pql-test run-tests local/TestingModel`. Fix any suite whose rows fail. Note that `Partition.ANY.Tests` hard-codes partition counts by date, which will drift as the incremental refresh policy rolls forward.
+- [ ] Optional: file a pql-test issue for D5 (`--exclude` / `--expect-fail`).
 - [x] Fork PRs on `pull_request` **fail** (not skip) with instructions, because GitHub counts a skipped required check as passing.
 - [ ] Open a pql-test issue requesting `--exclude` and `--expect-fail` (D5).
 

@@ -23,6 +23,14 @@ pql-test check-prereqs
 
 When you change a function in `src/lib`, run `sync`. Then open the model in Power BI Desktop to confirm it loads, and commit both the source and the model changes. CI runs `check` and fails the PR if they drift.
 
+## Writing test suites
+
+pql-test only runs suites that are **UDFs in the model** (`PQL.Assert.RetrieveTestsV2()`). A `DAXQueries/*.dax` file on its own never runs in CI. For each suite:
+
+- Add a function named `[Area].[Env].Tests` to `definition/functions.tmdl`, returning `TestName`, `Expected`, `Actual`, `Passed`.
+- Keep `DAXQueries/<same name>.dax` as `DEFINE FUNCTION <name> = () => … EVALUATE <name>()` for DAX query view.
+- For deliberate "should fail" cases, follow the validation pattern in `Col.ANY.Tests`: `Passed` means the assertion behaved as its name says.
+
 ## Running the tests locally
 
 With TestingModel open in Power BI Desktop:

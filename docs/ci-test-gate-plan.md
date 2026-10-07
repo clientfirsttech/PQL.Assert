@@ -107,15 +107,43 @@ If (1) or (2) fails, the next option is a Fabric trial capacity or the smallest 
 
 ---
 
+## Phase 0 findings (2026-10-07)
+
+**Environment:** `.venv` with Python 3.12.6 and `pql-test 0.1.19`. `check-prereqs` passes on this machine.
+
+**Test suites live in the model, not just in `.dax` files.** Every suite (`Example.ANY.Tests`, `ShouldFail.TEST.Tests`, `RLS.ANY.Tests`, `OLS_West.ANY.Tests`, …) is a UDF in `definition/functions.tmdl`. pql-test finds them live through `PQL.Assert.RetrieveTestsV2()` and reads impersonation from annotations (`PQLAssert_RoleName`, `PQLAssert_ImpersonatedUserName`). As a result:
+- The Phase 4 item about renaming the RLS `.dax` files isn't needed for discovery. Suites need to be UDFs with the right annotations.
+- D4 injection has to **merge**, not overwrite. Replace the `PQL.Assert.*` functions with the `src/lib` build and keep every other UDF (the suites).
+
+**Drift between `src/lib` and the models.** Compared function by function, ignoring `lineageTag`, annotations and comments:
+
+| Model | Same as `src/lib` | Differs | Missing | Suite UDFs kept |
+|---|---|---|---|---|
+| TestingModel | 107 / 108 | `Relationship.ShouldExist`: only `//` comments, which Desktop strips | none | 7 |
+| RLS_Model | 100 / 108 | `RetrieveTestsV2` and `RetrieveTestsByEnvironmentV2` lack the `PQLAssert_RoleName` column | 5 (`Partitions.*`, `Perspective.ShouldContain/ShouldExist`) | 3 |
+
+- The drift check must **ignore `//` line comments** as well as `lineageTag`, or Desktop round-trips will always look like drift.
+- **RLS_Model needs a resync before the gate can be enforced.** Its stale `RetrieveTestsV2` can't surface `PQLAssert_RoleName`.
+
+**Impersonation as a service principal.** From `pql_test/runner/execution.py`: a service principal can **never** use `EffectiveUserName` on the Power BI XMLA endpoint, so `PQLAssert_ImpersonatedUserName` won't work in CI. Only `PQLAssert_RoleName` (`Roles=`) works.
+
+| Suite | Current annotation | Needed for CI |
+|---|---|---|
+| RLS_Model `RLS.ANY.Tests` | `ImpersonatedUserName = atlas.kerski@…` | Add `PQLAssert_RoleName = West` |
+| RLS_Model `OLS_West.ANY.Tests` / `OLS_East.ANY.Tests` | none, so the run isn't impersonated and the OLS "hidden" assertions would fail | Add `PQLAssert_RoleName = West` / `East` |
+| TestingModel `RLS.ANY.Tests` | `RoleName = WestSales` | **The model's roles are `West` and `Dynamic`; `WestSales` doesn't exist.** Fix it, or add it to the expected-failure list if it's deliberate |
+
+**Still open in Phase 0:** the JSON results shape (needs the models open in Desktop), the PPU checks, the D3 binding, and timing.
+
 ## Phased work plan
 
 ### Phase 0 – Spike (locally, in a venv)
 
-- [ ] `python -m venv .venv; .venv\Scripts\Activate.ps1; pip install pql-test==0.1.19; pql-test check-prereqs`
+- [x] `python -m venv .venv; .venv\Scripts\Activate.ps1; pip install pql-test==0.1.19; pql-test check-prereqs`
 - [ ] With both PBIPs open in Desktop, run `pql-test retrieve-tests local/TestingModel` and `local/RLS_Model` and record which suites are discovered.
 - [ ] Run `run-tests --output` and record the **JSON shape**. Does each result carry a suite or function name, or only `test_name`? This decides whether expected failures are matched by suite or by test.
 - [ ] Decide what happens to `Table.DEV.Test.dax`, `Example.prod.tests.dax` and `Query 1.dax`: rename them, keep them as negative cases, or delete them.
-- [ ] Check whether `tests/model/.../functions.tmdl` equals the combined `src/lib` plus replaced placeholders. List any functions that only exist in tests and must be kept during injection.
+- [x] Check whether `tests/model/.../functions.tmdl` equals the combined `src/lib` plus replaced placeholders. List any functions that only exist in tests and must be kept during injection. *(See findings above)*
 - [ ] **PPU check 1:** run `pql-test run-tests` as the service principal against a model in a PPU workspace, including one `ImpersonateRole` suite.
 - [ ] **PPU check 2:** deploy TestingModel by hand with fabric-cicd to a scratch PPU workspace. If the item APIs reject it, prototype the XMLA deploy fallback.
 - [ ] **D3 check:** bind a test shareable cloud connection (OAuth) to the SharePoint source, then run an enhanced refresh with `applyRefreshPolicy: true` as the service principal.
@@ -131,8 +159,8 @@ If (1) or (2) fails, the next option is a Fabric trial capacity or the smallest 
 
 ### Phase 2 – Build and stage
 
-- [ ] `ci/build_stage.ps1`: reuse `Combine-TmdlFiles.ps1`, replace `__PLACEHOLDER_PACKAGE_ID__` and `__PLACEHOLDER_PACKAGE_VERSION__` from `src/manifest.daxlib`, write into `_stage/<Model>.SemanticModel/definition/functions.tmdl`, and check for drift (D4).
-- [ ] Add `_stage/`, `.venv/` and `results-*.json` to `.gitignore`. Also remove the stray `temp-test-output.tmdl` from the repo root, or ignore it.
+- [ ] `ci/build_stage.ps1`: reuse `Combine-TmdlFiles.ps1`, replace `__PLACEHOLDER_PACKAGE_ID__` and `__PLACEHOLDER_PACKAGE_VERSION__` from `src/manifest.daxlib`, **merge** into `_stage/<Model>.SemanticModel/definition/functions.tmdl` (replace the `PQL.Assert.*` UDFs and keep the suite UDFs), and check for drift (D4) while ignoring `lineageTag`, annotations, `///` and `//` comments, and whitespace.
+- [x] Add `_stage/`, `.venv/` and `results-*.json` to `.gitignore`. Also remove the stray `temp-test-output.tmdl` from the repo root, or ignore it.
 
 ### Phase 3 – Deploy and refresh
 
@@ -142,7 +170,8 @@ If (1) or (2) fails, the next option is a Fabric trial capacity or the smallest 
 
 ### Phase 4 – Test and gate
 
-- [ ] RLS_Model: rename the test files to `*.Tests.dax` and add `// ImpersonateRole: West|East|Admin` headers. Grant the service principal what it needs for roles under XMLA.
+- [ ] RLS_Model: resync the library from `src/lib`. Add `PQLAssert_RoleName` annotations to `RLS.ANY.Tests` (West), `OLS_West.ANY.Tests` (West) and `OLS_East.ANY.Tests` (East). Confirm that `Roles=` works for the service principal on PPU.
+- [ ] TestingModel: fix `RLS.ANY.Tests` `PQLAssert_RoleName = WestSales`, a role that doesn't exist, or list it as an expected failure.
 - [ ] Run `run-tests` for each model with `--output` and `--log-format github`, using `continue-on-error` so that the evaluator makes the final call.
 - [ ] `ci/evaluate_results.py` fails on any of the following:
   - an unexpected failure

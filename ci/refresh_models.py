@@ -3,10 +3,9 @@
 Reads PQL_TENANT_ID, PQL_CLIENT_ID, PQL_CLIENT_SECRET and PQL_WORKSPACE_ID
 from the environment.
 
-Before refreshing, each model's connections are checked: any SharePoint
-source must be bound to a shareable cloud connection. That binding is set
-once by hand (docs/ci-setup.md, step 6.1), and this check turns a lost
-binding into a clear message instead of a vague credentials error.
+TestingModel's SharePoint source needs data source credentials set once on
+the published model (docs/ci-setup.md, step 6.1). If they are missing, the
+refresh fails and Power BI's error messages are printed.
 """
 
 import argparse
@@ -18,9 +17,7 @@ import requests
 from azure.identity import ClientSecretCredential
 
 PBI_API = "https://api.powerbi.com/v1.0/myorg"
-FABRIC_API = "https://api.fabric.microsoft.com/v1"
 PBI_SCOPE = "https://analysis.windows.net/powerbi/api/.default"
-FABRIC_SCOPE = "https://api.fabric.microsoft.com/.default"
 REQUIRED_ENV = ("PQL_TENANT_ID", "PQL_CLIENT_ID", "PQL_CLIENT_SECRET", "PQL_WORKSPACE_ID")
 DONE = {"Completed", "Failed", "Cancelled", "Disabled"}
 
@@ -49,23 +46,6 @@ def find_datasets(api, workspace_id, names):
         raise SystemExit(f"Semantic model(s) not found in the CI workspace: {', '.join(missing)}. "
                          "Did the deploy step run?")
     return {n: by_name[n] for n in names}
-
-
-def check_bindings(api, workspace_id, name, dataset_id):
-    """Fail if a SharePoint source isn't bound to a shareable cloud connection."""
-    url = f"{FABRIC_API}/workspaces/{workspace_id}/items/{dataset_id}/connections"
-    connections = api.get(url, scope=FABRIC_SCOPE).get("value", [])
-    unbound = []
-    for conn in connections:
-        details = conn.get("connectionDetails") or {}
-        path = f"{details.get('type', '')} {details.get('path', '')}".lower()
-        if "sharepoint" in path and conn.get("connectivityType") != "ShareableCloud":
-            unbound.append(details.get("path") or details.get("type"))
-    if unbound:
-        raise SystemExit(
-            f"{name}: SharePoint source(s) not bound to a shareable cloud connection: "
-            f"{', '.join(unbound)}.\nRe-bind the connection: see docs/ci-setup.md, step 6.1.")
-    print(f"{name}: connection binding OK ({len(connections)} connection(s))")
 
 
 def start_refresh(api, workspace_id, name, dataset_id):
@@ -108,7 +88,6 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("models", nargs="+", help="semantic model names, e.g. TestingModel RLS_Model")
     parser.add_argument("--timeout", type=int, default=1200, help="seconds to wait for all refreshes")
-    parser.add_argument("--skip-binding-check", action="store_true")
     args = parser.parse_args()
 
     missing = [name for name in REQUIRED_ENV if not os.environ.get(name)]
@@ -120,9 +99,6 @@ def main():
     api = Api(ClientSecretCredential(os.environ["PQL_TENANT_ID"], os.environ["PQL_CLIENT_ID"],
                                      os.environ["PQL_CLIENT_SECRET"]))
     datasets = find_datasets(api, workspace_id, args.models)
-    if not args.skip_binding_check:
-        for name, dataset_id in datasets.items():
-            check_bindings(api, workspace_id, name, dataset_id)
     locations = {n: start_refresh(api, workspace_id, n, d) for n, d in datasets.items()}
     failed = wait(api, locations, args.timeout)
     return 1 if failed else 0

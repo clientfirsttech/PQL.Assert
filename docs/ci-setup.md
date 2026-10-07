@@ -7,7 +7,7 @@ This is the one-time setup behind the PR gate described in [ci-test-gate-plan.md
 | 1. Entra ID | Entra admin, or anyone allowed to create app registrations |
 | 2. Fabric tenant settings | Fabric / Power BI administrator |
 | 3. CI workspace | Anyone with a PPU license |
-| 4. SharePoint connection | Workspace owner plus the CI identity |
+| 4. SharePoint credentials | Workspace owner |
 | 5. GitHub repo | Repo admin |
 | 6. After the first CI run | Workspace owner and repo admin |
 
@@ -67,26 +67,11 @@ Copy the GUID after `/groups/` in the workspace URL, for example `https://app.po
 
 ---
 
-## 4. SharePoint connection
+## 4. SharePoint credentials
 
-`Test Import 1 & 3` in TestingModel reads `SharePoint.Contents("https://kerski.sharepoint.com/sites/DocLibTest")`. A service principal can't authenticate to SharePoint, so the model uses a **shareable cloud connection** signed in as a real **CI identity**. No gateway is needed because SharePoint Online is a cloud source.
+`Test Import 1 & 3` in TestingModel reads `SharePoint.Contents("https://kerski.sharepoint.com/sites/DocLibTest")`. A service principal can't authenticate to SharePoint, so the model's data source credentials are set **once, on the published model**, by a user who has **read** access to that site. No gateway or shareable connection is needed. See step 6.1.
 
-### 4.1 CI identity
-Pick, or create, a user account that has **read** access to `https://kerski.sharepoint.com/sites/DocLibTest`. Record who owns it. If this account loses access or its password resets, refresh in CI fails.
-
-### 4.2 Create the connection
-1. Go to **Settings (gear) → Manage connections and gateways → + New → Cloud**.
-2. Fill in the connection:
-   - **Connection name:** `PQL.Assert-CI SharePoint`
-   - **Connection type:** SharePoint
-   - **URL:** `https://kerski.sharepoint.com/sites/DocLibTest`. Use exactly this value, because it must match the model's data source.
-   - **Authentication:** OAuth 2.0. Select **Edit credentials** and sign in **as the CI identity**.
-3. Select **Create**.
-4. Open the connection's **Manage users** and add `pql-assert-ci` (the service principal) as **User**.
-
-**Verify:** the connection's status is online, and the service principal appears under *Manage users*.
-
-The connection is **bound to the model once, after the first CI deploy**. See step 6.1. CI doesn't need its ID.
+Record whose account the credentials use. If that account loses access to the site or its sign-in expires, CI refreshes fail.
 
 ---
 
@@ -113,15 +98,15 @@ Then make these settings:
 
 ## 6. After the first CI run
 
-### 6.1 Bind the SharePoint connection (one time)
-The first deploy creates `TestingModel` in `PQL.Assert-CI`. Its refresh fails until the connection is bound, and the CI log will say so.
+### 6.1 Set the SharePoint credentials (one time)
+Once TestingModel exists in `PQL.Assert-CI` (published by hand or by the first CI deploy):
 
 1. In the workspace, open **TestingModel → Settings**.
-2. If the settings are greyed out, select **Take over**. CI deployed the model as the service principal, so you have to take it over before you can edit its data source settings. CI keeps working after the takeover.
-3. Under **Gateway and cloud connections → Cloud connections**, set **Maps to** for the SharePoint source to `PQL.Assert-CI SharePoint`, then select **Apply**.
-4. Re-run the failed workflow.
+2. If the settings are greyed out, select **Take over**.
+3. Under **Data source credentials**, select **Edit credentials** for the SharePoint source, choose **OAuth2**, and sign in with an account that can read the site.
+4. Re-run the workflow if it already failed at **Refresh models**.
 
-Later deploys update the model in place and keep this binding. **Redo this step only if** the model is deleted or recreated, or `SharePoint_URL` changes. To avoid that, never delete or rename the models in `PQL.Assert-CI` by hand.
+Later deploys update the model in place and keep these credentials. **Redo this step only if** the model is deleted or recreated, or `SharePoint_URL` changes. To avoid that, never delete or rename the models in `PQL.Assert-CI` by hand.
 
 **Verify:** a manual **Refresh now** on TestingModel succeeds.
 
@@ -142,5 +127,5 @@ GitHub only offers a status check in rulesets after that check has run at least 
 | What | When | Effect if missed |
 |---|---|---|
 | Rotate `PQL_CLIENT_SECRET` | Before the expiry date noted in step 1.1 | Every run fails to authenticate |
-| CI identity keeps SharePoint access and its password stays valid | Ongoing | TestingModel refresh fails with a credentials error |
+| The account behind the SharePoint credentials keeps access and its sign-in stays valid | Ongoing | TestingModel refresh fails with a credentials error |
 | PPU licenses for workspace maintainers | When licenses renew | Maintainers lose access to inspect the workspace. CI itself is unaffected |

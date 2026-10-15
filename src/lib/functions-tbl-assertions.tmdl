@@ -14,7 +14,7 @@ createOrReplace
 					"Passed", _Passed
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.7.0
+		annotation DAXLIB_PackageVersion = 0.7.1
 
 	/// Asserts that a table has exactly the expected number of rows.
 	function 'PQL.Assert.Tbl.ShouldHaveRowCount' =
@@ -28,7 +28,7 @@ createOrReplace
 					"Passed", _Passed
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.7.0
+		annotation DAXLIB_PackageVersion = 0.7.1
 
 	/// Asserts that a table has more rows than the specified threshold.
 	function 'PQL.Assert.Tbl.ShouldHaveMoreRowsThan' =
@@ -42,7 +42,7 @@ createOrReplace
 					"Passed", _Passed
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.7.0
+		annotation DAXLIB_PackageVersion = 0.7.1
 
 	/// Asserts that a table exists in the model.
 	function 'PQL.Assert.Tbl.ShouldExist' =
@@ -56,14 +56,17 @@ createOrReplace
 					"Passed", _Found
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.7.0
+		annotation DAXLIB_PackageVersion = 0.7.1
 
 	/// Schema & Column Shape
 	/// Asserts that a table has all the specified columns (comma-separated list).
+	/// @param {STRING} testName - Description of the test being performed
+	/// @param {STRING} tableName - Table name as text, e.g. "Sales" (not a table expression or 'Sales')
+	/// @param {STRING} columnNamesList - Comma-separated column names, e.g. "OrderID,Amount"
 	function 'PQL.Assert.Tbl.ShouldHaveColumns' =
-			(testName : STRING, tableRef : STRING, columnNamesList : STRING) =>
+			(testName : STRING, tableName : STRING, columnNamesList : STRING) =>
 				VAR _Columns = INFO.VIEW.COLUMNS()
-				VAR _TableColumns = FILTER(_Columns, [Table] = tableRef)
+				VAR _TableColumns = FILTER(_Columns, [Table] = tableName)
 				VAR _ExpectedCount = LEN(columnNamesList) - LEN(SUBSTITUTE(columnNamesList, ",", "")) + 1
 				VAR _ColumnNamesUpper = UPPER(columnNamesList)
 				VAR _MatchedColumns = FILTER(
@@ -76,18 +79,21 @@ createOrReplace
 				VAR _Passed = _MissingCount <= 0
 				RETURN ROW(
 					"TestName", testName,
-					"Expected", "Table '" & tableRef & "' has columns: " & columnNamesList,
+					"Expected", "Table '" & tableName & "' has columns: " & columnNamesList,
 					"Actual", IF(_Passed, "ALL COLUMNS FOUND", "MISSING " & FORMAT(_MissingCount, "0") & " COLUMN(S). Available: " & _ActualColumnNames),
 					"Passed", _Passed
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.7.0
+		annotation DAXLIB_PackageVersion = 0.7.1
 
 	/// Asserts that a table does not have extra columns beyond the allowed list (comma-separated).
+	/// @param {STRING} testName - Description of the test being performed
+	/// @param {STRING} tableName - Table name as text, e.g. "Sales" (not a table expression or 'Sales')
+	/// @param {STRING} allowedColumnNamesList - Comma-separated allowed column names
 	function 'PQL.Assert.Tbl.ShouldNotHaveExtraColumns' =
-			(testName : STRING, tableRef : STRING, allowedColumnNamesList : STRING) =>
+			(testName : STRING, tableName : STRING, allowedColumnNamesList : STRING) =>
 				VAR _Columns = INFO.VIEW.COLUMNS()
-				VAR _TableColumns = FILTER(_Columns, [Table] = tableRef && [Type] <> "RowNumber")
+				VAR _TableColumns = FILTER(_Columns, [Table] = tableName && [Type] <> "RowNumber")
 				VAR _TableColumnCount = COUNTROWS(_TableColumns)
 				VAR _AllowedUpper = UPPER(allowedColumnNamesList)
 				VAR _ExtraColumns = FILTER(
@@ -104,22 +110,26 @@ createOrReplace
 					"Passed", _Passed
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.7.0
+		annotation DAXLIB_PackageVersion = 0.7.1
 
 	/// Asserts that a column in a table has the expected data type.
+	/// @param {STRING} testName - Description of the test being performed
+	/// @param {STRING} tableName - Table name as text, e.g. "Sales" (not a table expression or 'Sales')
+	/// @param {STRING} columnName - Column name as text
+	/// @param {STRING} expectedType - Expected data type as text
 	function 'PQL.Assert.Tbl.ColumnDataTypeShouldBe' =
-			(testName : STRING, tableRef : STRING, columnName : STRING, expectedType : STRING) =>
+			(testName : STRING, tableName : STRING, columnName : STRING, expectedType : STRING) =>
 				VAR _Columns = INFO.VIEW.COLUMNS()
-				VAR _MatchingColumn = FILTER(_Columns, [Table] = tableRef && [Name] = columnName)
+				VAR _MatchingColumn = FILTER(_Columns, [Table] = tableName && [Name] = columnName)
 				VAR _Found = COUNTROWS(_MatchingColumn) > 0
 				VAR _ActualType = IF(_Found, MAXX(_MatchingColumn, [DataType]), "COLUMN NOT FOUND")
 				VAR _Passed = _Found && UPPER(_ActualType) = UPPER(expectedType)
 				RETURN ROW(
 					"TestName", testName,
-					"Expected", "Column '" & tableRef & "[" & columnName & "]' data type = " & expectedType,
+					"Expected", "Column '" & tableName & "[" & columnName & "]' data type = " & expectedType,
 					"Actual", IF(_Found, "DataType = " & _ActualType, "COLUMN NOT FOUND"),
 					"Passed", _Passed
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.7.0
+		annotation DAXLIB_PackageVersion = 0.7.1
 

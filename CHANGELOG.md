@@ -9,6 +9,17 @@ match the `version` value in [src/manifest.daxlib](src/manifest.daxlib) and the
 
 ---
 
+## [0.7.1] - 2026-10-15
+
+### Changed
+- Renamed the `tableRef` parameter to `tableName` on `Tbl.ShouldHaveColumns`,
+  `Tbl.ShouldNotHaveExtraColumns` and `Tbl.ColumnDataTypeShouldBe`. These take the table as a
+  STRING name (for example `"Sales"`), not a table reference; the old name suggested otherwise.
+  Only affects callers passing the argument by name.
+- Added `@param` doc comments to those three functions and updated the README signatures.
+
+---
+
 ## [0.7.0] - 2026-10-07
 
 ### Added

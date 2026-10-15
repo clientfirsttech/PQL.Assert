@@ -136,9 +136,11 @@ DAX has no `STARTSWITH`/`ENDSWITH` functions, so these assertions use `LEFT()` a
 #### Schema & Column Shape
 
 - `PQL.Assert.Tbl.ShouldExist(testName, tableName)` - Asserts table exists
-- `PQL.Assert.Tbl.ShouldHaveColumns(testName, tableRef, columnNamesList)` - Asserts table has all specified columns (comma-separated list)
-- `PQL.Assert.Tbl.ShouldNotHaveExtraColumns(testName, tableRef, allowedColumnNamesList)` - Asserts table does not have extra columns beyond the allowed list (comma-separated)
-- `PQL.Assert.Tbl.ColumnDataTypeShouldBe(testName, tableRef, columnName, expectedType)` - Asserts column has the expected data type
+- `PQL.Assert.Tbl.ShouldHaveColumns(testName, tableName, columnNamesList)` - Asserts table has all specified columns (comma-separated list)
+- `PQL.Assert.Tbl.ShouldNotHaveExtraColumns(testName, tableName, allowedColumnNamesList)` - Asserts table does not have extra columns beyond the allowed list (comma-separated)
+- `PQL.Assert.Tbl.ColumnDataTypeShouldBe(testName, tableName, columnName, expectedType)` - Asserts column has the expected data type
+
+These three functions take `tableName` as a text string, not a table reference. For example: `PQL.Assert.Tbl.ShouldHaveColumns("Sales has key columns", "Sales", "OrderID,Amount")`.
 
 ### Relationship Assertions
 

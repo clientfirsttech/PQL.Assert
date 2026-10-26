@@ -115,6 +115,49 @@ table TestData
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Fixture for null-aware uniqueness assertions: 1, 1, 2, 3, (blank). The deprecated Col.ShouldBeDistinct passes it; NonNullValuesShouldBeDistinct fails it.
+	column 'Dup With Blank' = SWITCH([ID], 1, 1, 2, 1, 3, 2, 4, 3, BLANK())
+		dataType: int64
+		formatString: 0
+		lineageTag: 916c3bd6-9428-446c-b305-b48d41828af0
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Fixture for null-aware uniqueness assertions: 10, 20, 30, 40, (blank). Distinct apart from one blank.
+	column 'Distinct With Blank' = IF([ID] < 5, [ID] * 10)
+		dataType: int64
+		formatString: 0
+		lineageTag: df3fc513-6655-4c73-bed1-d11873d5f5b9
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Fixture for NULL handling in numeric assertions: -1, 0, 0, 2, (NULL). NULL must not count as zero, even or non-positive.
+	column 'Signed With Blank' = SWITCH([ID], 1, -1, 2, 0, 3, 0, 4, 2, BLANK())
+		dataType: int64
+		formatString: 0
+		lineageTag: 3d9a6e52-0c47-4b8e-9f21-6a7c5e2d1b84
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Fixture for "no values" handling in text assertions: every row is NULL (BLANK()).
+	column 'Null Text' = IF([ID] < 0, "x")
+		dataType: string
+		lineageTag: 6b1e9d3f-4a72-4c58-9e0d-2f8a7c5b1e63
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Fixture for NULL vs empty-string assertions: every row is an empty string (""), no NULLs.
+	column 'Empty Text' = ""
+		dataType: string
+		lineageTag: 8f47df1c-683f-43ee-a7e2-7d5520d6b85e
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
 	partition TestData = m
 		mode: import
 		source = ```

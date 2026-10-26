@@ -21,6 +21,13 @@ $patterns = @(
 $totalReplacements = 0
 $filesModified = 0
 
+# Write text back with the file's original BOM state (PowerShell 5.1's [Text.Encoding]::UTF8 always adds a BOM)
+function Write-PreservingBom([string]$path, [string]$text) {
+    $bytes = [System.IO.File]::ReadAllBytes($path)
+    $hasBom = $bytes.Length -ge 3 -and $bytes[0] -eq 0xEF -and $bytes[1] -eq 0xBB -and $bytes[2] -eq 0xBF
+    [System.IO.File]::WriteAllText($path, $text, (New-Object System.Text.UTF8Encoding($hasBom)))
+}
+
 foreach ($pattern in $patterns) {
     $files = Get-ChildItem -Path $pattern -ErrorAction SilentlyContinue
     
@@ -30,15 +37,26 @@ foreach ($pattern in $patterns) {
         
         # Replace version
         $content = $content -replace "DAXLIB_PackageVersion = $OldVersion", "DAXLIB_PackageVersion = $NewVersion"
-        
+        # PQL.Assert.LibraryVersion returns the version as a literal
+        $content = $content -replace "(function 'PQL\.Assert\.LibraryVersion' =\s*\(\)\s*=>\s*)`"$([regex]::Escape($OldVersion))`"", "`${1}`"$NewVersion`""
+
         if ($content -ne $originalContent) {
-            [System.IO.File]::WriteAllText($file.FullName, $content, [System.Text.Encoding]::UTF8)
+            Write-PreservingBom $file.FullName $content
             $replacements = ([regex]::Matches($originalContent, [regex]::Escape("DAXLIB_PackageVersion = $OldVersion"))).Count
             $totalReplacements += $replacements
             $filesModified++
-            Write-Host "  ✓ Updated $($file.Name) ($replacements replacements)" -ForegroundColor Green
+            Write-Host "  Updated $($file.Name) ($replacements replacements)" -ForegroundColor Green
         }
     }
+}
+
+$manifestPath = "$repoRoot\src\manifest.daxlib"
+$manifest = [System.IO.File]::ReadAllText($manifestPath, [System.Text.Encoding]::UTF8)
+$newManifest = $manifest -replace "`"version`": `"$([regex]::Escape($OldVersion))`"", "`"version`": `"$NewVersion`""
+if ($newManifest -ne $manifest) {
+    Write-PreservingBom $manifestPath $newManifest
+    $filesModified++
+    Write-Host "  Updated manifest.daxlib" -ForegroundColor Green
 }
 
 Write-Host "`nVersion bump complete!" -ForegroundColor Cyan

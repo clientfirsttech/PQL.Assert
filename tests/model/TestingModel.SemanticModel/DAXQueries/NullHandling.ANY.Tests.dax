@@ -1,0 +1,181 @@
+DEFINE
+	FUNCTION NullHandling.ANY.Tests = () =>
+		// NULL vs blank handling (NULL = BLANK(), blank = "").
+		// Rules from SQLBI "Handling BLANK in DAX" (https://www.sqlbi.com/articles/blank-handling-in-dax/)
+		// and examples/custom-agents/skills/dax-blank-handling/SKILL.md.
+		// Column checks: value checks fail with NO VALUES on an all-NULL column; statistics skip NULL and use rows.
+		VAR _NV_InRange = PQL.Assert.Col.ShouldBeInRange("Col.ShouldBeInRange: Blank Column all NULL in [-5,5] (no values) should fail", 'TestData-Fact'[Blank Column], -5, 5)
+		VAR _NV_MinAtLeast = PQL.Assert.Col.MinShouldBeAtLeast("Col.MinShouldBeAtLeast: Blank Column all NULL >= 0 (no values) should fail", 'TestData-Fact'[Blank Column], 0)
+		VAR _NV_MaxAtMost = PQL.Assert.Col.MaxShouldBeAtMost("Col.MaxShouldBeAtMost: Blank Column all NULL <= 0 (no values) should fail", 'TestData-Fact'[Blank Column], 0)
+		VAR _NV_Pctile = PQL.Assert.Col.PctileShouldBeInRange("Col.PctileShouldBeInRange: Blank Column all NULL P50 in [-1,1] (no values) should fail", 'TestData-Fact'[Blank Column], 0.5, -1, 1)
+		VAR _NV_Mean = PQL.Assert.Col.MeanShouldBeInRange("Col.MeanShouldBeInRange: Blank Column all NULL in [-1,1] (no values) should fail", 'TestData-Fact'[Blank Column], -1, 1)
+		VAR _NV_StdDev = PQL.Assert.Col.StdDevShouldBeAtMost("Col.StdDevShouldBeAtMost: Blank Column all NULL <= 0 (no values) should fail", 'TestData-Fact'[Blank Column], 0)
+		VAR _NV_NonNegative = PQL.Assert.Col.ShouldBeNonNegative("Col.ShouldBeNonNegative: Blank Column all NULL (no values) should fail", 'TestData-Fact'[Blank Column])
+		VAR _NV_Positive = PQL.Assert.Col.ShouldBePositive("Col.ShouldBePositive: Blank Column all NULL (no values) should fail", 'TestData-Fact'[Blank Column])
+		VAR _NV_NonZero = PQL.Assert.Col.ShouldBeNonZero("Col.ShouldBeNonZero: Blank Column all NULL (no values) should fail", 'TestData-Fact'[Blank Column])
+		VAR _NV_ZerosV2 = PQL.Assert.Col.ShareOfZerosAtMostV2("Col.ShareOfZerosAtMostV2: Blank Column all NULL <=100% (no values) should fail", 'TestData-Fact', 'TestData-Fact'[Blank Column], 100)
+		VAR _NV_EvensV2 = PQL.Assert.Col.ShareOfEvensAtLeastV2("Col.ShareOfEvensAtLeastV2: Blank Column all NULL >=0% (no values) should fail", 'TestData-Fact', 'TestData-Fact'[Blank Column], 0)
+		VAR _NV_OddsV2 = PQL.Assert.Col.ShareOfOddsAtLeastV2("Col.ShareOfOddsAtLeastV2: Blank Column all NULL >=0% (no values) should fail", 'TestData-Fact', 'TestData-Fact'[Blank Column], 0)
+		VAR _NV_NonNullDistinct = PQL.Assert.Col.NonNullValuesShouldBeDistinct("Col.NonNullValuesShouldBeDistinct: Blank Column all NULL (no values) should fail", 'TestData-Fact'[Blank Column])
+		VAR _NV_DupCount = PQL.Assert.Col.DuplicateCountShouldBeAtMost("Col.DuplicateCountShouldBeAtMost: Blank Column all NULL <=0 (no values) should fail", 'TestData-Fact'[Blank Column], 0)
+		VAR _NV_StartsWith = PQL.Assert.Col.ShouldStartWith("Col.ShouldStartWith: Null Text all NULL starts with '' (no values) should fail", 'TestData'[Null Text], "")
+		VAR _NV_NotStartsWith = PQL.Assert.Col.ShouldNotStartWith("Col.ShouldNotStartWith: Null Text all NULL starts with 'x' (no values) should fail", 'TestData'[Null Text], "x")
+		VAR _NV_EndsWith = PQL.Assert.Col.ShouldEndWith("Col.ShouldEndWith: Null Text all NULL ends with '' (no values) should fail", 'TestData'[Null Text], "")
+		VAR _NV_NotEndsWith = PQL.Assert.Col.ShouldNotEndWith("Col.ShouldNotEndWith: Null Text all NULL ends with 'x' (no values) should fail", 'TestData'[Null Text], "x")
+		VAR _NV_Contains = PQL.Assert.Col.ShouldContainString("Col.ShouldContainString: Null Text all NULL contains '' (no values) should fail", 'TestData'[Null Text], "")
+		VAR _NV_NotContains = PQL.Assert.Col.ShouldNotContainString("Col.ShouldNotContainString: Null Text all NULL contains 'x' (no values) should fail", 'TestData'[Null Text], "x")
+		VAR _NV_NoSpaces = PQL.Assert.Col.TextShouldHaveNoLeadingOrTrailingSpaces("Col.TextShouldHaveNoLeadingOrTrailingSpaces: Null Text all NULL (no values) should fail", 'TestData'[Null Text])
+		VAR _NV_Trimmed = PQL.Assert.Col.TextShouldBeTrimmed("Col.TextShouldBeTrimmed: Null Text all NULL (no values) should fail", 'TestData'[Null Text])
+		VAR _NV_Upper = PQL.Assert.Col.TextCaseShouldBeUpper("Col.TextCaseShouldBeUpper: Null Text all NULL (no values) should fail", 'TestData'[Null Text])
+		VAR _NV_Lower = PQL.Assert.Col.TextCaseShouldBeLower("Col.TextCaseShouldBeLower: Null Text all NULL (no values) should fail", 'TestData'[Null Text])
+		VAR _NV_TextLen = PQL.Assert.Col.TextLengthShouldBeInRange("Col.TextLengthShouldBeInRange: Null Text all NULL in [0,10] (no values) should fail", 'TestData'[Null Text], 0, 10)
+		VAR _NV_InSet = PQL.Assert.Col.ValuesShouldBeInSet("Col.ValuesShouldBeInSet: Null Text all NULL (no values) should fail", 'TestData'[Null Text], DATATABLE("v", STRING, {{"x"}}), [v])
+		VAR _NV_NotInSet = PQL.Assert.Col.ValuesShouldNotBeInSet("Col.ValuesShouldNotBeInSet: Null Text all NULL (no values) should fail", 'TestData'[Null Text], DATATABLE("v", STRING, {{"x"}}), [v])
+		VAR _NV_UniqueWithin = PQL.Assert.Col.ShouldBeUniqueWithin("Col.ShouldBeUniqueWithin: Null Text all NULL within Category (no values) should fail", 'TestData'[Null Text], 'TestData'[Category])
+		VAR _NV_Combo = PQL.Assert.Col.ComboShouldBeDistinct("Col.ComboShouldBeDistinct: Null Text all NULL + ID (no values) should fail", 'TestData'[Null Text], 'TestData'[ID])
+		VAR _EV_Upper = PQL.Assert.Col.TextCaseShouldBeUpper("Col.TextCaseShouldBeUpper: Empty Text all empty strings (empty strings are values) should pass", 'TestData'[Empty Text])
+		VAR _EV_TextLen_Fail = PQL.Assert.Col.TextLengthShouldBeInRange("Col.TextLengthShouldBeInRange: Empty Text in [1,10] (empty string has length 0) should fail", 'TestData'[Empty Text], 1, 10)
+		VAR _Stat_Mean_Rows = PQL.Assert.Col.MeanShouldBeInRange("Col.MeanShouldBeInRange: Dup With Blank mean 1.75 over rows (1,1,2,3) should pass", 'TestData'[Dup With Blank], 1.75, 1.75)
+		VAR _Stat_Mean_NotDistinct = PQL.Assert.Col.MeanShouldBeInRange("Col.MeanShouldBeInRange: Dup With Blank mean 2 (average of distinct values) should fail", 'TestData'[Dup With Blank], 2, 2)
+		VAR _Stat_P50_Rows = PQL.Assert.Col.PctileShouldBeInRange("Col.PctileShouldBeInRange: Distinct With Blank P50 25 (NULL skipped) should pass", 'TestData'[Distinct With Blank], 0.5, 25, 25)
+		VAR _Stat_P50_NullAsValue = PQL.Assert.Col.PctileShouldBeInRange("Col.PctileShouldBeInRange: Distinct With Blank P50 20 (NULL ranked as a value) should fail", 'TestData'[Distinct With Blank], 0.5, 20, 20)
+		VAR _Stat_P0_Rows = PQL.Assert.Col.PctileShouldBeInRange("Col.PctileShouldBeInRange: Distinct With Blank P0 10 (NULL is not the lowest value) should pass", 'TestData'[Distinct With Blank], 0, 10, 10)
+		VAR _Stat_StdDev_Rows = PQL.Assert.Col.StdDevShouldBeAtMost("Col.StdDevShouldBeAtMost: Distinct With Blank sample stddev 12.91 (NULL skipped) <=12.92 should pass", 'TestData'[Distinct With Blank], 12.92)
+		VAR _Stat_StdDev_Fail = PQL.Assert.Col.StdDevShouldBeAtMost("Col.StdDevShouldBeAtMost: Distinct With Blank sample stddev 12.91 <=12.9 should fail", 'TestData'[Distinct With Blank], 12.9)
+		VAR _Stat_StdDev_Dup = PQL.Assert.Col.StdDevShouldBeAtMost("Col.StdDevShouldBeAtMost: Dup With Blank sample stddev 0.96 over rows <=0.95 should fail", 'TestData'[Dup With Blank], 0.95)
+		VAR _Stat_Min_SkipsNull = PQL.Assert.Col.MinShouldBeAtLeast("Col.MinShouldBeAtLeast: Distinct With Blank >=10 (NULL skipped) should pass", 'TestData'[Distinct With Blank], 10)
+		VAR _Set_In_SkipsNull = PQL.Assert.Col.ValuesShouldBeInSet("Col.ValuesShouldBeInSet: NullableField in its 3 values (NULL skipped) should pass", 'TestData'[NullableField], DATATABLE("v", STRING, {{"Has Value"}, {"Another Value"}, {"Third Value"}}), [v])
+		VAR _Set_In_Fail = PQL.Assert.Col.ValuesShouldBeInSet("Col.ValuesShouldBeInSet: NullableField in {Has Value} should fail", 'TestData'[NullableField], DATATABLE("v", STRING, {{"Has Value"}}), [v])
+		VAR _Set_NotIn_NullIsNotEmpty = PQL.Assert.Col.ValuesShouldNotBeInSet("Col.ValuesShouldNotBeInSet: NullableField banned {''} (NULL is not an empty string) should pass", 'TestData'[NullableField], DATATABLE("v", STRING, {{""}}), [v])
+		VAR _Set_NotIn_EmptyFound = PQL.Assert.Col.ValuesShouldNotBeInSet("Col.ValuesShouldNotBeInSet: Short Text banned {''} (has an empty string) should fail", 'TestData'[Short Text], DATATABLE("v", STRING, {{""}}), [v])
+		VAR _NR_BlankRateV2 = PQL.Assert.Col.BlankRateShouldBeAtMostV2("Col.BlankRateShouldBeAtMostV2: empty table (NO ROWS) should fail", FILTER('TestData', FALSE), 'TestData'[Short Text], 100)
+		VAR _NR_NullOrBlankRateV2 = PQL.Assert.Col.NullOrBlankRateShouldBeAtMostV2("Col.NullOrBlankRateShouldBeAtMostV2: empty table (NO ROWS) should fail", FILTER('TestData', FALSE), 'TestData'[Short Text], 100)
+		VAR _NR_PopulatedRateV2 = PQL.Assert.Col.PopulatedRateShouldBeAtLeastV2("Col.PopulatedRateShouldBeAtLeastV2: empty table >=0% (NO ROWS) should fail", FILTER('TestData', FALSE), 'TestData'[Short Text], 0)
+		VAR _AllNull_NullRateV2 = PQL.Assert.Col.NullRateShouldBeAtMostV2("Col.NullRateShouldBeAtMostV2: Null Text all NULL <=99% (5 of 5 rows) should fail", 'TestData', 'TestData'[Null Text], 99)
+		VAR _AllNull_NullCount = PQL.Assert.Col.NullCountShouldBeAtMost("Col.NullCountShouldBeAtMost: Null Text all NULL <=5 should pass", 'TestData', 'TestData'[Null Text], 5)
+		VAR _AllNull_ShouldBeNull = PQL.Assert.Col.ShouldBeNull("Col.ShouldBeNull: Null Text all NULL should pass", 'TestData'[Null Text])
+		// Scalar checks: a NULL actual value fails; NULL and "" are different values.
+		VAR _NB_GreaterThan = PQL.Assert.ShouldBeGreaterThan("ShouldBeGreaterThan: NULL > -1 (NULL is not 0) should fail", -1, BLANK())
+		VAR _NB_GreaterThan_Zero = PQL.Assert.ShouldBeGreaterThan("ShouldBeGreaterThan: 0 > -1 should pass", -1, 0)
+		VAR _NB_LessThan = PQL.Assert.ShouldBeLessThan("ShouldBeLessThan: NULL < 1 (NULL is not 0) should fail", 1, BLANK())
+		VAR _NB_GreaterOrEqual = PQL.Assert.ShouldBeGreaterOrEqual("ShouldBeGreaterOrEqual: NULL >= 0 should fail", 0, BLANK())
+		VAR _NB_LessOrEqual = PQL.Assert.ShouldBeLessOrEqual("ShouldBeLessOrEqual: NULL <= 0 should fail", 0, BLANK())
+		VAR _NB_Between = PQL.Assert.ShouldBeBetween("ShouldBeBetween: NULL in [-1,1] should fail", -1, 1, BLANK())
+		VAR _NB_Between_Zero = PQL.Assert.ShouldBeBetween("ShouldBeBetween: 0 in [-1,1] should pass", -1, 1, 0)
+		VAR _NB_NotBetween = PQL.Assert.ShouldNotBeBetween("ShouldNotBeBetween: NULL outside [5,10] should fail", 5, 10, BLANK())
+		VAR _NB_StartWith = PQL.Assert.ShouldStartWith("ShouldStartWith: NULL starts with '' (NULL is not a string) should fail", "", BLANK())
+		VAR _NB_StartWith_Empty = PQL.Assert.ShouldStartWith("ShouldStartWith: '' starts with '' should pass", "", "")
+		VAR _NB_EndWith = PQL.Assert.ShouldEndWith("ShouldEndWith: NULL ends with '' should fail", "", BLANK())
+		VAR _NB_Contain = PQL.Assert.ShouldContainString("ShouldContainString: NULL contains '' should fail", "", BLANK())
+		VAR _NB_Match = PQL.Assert.ShouldMatch("ShouldMatch: NULL matches '*' should fail", "*", BLANK())
+		VAR _NB_EqualExactly_NullVsEmpty = PQL.Assert.ShouldEqualExactly("ShouldEqualExactly: '' vs NULL should fail", "", BLANK())
+		VAR _NB_EqualExactly_NullVsNull = PQL.Assert.ShouldEqualExactly("ShouldEqualExactly: NULL vs NULL should pass", BLANK(), BLANK())
+		VAR _NB_EqualExactly_EmptyVsEmpty = PQL.Assert.ShouldEqualExactly("ShouldEqualExactly: '' vs '' should pass", "", "")
+		VAR _NB_ShouldBeTrue = PQL.Assert.ShouldBeTrue("ShouldBeTrue: NULL (BOOLEAN parameter converts BLANK to FALSE) should fail", BLANK())
+		VAR _NB_ShouldBeFalse = PQL.Assert.ShouldBeFalse("ShouldBeFalse: NULL (BOOLEAN parameter converts BLANK to FALSE, documented) should pass", BLANK())
+		VAR _AllTests = UNION(
+		    _NV_InRange,
+		    _NV_MinAtLeast,
+		    _NV_MaxAtMost,
+		    _NV_Pctile,
+		    _NV_Mean,
+		    _NV_StdDev,
+		    _NV_NonNegative,
+		    _NV_Positive,
+		    _NV_NonZero,
+		    _NV_ZerosV2,
+		    _NV_EvensV2,
+		    _NV_OddsV2,
+		    _NV_NonNullDistinct,
+		    _NV_DupCount,
+		    _NV_StartsWith,
+		    _NV_NotStartsWith,
+		    _NV_EndsWith,
+		    _NV_NotEndsWith,
+		    _NV_Contains,
+		    _NV_NotContains,
+		    _NV_NoSpaces,
+		    _NV_Trimmed,
+		    _NV_Upper,
+		    _NV_Lower,
+		    _NV_TextLen,
+		    _NV_InSet,
+		    _NV_NotInSet,
+		    _NV_UniqueWithin,
+		    _NV_Combo,
+		    _EV_Upper,
+		    _EV_TextLen_Fail,
+		    _Stat_Mean_Rows,
+		    _Stat_Mean_NotDistinct,
+		    _Stat_P50_Rows,
+		    _Stat_P50_NullAsValue,
+		    _Stat_P0_Rows,
+		    _Stat_StdDev_Rows,
+		    _Stat_StdDev_Fail,
+		    _Stat_StdDev_Dup,
+		    _Stat_Min_SkipsNull,
+		    _Set_In_SkipsNull,
+		    _Set_In_Fail,
+		    _Set_NotIn_NullIsNotEmpty,
+		    _Set_NotIn_EmptyFound,
+		    _NR_BlankRateV2,
+		    _NR_NullOrBlankRateV2,
+		    _NR_PopulatedRateV2,
+		    _AllNull_NullRateV2,
+		    _AllNull_NullCount,
+		    _AllNull_ShouldBeNull,
+		    _NB_GreaterThan,
+		    _NB_GreaterThan_Zero,
+		    _NB_LessThan,
+		    _NB_GreaterOrEqual,
+		    _NB_LessOrEqual,
+		    _NB_Between,
+		    _NB_Between_Zero,
+		    _NB_NotBetween,
+		    _NB_StartWith,
+		    _NB_StartWith_Empty,
+		    _NB_EndWith,
+		    _NB_Contain,
+		    _NB_Match,
+		    _NB_EqualExactly_NullVsEmpty,
+		    _NB_EqualExactly_NullVsNull,
+		    _NB_EqualExactly_EmptyVsEmpty,
+		    _NB_ShouldBeTrue,
+		    _NB_ShouldBeFalse
+		)
+		VAR _ValidationResults =
+		    ADDCOLUMNS(
+		        _AllTests,
+		        "ExpectedToPass",
+		            CONTAINSSTRING([TestName], "should pass"),
+		        "ExpectedToFail",
+		            CONTAINSSTRING([TestName], "should fail"),
+		        "HasExpectation",
+		            CONTAINSSTRING([TestName], "should pass") || CONTAINSSTRING([TestName], "should fail"),
+		        "ValidationStatus",
+		            SWITCH(
+		                TRUE(),
+		                CONTAINSSTRING([TestName], "should pass") && [Passed] = TRUE, "✅ CORRECT",
+		                CONTAINSSTRING([TestName], "should fail") && [Passed] = FALSE, "✅ CORRECT",
+		                CONTAINSSTRING([TestName], "should pass") && [Passed] = FALSE, "❌ MISMATCH: Expected PASS but got FAIL",
+		                CONTAINSSTRING([TestName], "should fail") && [Passed] = TRUE, "❌ MISMATCH: Expected FAIL but got PASS",
+		                "⚠️ NO CLEAR EXPECTATION"
+		            )
+		    )
+		RETURN
+		    SELECTCOLUMNS(
+		        _ValidationResults,
+		        "TestName", [TestName],
+		        "Expected", [Expected],
+		        "Actual", [Actual] & " [" & [ValidationStatus] & "]",
+		        "Passed",
+		            SWITCH(
+		                TRUE(),
+		                CONTAINSSTRING([ValidationStatus], "MISMATCH"), FALSE,
+		                CONTAINSSTRING([ValidationStatus], "CORRECT"), TRUE,
+		                [Passed]
+		            )
+		    )
+
+EVALUATE NullHandling.ANY.Tests()
+ORDER BY [Passed], [TestName]

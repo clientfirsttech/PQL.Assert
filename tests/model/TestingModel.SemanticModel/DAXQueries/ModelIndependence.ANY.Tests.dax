@@ -1,0 +1,84 @@
+DEFINE
+	FUNCTION ModelIndependence.ANY.Tests = () =>
+		// Model independence: every TABLE-parameter function on virtual tables that are not in the model,
+		// with unusual column names. The functions must not assume any column name on a TABLE parameter
+		// (see examples/custom-agents/skills/model-independence/SKILL.md).
+		VAR _T = DATATABLE(
+		    "Weird Col #1", INTEGER, "Name", STRING, "Value", DOUBLE,
+		    { {1, "a", BLANK()}, {1, "", 2}, {3, BLANK(), 0}, {BLANK(), "b", 4} }
+		)
+		VAR _Allowed = DATATABLE("Allowed Code (x)", STRING, { {"A"}, {"B"}, {"C"} })
+		VAR _MI_NullCount_Pass = PQL.Assert.Col.NullCountShouldBeAtMost("Col.NullCountShouldBeAtMost: virtual [Weird Col #1] <=1 should pass", _T, [Weird Col #1], 1)
+		VAR _MI_NullCount_Fail = PQL.Assert.Col.NullCountShouldBeAtMost("Col.NullCountShouldBeAtMost: virtual [Weird Col #1] <=0 should fail", _T, [Weird Col #1], 0)
+		VAR _MI_NullRateV2_Pass = PQL.Assert.Col.NullRateShouldBeAtMostV2("Col.NullRateShouldBeAtMostV2: virtual [Name] <=25% (1 of 4 rows) should pass", _T, [Name], 25)
+		VAR _MI_BlankRateV2_Fail = PQL.Assert.Col.BlankRateShouldBeAtMostV2("Col.BlankRateShouldBeAtMostV2: virtual [Name] <=24% should fail", _T, [Name], 24)
+		VAR _MI_NullOrBlankRateV2_Pass = PQL.Assert.Col.NullOrBlankRateShouldBeAtMostV2("Col.NullOrBlankRateShouldBeAtMostV2: virtual [Name] <=50% should pass", _T, [Name], 50)
+		VAR _MI_PopulatedRateV2_Fail = PQL.Assert.Col.PopulatedRateShouldBeAtLeastV2("Col.PopulatedRateShouldBeAtLeastV2: virtual [Name] >=51% should fail", _T, [Name], 51)
+		VAR _MI_ZerosV2_Pass = PQL.Assert.Col.ShareOfZerosAtMostV2("Col.ShareOfZerosAtMostV2: virtual [Value] <=34% (1 of 3 non-null rows) should pass", _T, [Value], 34)
+		VAR _MI_EvensV2_Pass = PQL.Assert.Col.ShareOfEvensAtLeastV2("Col.ShareOfEvensAtLeastV2: virtual [Value] >=100% (0, 2, 4) should pass", _T, [Value], 100)
+		VAR _MI_OddsV2_Fail = PQL.Assert.Col.ShareOfOddsAtLeastV2("Col.ShareOfOddsAtLeastV2: virtual [Value] >=1% should fail", _T, [Value], 1)
+		VAR _MI_RowsDistinct_Fail = PQL.Assert.Tbl.RowsShouldBeDistinct("Tbl.RowsShouldBeDistinct: virtual key [Weird Col #1] (1 repeated) should fail", SELECTCOLUMNS(_T, "k", [Weird Col #1]))
+		VAR _MI_RowsDistinct_Pass = PQL.Assert.Tbl.RowsShouldBeDistinct("Tbl.RowsShouldBeDistinct: virtual key [Weird Col #1] + [Name] should pass", SELECTCOLUMNS(_T, "k", [Weird Col #1], "n", [Name]))
+		VAR _MI_RowCount_Pass = PQL.Assert.Tbl.RowCountShouldBeAtMost("Tbl.RowCountShouldBeAtMost: virtual NULL [Name] <=1 should pass", FILTER(_T, ISBLANK([Name])), 1)
+		VAR _MI_RowRate_Fail = PQL.Assert.Tbl.RowRateShouldBeAtMost("Tbl.RowRateShouldBeAtMost: virtual NULL [Value] <=24% should fail", FILTER(_T, ISBLANK([Value])), _T, 24)
+		VAR _MI_HasRows_Pass = PQL.Assert.Tbl.ShouldHaveRows("Tbl.ShouldHaveRows: virtual table should pass", _T)
+		VAR _MI_RowCountExact_Pass = PQL.Assert.Tbl.ShouldHaveRowCount("Tbl.ShouldHaveRowCount: virtual table 4 rows should pass", _T, 4)
+		VAR _MI_MoreRowsThan_Fail = PQL.Assert.Tbl.ShouldHaveMoreRowsThan("Tbl.ShouldHaveMoreRowsThan: virtual table > 4 should fail", 4, _T)
+		VAR _MI_InSet_Pass = PQL.Assert.Col.ValuesShouldBeInSet("Col.ValuesShouldBeInSet: Category in virtual [Allowed Code (x)] should pass", 'TestData'[Category], _Allowed, [Allowed Code (x)])
+		VAR _MI_NotInSet_Fail = PQL.Assert.Col.ValuesShouldNotBeInSet("Col.ValuesShouldNotBeInSet: Category not in virtual [Allowed Code (x)] should fail", 'TestData'[Category], _Allowed, [Allowed Code (x)])
+		VAR _AllTests = UNION(
+		    _MI_NullCount_Pass,
+		    _MI_NullCount_Fail,
+		    _MI_NullRateV2_Pass,
+		    _MI_BlankRateV2_Fail,
+		    _MI_NullOrBlankRateV2_Pass,
+		    _MI_PopulatedRateV2_Fail,
+		    _MI_ZerosV2_Pass,
+		    _MI_EvensV2_Pass,
+		    _MI_OddsV2_Fail,
+		    _MI_RowsDistinct_Fail,
+		    _MI_RowsDistinct_Pass,
+		    _MI_RowCount_Pass,
+		    _MI_RowRate_Fail,
+		    _MI_HasRows_Pass,
+		    _MI_RowCountExact_Pass,
+		    _MI_MoreRowsThan_Fail,
+		    _MI_InSet_Pass,
+		    _MI_NotInSet_Fail
+		)
+		VAR _ValidationResults =
+		    ADDCOLUMNS(
+		        _AllTests,
+		        "ExpectedToPass",
+		            CONTAINSSTRING([TestName], "should pass"),
+		        "ExpectedToFail",
+		            CONTAINSSTRING([TestName], "should fail"),
+		        "HasExpectation",
+		            CONTAINSSTRING([TestName], "should pass") || CONTAINSSTRING([TestName], "should fail"),
+		        "ValidationStatus",
+		            SWITCH(
+		                TRUE(),
+		                CONTAINSSTRING([TestName], "should pass") && [Passed] = TRUE, "✅ CORRECT",
+		                CONTAINSSTRING([TestName], "should fail") && [Passed] = FALSE, "✅ CORRECT",
+		                CONTAINSSTRING([TestName], "should pass") && [Passed] = FALSE, "❌ MISMATCH: Expected PASS but got FAIL",
+		                CONTAINSSTRING([TestName], "should fail") && [Passed] = TRUE, "❌ MISMATCH: Expected FAIL but got PASS",
+		                "⚠️ NO CLEAR EXPECTATION"
+		            )
+		    )
+		RETURN
+		    SELECTCOLUMNS(
+		        _ValidationResults,
+		        "TestName", [TestName],
+		        "Expected", [Expected],
+		        "Actual", [Actual] & " [" & [ValidationStatus] & "]",
+		        "Passed",
+		            SWITCH(
+		                TRUE(),
+		                CONTAINSSTRING([ValidationStatus], "MISMATCH"), FALSE,
+		                CONTAINSSTRING([ValidationStatus], "CORRECT"), TRUE,
+		                [Passed]
+		            )
+		    )
+
+EVALUATE ModelIndependence.ANY.Tests()
+ORDER BY [Passed], [TestName]

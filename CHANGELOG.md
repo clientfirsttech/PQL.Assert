@@ -9,6 +9,126 @@ match the `version` value in [src/manifest.daxlib](src/manifest.daxlib) and the
 
 ---
 
+## [0.8.0] - 2026-10-26
+
+No existing function changes name or parameters. 0.8.0 applies one NULL (`BLANK()`) policy across the
+library (see "Changed (behavior)" and the README section "NULL vs blank"). Results change only for NULL
+input, all-NULL columns and empty tables, plus mean, percentile and standard deviation on columns with
+repeated values, which 0.7.x computed over distinct values. Deprecated functions keep their 0.7.x
+behavior. A 0.7.1 test on columns and values without NULLs gives the same result on 0.8.0.
+
+### Added
+- `PQL.Assert.LibraryVersion()` returns the installed version (`"0.8.0"`). Tools can detect 0.8.0+
+  with `EVALUATE { PQL.Assert.LibraryVersion() }`; an error means 0.7.x or older.
+- Row-based null and blank checks. They take `tableRef` as well as `columnRef` because a column
+  reference alone gives distinct values, not rows. Percentages are 0-100.
+  - `Col.NullCountShouldBeAtMost(testName, tableRef, columnRef, maxCount)`. Pass `0` for "no row is NULL".
+  - `Col.NullRateShouldBeAtMostV2`, `Col.BlankRateShouldBeAtMostV2`,
+    `Col.NullOrBlankRateShouldBeAtMostV2`, `Col.PopulatedRateShouldBeAtLeastV2`
+    `(testName, tableRef, columnRef, pct)`. NULL means `BLANK()`, blank means `""`, and the blank
+    check works on columns of any data type.
+- Row-based, NULL-safe share checks: `Col.ShareOfZerosAtMostV2`, `Col.ShareOfEvensAtLeastV2` and
+  `Col.ShareOfOddsAtLeastV2` `(testName, tableRef, columnRef, pct)`. They skip NULL rows instead of
+  treating NULL as 0, like the other numeric checks, and divide by non-NULL rows.
+- NULL-aware uniqueness: `Col.NonNullValuesShouldBeDistinct(testName, columnRef)` (NULLs ignored),
+  `Col.ShouldBePrimaryKey(testName, columnRef)` (no NULL or `""`, all distinct) and
+  `Col.DuplicateCountShouldBeAtMost(testName, columnRef, maxCount)`.
+- `Tbl.RowsShouldBeDistinct(testName, keyTable)` for composite keys of any width, passed as a
+  `SELECTCOLUMNS` projection.
+- `Tbl.RowCountShouldBeAtMost(testName, filteredTable, maxCount)` and
+  `Tbl.RowRateShouldBeAtMost(testName, filteredTable, baseTable, maxPct)` for "at most N / N% of rows
+  break a rule" checks.
+- `PQL.Assert.ShouldNotBeBetween(testName, lowerBound, upperBound, actual)`, the inverse of
+  `ShouldBeBetween` with the same argument order.
+- Freshness checks against `UTCNOW()`. An empty column fails, and the column should be stored in UTC.
+  - `Col.MaxDateShouldBeWithinDays(testName, columnRef, maxAgeDays)`
+  - `Col.MaxDateShouldBeWithinHours(testName, columnRef, maxAgeHours)`, e.g. a refresh-log
+    timestamp that must be no older than 3 hours.
+- TestingModel fixture columns `TestData[Dup With Blank]` (`1, 1, 2, 3, NULL`),
+  `TestData[Distinct With Blank]` (`10, 20, 30, 40, NULL`), `TestData[Signed With Blank]`
+  (`-1, 0, 0, 2, NULL`) and `TestData[Empty Text]` (all `""`), plus 57 pass/fail cases across
+  `Col.ANY.Tests`, `Tbl.ANY.Tests` and `Assert.ANY.Tests`. They include cases that pin the deprecated
+  behavior (the `{1, 1, NULL}` false pass of `Col.ShouldBeDistinct`, `Col.ShouldBeBlank` passing an
+  all-NULL column, `Col.ShouldNotBeBlank` failing on NULL), cases for the `ShouldBePositive` and
+  `ShouldBeNonZero` behavior change, and a check that `LibraryVersion()` matches its
+  `DAXLIB_PackageVersion` annotation.
+- `NullHandling.ANY.Tests`, a TestingModel suite of 68 cases for the NULL policy: value checks on
+  all-NULL columns (fixture `TestData[Null Text]` and `TestData-Fact[Blank Column]`), row-based
+  statistics, set membership with NULL, empty tables, and scalar checks with a NULL `actual`. It is
+  registered in `daxQueries.json` and the CI gate.
+- `ModelIndependence.ANY.Tests`, 18 cases that run every TABLE-parameter function on virtual tables
+  (`DATATABLE`) that are not in the model, with column names such as `Weird Col #1`, `Name` and
+  `Allowed Code (x)`. No library function assumes a column name on a TABLE parameter; the same
+  functions were also checked against RLS_Model, which has a different schema.
+- `examples/custom-agents/skills/dax-blank-handling/SKILL.md`, a SudoLang skill for reviewing NULL
+  (`BLANK()`) and empty-string handling in DAX. Its language rules are summarized from
+  [Handling BLANK in DAX](https://www.sqlbi.com/articles/blank-handling-in-dax/) by Marco Russo
+  (SQLBI). It adds the PQL.Assert NULL/blank vocabulary and the aggregation behavior verified on
+  TestingModel. The 0.8.0 NULL/blank review was done with this skill.
+
+### Deprecated
+Kept unchanged until 1.0; the descriptions now say what to use instead. The README section
+"Deprecated functions and replacements" maps each one to its replacement and explains the difference.
+- `Col.NullRateShouldBeAtMost`, `Col.BlankRateShouldBeAtMost`, `Col.NullOrBlankRateShouldBeAtMost`
+  and `Col.PopulatedRateShouldBeAtLeast` divide by the number of distinct values, not rows, so the
+  reported rate is wrong for any column with repeated values. Use the `V2` functions, which take
+  `tableRef` as a new second argument. `Col.NullRateShouldBeAtMost` also counts `""` as NULL
+  (it uses `COUNTBLANK`); `NullRateShouldBeAtMostV2` counts only `BLANK()`, so use
+  `NullOrBlankRateShouldBeAtMostV2` to keep counting both.
+- `Col.ShouldBeBlank` and `Col.ShouldNotBeBlank` are duplicates of `Col.ShouldBeNullOrBlank` and
+  `Col.ShouldNotBeNullOrBlank` (same logic and results), although their names suggest empty strings
+  only: `Col.ShouldBeBlank` passes an all-NULL column and `Col.ShouldNotBeBlank` fails on NULL rows,
+  unlike the scalar versions. Use the `NullOrBlank` functions, or
+  `Col.BlankRateShouldBeAtMostV2(…, 0)` to check for empty strings only.
+- `Col.ShareOfZerosAtMost`, `Col.ShareOfEvensAtLeast` and `Col.ShareOfOddsAtLeast` count NULL as 0
+  (`BLANK() = 0` and `MOD(BLANK(), 2) = 0` are TRUE in DAX) and divide by distinct values. Use the
+  `V2` functions.
+- `Col.ShouldBeDistinct` and `Col.ShouldNotContainDuplicates` compare `DISTINCTCOUNT` (counts BLANK)
+  with `COUNTA` (ignores BLANK). One BLANK fails a distinct column, and `{1, 1, BLANK}` passes. Use
+  `Col.NonNullValuesShouldBeDistinct` or `Col.ShouldBePrimaryKey`.
+
+### Changed (behavior)
+NULL policy, from a review with the `dax-blank-handling` skill. In DAX `BLANK() = 0`, `BLANK() = ""`
+and `BLANK() = FALSE` are TRUE, so several checks treated NULL as a value:
+- `Col.ShouldBePositive` and `Col.ShouldBeNonZero` skip NULL. In 0.7.x `{10, 20, 30, 40, NULL}` failed
+  both (`BLANK() <= 0` and `BLANK() = 0`); it now passes.
+- `Col.MeanShouldBeInRange`, `Col.PctileShouldBeInRange` and `Col.StdDevShouldBeAtMost` are computed
+  over rows with NULL skipped. 0.7.x used distinct values, ranked NULL as the lowest value in the
+  percentile and counted it as 0 in the standard deviation: on `{10, 20, 30, 40, NULL}` P50 was 20
+  (now 25) and StdDev 16.77 (now 12.91); on `{1, 1, 2, 3, NULL}` the mean was 2 (now 1.75).
+- Value checks fail with NO VALUES when the column has no non-NULL value: range, min, max, mean,
+  percentile, standard deviation, sign, the text checks, set membership, `ShouldBeUniqueWithin`,
+  `ComboShouldBeDistinct`, and the new uniqueness and share V2 functions. In 0.7.x they passed, or
+  passed only when 0 was inside the range (`ShouldBeInRange(-5, 5)` passed an all-NULL column).
+- The row-based rate V2 functions, `Tbl.RowRateShouldBeAtMost` and `Tbl.RowsShouldBeDistinct` fail
+  with NO ROWS on an empty table. Problem counts (`NullCountShouldBeAtMost`,
+  `Tbl.RowCountShouldBeAtMost`) still pass at zero.
+- `Col.ValuesShouldBeInSet` and `Col.ValuesShouldNotBeInSet` skip NULL. 0.7.x reported a NULL as
+  outside the allowed set.
+- Scalar `ShouldBeGreaterThan`, `ShouldBeLessThan`, `ShouldBeGreaterOrEqual`, `ShouldBeLessOrEqual`,
+  `ShouldBeBetween`, `ShouldStartWith`, `ShouldEndWith`, `ShouldContainString` and `ShouldMatch` fail
+  when `actual` is NULL, shown as "NULL". 0.7.x compared it as 0 or `""`, so
+  `ShouldBeGreaterThan(-1, BLANK())` passed.
+- `ShouldEqualExactly` treats NULL and `""` as different, like `ShouldEqual`.
+- Not changed: `ShouldBeTrue` / `ShouldBeFalse`. Their BOOLEAN parameter converts `BLANK()` to FALSE
+  before the function runs, so `ShouldBeFalse(BLANK())` still passes; the descriptions now say so.
+  Changing it would need a different parameter type.
+
+### Changed
+- Documentation only: `Col.ShouldNotBeNull` checks that a column has at least one non-NULL value,
+  not that no row is NULL. `ShouldMatch` is a case-insensitive substring match with `?`/`*`
+  wildcards, not a regular expression. README examples now use `Col.NullCountShouldBeAtMost(…, 0)`
+  and `Col.ShouldBePrimaryKey`.
+- `scripts/Bump-Version.ps1` also updates `src/manifest.daxlib` and the `LibraryVersion` literal,
+  keeps each file's BOM state, and runs under Windows PowerShell 5.1 (it previously failed to parse
+  there because of a non-ASCII character).
+- Regenerated TestingModel `TMDLScripts/Load PQL*.tmdl` from `src/lib`. They had drifted since
+  before 0.7.0 (17 functions missing, older bodies in the BP and Col scripts). `Load PQL.tmdl` is
+  `functions-assertions` plus `functions-ols-assertions`, and `Load PQL.BP.tmdl` is now the full
+  `functions-bp-performance` file. `tests/clear-functions.tmdl` lists the new functions.
+
+---
+
 ## [0.7.1] - 2026-10-15
 
 ### Changed

@@ -53,6 +53,11 @@ class Block:
         lines = [l for l in self.expression if l.strip() and not NON_LOGIC_RE.match(l)]
         return " ".join(" ".join(lines).split())
 
+    @property
+    def description(self):
+        """Whitespace-insensitive /// text, so description-only edits count as drift."""
+        return " ".join(" ".join(self.docs).split())
+
     def render(self):
         """Render in the layout Power BI Desktop writes: tabs for the base
         indentation and a blank line after each property."""
@@ -196,7 +201,8 @@ def drift(library, model_blocks):
     missing = sorted(set(library) - set(model_lib))
     removed = sorted(set(model_lib) - set(library))
     changed = sorted(n for n in set(library) & set(model_lib)
-                     if library[n].logic != model_lib[n].logic)
+                     if library[n].logic != model_lib[n].logic
+                     or library[n].description != model_lib[n].description)
     return missing, removed, changed, model_lib
 
 

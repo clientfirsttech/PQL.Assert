@@ -1,4 +1,15 @@
 createOrReplace
+    /// Perspective Assertions - PQL.Assert.Perspective namespace
+    /// These functions validate perspective configurations and membership in semantic models
+    /// Asserts that a perspective exists and contains expected tables, columns, and measures.
+    /// Uses INFO.PERSPECTIVES() and related DMV functions to validate perspective membership.
+    /// Model-independent: accepts comma-separated string lists instead of TABLE parameters.
+    /// NOTE: List items should not contain commas. Use exact names without extra delimiters.
+    /// @param {STRING} testName - Description of the test being performed
+    /// @param {STRING} perspectiveName - Name of the perspective to validate
+    /// @param {STRING} expectedTablesList - Comma-separated table names (empty string for no tables)
+    /// @param {STRING} expectedColumnsList - Comma-separated column references in Table[Column] format (empty string for no columns)
+    /// @param {STRING} expectedMeasuresList - Comma-separated measure references in Table[Measure] format (empty string for no measures)
     function 'PQL.Assert.Perspective.ShouldContain' =
             (testName: STRING, perspectiveName: STRING, expectedTablesList: STRING, expectedColumnsList: STRING, expectedMeasuresList: STRING) =>
                 VAR _Perspective =
@@ -13,7 +24,7 @@ createOrReplace
                         INFO.PERSPECTIVETABLES(),
                         [PerspectiveID] = _PerspectiveID
                     )
-
+                
                 // Get actual tables in perspective
                 VAR _ActualTables =
                     SELECTCOLUMNS(
@@ -94,7 +105,7 @@ createOrReplace
                         ),
                         "Name", [TableName] & "[" & [MeasureName] & "]"
                     )
-
+                
                 // Calculate expected counts from comma-separated lists
                 VAR _ExpectedTablesCount =
                     IF(
@@ -114,12 +125,12 @@ createOrReplace
                         0,
                         LEN(expectedMeasuresList) - LEN(SUBSTITUTE(expectedMeasuresList, ",", "")) + 1
                     )
-
+                
                 // Prepare for case-insensitive string matching with proper delimiters to avoid substring false matches
                 VAR _ExpectedTablesUpper = "," & UPPER(TRIM(expectedTablesList)) & ","
                 VAR _ExpectedColumnsUpper = "," & UPPER(TRIM(expectedColumnsList)) & ","
                 VAR _ExpectedMeasuresUpper = "," & UPPER(TRIM(expectedMeasuresList)) & ","
-
+                
                 // Count matched items using exact string matching (with delimiters to prevent substring matches)
                 VAR _MatchedTablesCount =
                     COUNTROWS(
@@ -142,18 +153,14 @@ createOrReplace
                             CONTAINSSTRING(_ExpectedMeasuresUpper, "," & TRIM(UPPER([Name])) & ",")
                         )
                     )
-
+                
                 // Calculate missing counts
                 VAR _MissingTablesCount = MAX(0, _ExpectedTablesCount - _MatchedTablesCount)
                 VAR _MissingColumnsCount = MAX(0, _ExpectedColumnsCount - _MatchedColumnsCount)
                 VAR _MissingMeasuresCount = MAX(0, _ExpectedMeasuresCount - _MatchedMeasuresCount)
                 
-                VAR _ExpectedCount =
-                    _ExpectedTablesCount + _ExpectedColumnsCount + _ExpectedMeasuresCount
-                VAR _ActualCount =
-                    COUNTROWS(_ActualTables) +
-                    COUNTROWS(_ActualColumns) +
-                    COUNTROWS(_ActualMeasures)
+                VAR _ExpectedCount = _ExpectedTablesCount + _ExpectedColumnsCount + _ExpectedMeasuresCount
+                VAR _ActualCount = COUNTROWS(_ActualTables) + COUNTROWS(_ActualColumns) + COUNTROWS(_ActualMeasures)
                 VAR _MissingCount = _MissingTablesCount + _MissingColumnsCount + _MissingMeasuresCount
                 
                 VAR _Passed = _PerspectiveExists && _MissingCount = 0
@@ -175,9 +182,15 @@ createOrReplace
                     "Passed", _Passed
                 )
         annotation DAXLIB_PackageId = PQL.Assert
-        annotation DAXLIB_PackageVersion = 0.7.0
+        annotation DAXLIB_PackageVersion = 0.8.0
 
     /// Asserts that a perspective exactly matches expected tables, columns, and measures from comma-separated lists.
+    /// This is a schema-check style function aligned with other PQL.Assert schema assertions.
+    /// @param {STRING} testName - Description of the test being performed
+    /// @param {STRING} perspectiveName - Name of the perspective to validate
+    /// @param {STRING} expectedTablesList - Comma-separated table names
+    /// @param {STRING} expectedColumnsList - Comma-separated column refs in Table[Column] format
+    /// @param {STRING} expectedMeasuresList - Comma-separated measure refs in Table[Measure] format
     function 'PQL.Assert.Perspective.ShouldMatchSchema' =
             (testName: STRING, perspectiveName: STRING, expectedTablesList: STRING, expectedColumnsList: STRING, expectedMeasuresList: STRING) =>
                 VAR _Perspective =
@@ -350,7 +363,7 @@ createOrReplace
                     "Passed", _Passed
                 )
         annotation DAXLIB_PackageId = PQL.Assert
-        annotation DAXLIB_PackageVersion = 0.7.0
+        annotation DAXLIB_PackageVersion = 0.8.0
 
     /// Asserts that a perspective exists in the semantic model.
     /// @param {STRING} testName - Description of the test being performed
@@ -370,4 +383,4 @@ createOrReplace
                     "Passed", _Exists
                 )
         annotation DAXLIB_PackageId = PQL.Assert
-        annotation DAXLIB_PackageVersion = 0.7.0
+        annotation DAXLIB_PackageVersion = 0.8.0

@@ -17,6 +17,8 @@
     "Retrieve Tests",
     "Example.prod.tests",
     "Tbl.ANY.Tests",
+    "NullHandling.ANY.Tests",
+    "ModelIndependence.ANY.Tests",
     "Col.ANY.Tests",
     "RLS.ANY.Tests",
     "Partition.SVC.Tests",

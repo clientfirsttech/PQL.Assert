@@ -13,7 +13,7 @@ createOrReplace
                     "Passed", _Passed
                 )
         annotation DAXLIB_PackageId = PQL.Assert
-        annotation DAXLIB_PackageVersion = 0.7.0
+        annotation DAXLIB_PackageVersion = 0.8.0
 
     function 'PQL.Assert.ShouldBeFalse' =
             (testName : STRING, actualCondition : BOOLEAN) =>
@@ -25,7 +25,7 @@ createOrReplace
                     "Passed", _Passed
                 )
         annotation DAXLIB_PackageId = PQL.Assert
-        annotation DAXLIB_PackageVersion = 0.7.0
+        annotation DAXLIB_PackageVersion = 0.8.0
 
     /// Asserts that a value is NULL (DAX BLANK()).
     function 'PQL.Assert.ShouldBeNull' =
@@ -38,7 +38,7 @@ createOrReplace
                     "Passed", _Passed
                 )
         annotation DAXLIB_PackageId = PQL.Assert
-        annotation DAXLIB_PackageVersion = 0.7.0
+        annotation DAXLIB_PackageVersion = 0.8.0
 
     /// Asserts that a value is not NULL (not DAX BLANK()). Accepts both simple values and expressions.
     function 'PQL.Assert.ShouldNotBeNull' =
@@ -52,7 +52,7 @@ createOrReplace
                     "Passed", _Passed
                 )
         annotation DAXLIB_PackageId = PQL.Assert
-        annotation DAXLIB_PackageVersion = 0.7.0
+        annotation DAXLIB_PackageVersion = 0.8.0
 
     /// Asserts that a value is BLANK (empty string "").
     function 'PQL.Assert.ShouldBeBlank' =
@@ -65,7 +65,7 @@ createOrReplace
                     "Passed", _Passed
                 )
         annotation DAXLIB_PackageId = PQL.Assert
-        annotation DAXLIB_PackageVersion = 0.7.0
+        annotation DAXLIB_PackageVersion = 0.8.0
 
     /// Asserts that a value is not BLANK (not empty string "").
     function 'PQL.Assert.ShouldNotBeBlank' =
@@ -79,7 +79,7 @@ createOrReplace
                     "Passed", _Passed
                 )
         annotation DAXLIB_PackageId = PQL.Assert
-        annotation DAXLIB_PackageVersion = 0.7.0
+        annotation DAXLIB_PackageVersion = 0.8.0
 
     /// Asserts that a value is NULL or BLANK (BLANK() or empty string "").
     function 'PQL.Assert.ShouldBeNullOrBlank' =
@@ -93,7 +93,7 @@ createOrReplace
                 )
 
         annotation DAXLIB_PackageId = PQL.Assert
-        annotation DAXLIB_PackageVersion = 0.7.0
+        annotation DAXLIB_PackageVersion = 0.8.0
 
     /// Asserts that a value is not NULL and not BLANK (has actual content).
     function 'PQL.Assert.ShouldNotBeNullOrBlank' =
@@ -107,7 +107,7 @@ createOrReplace
                     "Passed", _Passed
                 )
         annotation DAXLIB_PackageId = PQL.Assert
-        annotation DAXLIB_PackageVersion = 0.7.0
+        annotation DAXLIB_PackageVersion = 0.8.0
 
     function 'PQL.Assert.ShouldEqual' =
             (testName : STRING, expected : VARIANT, actual : VARIANT) =>
@@ -121,7 +121,7 @@ createOrReplace
                     "Passed", _Passed
                 )
         annotation DAXLIB_PackageId = PQL.Assert
-        annotation DAXLIB_PackageVersion = 0.7.0
+        annotation DAXLIB_PackageVersion = 0.8.0
 
     function 'PQL.Assert.ShouldNotEqual' =
             (testName : STRING, notExpected : VARIANT, actual : VARIANT) =>
@@ -135,7 +135,7 @@ createOrReplace
                     "Passed", _Passed
                 )
         annotation DAXLIB_PackageId = PQL.Assert
-        annotation DAXLIB_PackageVersion = 0.7.0
+        annotation DAXLIB_PackageVersion = 0.8.0
 
     /// Asserts that two strings are exactly equal (case-sensitive comparison).
     function 'PQL.Assert.ShouldEqualExactly' =
@@ -148,7 +148,7 @@ createOrReplace
                     "Passed", _Passed
                 )
         annotation DAXLIB_PackageId = PQL.Assert
-        annotation DAXLIB_PackageVersion = 0.7.0
+        annotation DAXLIB_PackageVersion = 0.8.0
 
     function 'PQL.Assert.ShouldBeGreaterThan' =
             (testName : STRING, threshold : DOUBLE, actual : DOUBLE) =>
@@ -160,7 +160,7 @@ createOrReplace
                     "Passed", _Passed
                 )
         annotation DAXLIB_PackageId = PQL.Assert
-        annotation DAXLIB_PackageVersion = 0.7.0
+        annotation DAXLIB_PackageVersion = 0.8.0
 
     function 'PQL.Assert.ShouldBeLessThan' =
             (testName : STRING, threshold : DOUBLE, actual : DOUBLE) =>
@@ -172,7 +172,7 @@ createOrReplace
                     "Passed", _Passed
                 )
         annotation DAXLIB_PackageId = PQL.Assert
-        annotation DAXLIB_PackageVersion = 0.7.0
+        annotation DAXLIB_PackageVersion = 0.8.0
 
     /// Asserts that a number is greater than or equal to an expected value.
     function 'PQL.Assert.ShouldBeGreaterOrEqual' =
@@ -185,7 +185,7 @@ createOrReplace
                     "Passed", _Passed
                 )
         annotation DAXLIB_PackageId = PQL.Assert
-        annotation DAXLIB_PackageVersion = 0.7.0
+        annotation DAXLIB_PackageVersion = 0.8.0
 
     /// Asserts that a number is less than or equal to an expected value.
     function 'PQL.Assert.ShouldBeLessOrEqual' =
@@ -198,7 +198,7 @@ createOrReplace
                     "Passed", _Passed
                 )
         annotation DAXLIB_PackageId = PQL.Assert
-        annotation DAXLIB_PackageVersion = 0.7.0
+        annotation DAXLIB_PackageVersion = 0.8.0
 
     function 'PQL.Assert.ShouldBeBetween' =
             (testName : STRING, lowerBound : DOUBLE, upperBound : DOUBLE, actual : DOUBLE) =>
@@ -210,7 +210,20 @@ createOrReplace
                     "Passed", _Passed
                 )
         annotation DAXLIB_PackageId = PQL.Assert
-        annotation DAXLIB_PackageVersion = 0.7.0
+        annotation DAXLIB_PackageVersion = 0.8.0
+
+    /// Asserts that a value is outside an inclusive range: actual < lowerBound or actual > upperBound. Argument order matches ShouldBeBetween.
+    function 'PQL.Assert.ShouldNotBeBetween' =
+            (testName : STRING, lowerBound : DOUBLE, upperBound : DOUBLE, actual : DOUBLE) =>
+                VAR _Passed = actual < lowerBound || actual > upperBound
+                RETURN ROW(
+                    "TestName", testName,
+                    "Expected", "NOT " & FORMAT(lowerBound, "General Number") & " <= value <= " & FORMAT(upperBound, "General Number"),
+                    "Actual", FORMAT(actual, "General Number"),
+                    "Passed", _Passed
+                )
+        annotation DAXLIB_PackageId = PQL.Assert
+        annotation DAXLIB_PackageVersion = 0.8.0
 
     /// String Assertions - PQL.Assert namespace
     /// Asserts that a string starts with the specified prefix (case-insensitive).
@@ -224,7 +237,7 @@ createOrReplace
                     "Passed", _Passed
                 )
         annotation DAXLIB_PackageId = PQL.Assert
-        annotation DAXLIB_PackageVersion = 0.7.0
+        annotation DAXLIB_PackageVersion = 0.8.0
 
     /// Asserts that a string ends with the specified suffix (case-insensitive).
     function 'PQL.Assert.ShouldEndWith' =
@@ -237,7 +250,7 @@ createOrReplace
                     "Passed", _Passed
                 )
         annotation DAXLIB_PackageId = PQL.Assert
-        annotation DAXLIB_PackageVersion = 0.7.0
+        annotation DAXLIB_PackageVersion = 0.8.0
 
     /// Asserts that a string contains the specified substring (case-insensitive).
     function 'PQL.Assert.ShouldContainString' =
@@ -250,9 +263,9 @@ createOrReplace
                     "Passed", _Passed
                 )
         annotation DAXLIB_PackageId = PQL.Assert
-        annotation DAXLIB_PackageVersion = 0.7.0
+        annotation DAXLIB_PackageVersion = 0.8.0
 
-    /// Asserts that a string matches a pattern (case-insensitive).
+    /// Asserts that a string contains a pattern (case-insensitive). Uses CONTAINSSTRING: a substring match where ? matches one character and * matches any run of characters. It is not a regular expression and does not need to match the whole value.
     function 'PQL.Assert.ShouldMatch' =
             (testName : STRING, pattern : STRING, actual : STRING) =>
                 VAR _Passed = CONTAINSSTRING(actual, pattern)
@@ -263,68 +276,7 @@ createOrReplace
                     "Passed", _Passed
                 )
         annotation DAXLIB_PackageId = PQL.Assert
-        annotation DAXLIB_PackageVersion = 0.7.0
-
-    /// Object Level Security (OLS) Assertions - PQL.Assert.OLS namespace
-    /// Asserts that a table is hidden from metadata (OLS metadataPermission = none).
-    /// Use this when a role should NOT have access to view or query a table.
-    function 'PQL.Assert.OLS.TableShouldBeHidden' =
-            (testName : STRING, tableName : STRING) =>
-                VAR _Tables = INFO.VIEW.TABLES()
-                VAR _IsVisible = COUNTROWS(FILTER(_Tables, [Name] = tableName)) > 0
-                RETURN ROW(
-                    "TestName", testName,
-                    "Expected", "Table '" & tableName & "' should be HIDDEN from metadata",
-                    "Actual", IF(_IsVisible, "VISIBLE (OLS not working)", "HIDDEN (OLS working)"),
-                    "Passed", NOT _IsVisible
-                )
-        annotation DAXLIB_PackageId = PQL.Assert
-        annotation DAXLIB_PackageVersion = 0.7.0
-
-    /// Asserts that a table is visible in metadata (OLS allows access).
-    /// Use this when a role SHOULD have access to view or query a table.
-    function 'PQL.Assert.OLS.TableShouldBeVisible' =
-            (testName : STRING, tableName : STRING) =>
-                VAR _Tables = INFO.VIEW.TABLES()
-                VAR _IsVisible = COUNTROWS(FILTER(_Tables, [Name] = tableName)) > 0
-                RETURN ROW(
-                    "TestName", testName,
-                    "Expected", "Table '" & tableName & "' should be VISIBLE in metadata",
-                    "Actual", IF(_IsVisible, "VISIBLE (correct)", "HIDDEN (unexpected)"),
-                    "Passed", _IsVisible
-                )
-        annotation DAXLIB_PackageId = PQL.Assert
-        annotation DAXLIB_PackageVersion = 0.7.0
-
-    /// Asserts that a column is hidden from metadata (OLS columnPermission = none).
-    /// Use this when a role should NOT have access to view or query a column.
-    function 'PQL.Assert.OLS.ColumnShouldBeHidden' =
-            (testName : STRING, tableName : STRING, columnName : STRING) =>
-                VAR _Columns = INFO.VIEW.COLUMNS()
-                VAR _IsVisible = COUNTROWS(FILTER(_Columns, [Table] = tableName && [Name] = columnName)) > 0
-                RETURN ROW(
-                    "TestName", testName,
-                    "Expected", "Column '" & tableName & "[" & columnName & "]' should be HIDDEN from metadata",
-                    "Actual", IF(_IsVisible, "VISIBLE (OLS not working)", "HIDDEN (OLS working)"),
-                    "Passed", NOT _IsVisible
-                )
-        annotation DAXLIB_PackageId = PQL.Assert
-        annotation DAXLIB_PackageVersion = 0.7.0
-
-    /// Asserts that a column is visible in metadata (OLS allows access).
-    /// Use this when a role SHOULD have access to view or query a column.
-    function 'PQL.Assert.OLS.ColumnShouldBeVisible' =
-            (testName : STRING, tableName : STRING, columnName : STRING) =>
-                VAR _Columns = INFO.VIEW.COLUMNS()
-                VAR _IsVisible = COUNTROWS(FILTER(_Columns, [Table] = tableName && [Name] = columnName)) > 0
-                RETURN ROW(
-                    "TestName", testName,
-                    "Expected", "Column '" & tableName & "[" & columnName & "]' should be VISIBLE in metadata",
-                    "Actual", IF(_IsVisible, "VISIBLE (correct)", "HIDDEN (unexpected)"),
-                    "Passed", _IsVisible
-                )
-        annotation DAXLIB_PackageId = PQL.Assert
-        annotation DAXLIB_PackageVersion = 0.7.0
+        annotation DAXLIB_PackageVersion = 0.8.0
 
 
     /// Relationship Assertions - PQL.Assert.Relationship namespace
@@ -346,32 +298,49 @@ createOrReplace
                 toCardinality : STRING = "",
                 securityFilteringBehavior : STRING = ""
             ) =>
+                // Existence check using INFO.VIEW.RELATIONSHIPS (human-readable table/column names)
                 VAR _ViewRels = INFO.VIEW.RELATIONSHIPS()
                 VAR _Found = COUNTROWS(FILTER(_ViewRels,
                     [FromTable] = fromTable && [FromColumn] = fromColumn &&
                     [ToTable] = toTable && [ToColumn] = toColumn)) > 0
+
+                // Resolve table and column IDs to join with INFO.RELATIONSHIPS for cardinality and security filtering
                 VAR _InfoTables = INFO.TABLES()
                 VAR _InfoCols = INFO.COLUMNS()
                 VAR _InfoRels = INFO.RELATIONSHIPS()
+
                 VAR _FromTableID = MAXX(FILTER(_InfoTables, [Name] = fromTable), [ID])
                 VAR _ToTableID = MAXX(FILTER(_InfoTables, [Name] = toTable), [ID])
                 VAR _FromColID = MAXX(FILTER(_InfoCols, [TableID] = _FromTableID && [ExplicitName] = fromColumn), [ID])
                 VAR _ToColID = MAXX(FILTER(_InfoCols, [TableID] = _ToTableID && [ExplicitName] = toColumn), [ID])
+
+                // Find the matching relationship in INFO.RELATIONSHIPS (numeric cardinality and security values)
                 VAR _MatchingRel = FILTER(_InfoRels,
                     [FromTableID] = _FromTableID && [FromColumnID] = _FromColID &&
                     [ToTableID] = _ToTableID && [ToColumnID] = _ToColID)
+
+                // FromCardinality / ToCardinality: 1 = One, 2 = Many
                 VAR _ActualFromCard = MAXX(_MatchingRel, SWITCH([FromCardinality], 1, "One", 2, "Many", "Unknown"))
                 VAR _ActualToCard = MAXX(_MatchingRel, SWITCH([ToCardinality], 1, "One", 2, "Many", "Unknown"))
+
+                // SecurityFilteringBehavior: 1 = OneDirection, 2 = BothDirections
                 VAR _ActualSecFiltering = MAXX(_MatchingRel, SWITCH([SecurityFilteringBehavior], 1, "OneDirection", 2, "BothDirections", "Unknown"))
+
+                // Evaluate optional checks (skip when parameter is "" or relationship not found)
                 VAR _FromCardOk = IF(fromCardinality = "" || NOT _Found, TRUE, UPPER(_ActualFromCard) = UPPER(fromCardinality))
                 VAR _ToCardOk = IF(toCardinality = "" || NOT _Found, TRUE, UPPER(_ActualToCard) = UPPER(toCardinality))
                 VAR _SecFilterOk = IF(securityFilteringBehavior = "" || NOT _Found, TRUE, UPPER(_ActualSecFiltering) = UPPER(securityFilteringBehavior))
+
                 VAR _Passed = _Found && _FromCardOk && _ToCardOk && _SecFilterOk
+
+                // Build descriptive Expected message
                 VAR _RelKey = fromTable & "[" & fromColumn & "] -> " & toTable & "[" & toColumn & "]"
                 VAR _ExpectedSuffix =
                     IF(fromCardinality <> "", " | FromCardinality: " & fromCardinality, "") &
                     IF(toCardinality <> "", " | ToCardinality: " & toCardinality, "") &
                     IF(securityFilteringBehavior <> "", " | SecurityFiltering: " & securityFilteringBehavior, "")
+
+                // Build Actual message showing values for each checked attribute
                 VAR _ActualDetails =
                     IF(
                         _Found,
@@ -380,6 +349,7 @@ createOrReplace
                         IF(securityFilteringBehavior <> "", " | SecurityFiltering: " & IF(ISBLANK(_ActualSecFiltering), "N/A", _ActualSecFiltering), ""),
                         ""
                     )
+
                 RETURN ROW(
                     "TestName", testName,
                     "Expected", "Relationship '" & _RelKey & "' exists" & _ExpectedSuffix,
@@ -387,7 +357,14 @@ createOrReplace
                     "Passed", _Passed
                 )
         annotation DAXLIB_PackageId = PQL.Assert
-        annotation DAXLIB_PackageVersion = 0.7.0
+        annotation DAXLIB_PackageVersion = 0.8.0
+
+    /// Library Version - PQL.Assert namespace
+    /// Returns the installed PQL.Assert version as text, e.g. "0.8.0". Added in 0.8.0: if EVALUATE { PQL.Assert.LibraryVersion() } errors, the model has 0.7.x or older.
+    function 'PQL.Assert.LibraryVersion' =
+            () => "0.8.0"
+        annotation DAXLIB_PackageId = PQL.Assert
+        annotation DAXLIB_PackageVersion = 0.8.0
 
     /// Test Discovery Functions - PQL.Assert namespace
     /// Uses INFO.FUNCTIONS only - compatible with Power Automate REST API.
@@ -403,7 +380,7 @@ createOrReplace
                     "Name", [FUNCTION_NAME]
                 )
         annotation DAXLIB_PackageId = PQL.Assert
-        annotation DAXLIB_PackageVersion = 0.7.0
+        annotation DAXLIB_PackageVersion = 0.8.0
 
     /// Retrieves tests filtered by environment. Looks for .{ENV}. or .ANY. in function names.
     /// If environment is blank, returns all tests.
@@ -428,7 +405,7 @@ createOrReplace
                         "Name", [FUNCTION_NAME]
                     )
         annotation DAXLIB_PackageId = PQL.Assert
-        annotation DAXLIB_PackageVersion = 0.7.0
+        annotation DAXLIB_PackageVersion = 0.8.0
 
     /// Retrieves all test functions with full metadata (Description, RLS ImpersonatedUserName, RoleName).
     /// Uses INFO.USERDEFINEDFUNCTIONS and INFO.ANNOTATIONS - NOT compatible with Power Automate REST API.
@@ -493,7 +470,7 @@ createOrReplace
                         )
                     )
         annotation DAXLIB_PackageId = PQL.Assert
-        annotation DAXLIB_PackageVersion = 0.7.0
+        annotation DAXLIB_PackageVersion = 0.8.0
 
     /// Retrieves tests filtered by environment with full metadata (Description, RLS ImpersonatedUserName, RoleName).
     /// Looks for .{ENV}. or .ANY. in function names. If environment is blank, returns all tests.
@@ -566,5 +543,68 @@ createOrReplace
                         )
                     )
         annotation DAXLIB_PackageId = PQL.Assert
-        annotation DAXLIB_PackageVersion = 0.7.0
+        annotation DAXLIB_PackageVersion = 0.8.0
 
+	/// Object Level Security (OLS) Assertions - PQL.Assert.OLS namespace
+	/// Publisher: PQL (Power Query Lint)
+	/// These functions test metadata visibility to verify OLS is properly configured.
+	/// Use with "View as" role context in Power BI Desktop to validate security settings.
+	/// Asserts that a table is hidden from metadata (OLS metadataPermission = none).
+	/// Use this when a role should NOT have access to view or query a table.
+	function 'PQL.Assert.OLS.TableShouldBeHidden' =
+			(testName : STRING, tableName : STRING) =>
+				VAR _Tables = INFO.VIEW.TABLES()
+				VAR _IsVisible = COUNTROWS(FILTER(_Tables, [Name] = tableName)) > 0
+				RETURN ROW(
+					"TestName", testName,
+					"Expected", "Table '" & tableName & "' should be HIDDEN from metadata",
+					"Actual", IF(_IsVisible, "VISIBLE (OLS not working)", "HIDDEN (OLS working)"),
+					"Passed", NOT _IsVisible
+				)
+		annotation DAXLIB_PackageId = PQL.Assert
+		annotation DAXLIB_PackageVersion = 0.8.0
+
+	/// Asserts that a table is visible in metadata (OLS allows access).
+	/// Use this when a role SHOULD have access to view or query a table.
+	function 'PQL.Assert.OLS.TableShouldBeVisible' =
+			(testName : STRING, tableName : STRING) =>
+				VAR _Tables = INFO.VIEW.TABLES()
+				VAR _IsVisible = COUNTROWS(FILTER(_Tables, [Name] = tableName)) > 0
+				RETURN ROW(
+					"TestName", testName,
+					"Expected", "Table '" & tableName & "' should be VISIBLE in metadata",
+					"Actual", IF(_IsVisible, "VISIBLE (correct)", "HIDDEN (unexpected)"),
+					"Passed", _IsVisible
+				)
+		annotation DAXLIB_PackageId = PQL.Assert
+		annotation DAXLIB_PackageVersion = 0.8.0
+
+	/// Asserts that a column is hidden from metadata (OLS columnPermission = none).
+	/// Use this when a role should NOT have access to view or query a column.
+	function 'PQL.Assert.OLS.ColumnShouldBeHidden' =
+			(testName : STRING, tableName : STRING, columnName : STRING) =>
+				VAR _Columns = INFO.VIEW.COLUMNS()
+				VAR _IsVisible = COUNTROWS(FILTER(_Columns, [Table] = tableName && [Name] = columnName)) > 0
+				RETURN ROW(
+					"TestName", testName,
+					"Expected", "Column '" & tableName & "[" & columnName & "]' should be HIDDEN from metadata",
+					"Actual", IF(_IsVisible, "VISIBLE (OLS not working)", "HIDDEN (OLS working)"),
+					"Passed", NOT _IsVisible
+				)
+		annotation DAXLIB_PackageId = PQL.Assert
+		annotation DAXLIB_PackageVersion = 0.8.0
+
+	/// Asserts that a column is visible in metadata (OLS allows access).
+	/// Use this when a role SHOULD have access to view or query a column.
+	function 'PQL.Assert.OLS.ColumnShouldBeVisible' =
+			(testName : STRING, tableName : STRING, columnName : STRING) =>
+				VAR _Columns = INFO.VIEW.COLUMNS()
+				VAR _IsVisible = COUNTROWS(FILTER(_Columns, [Table] = tableName && [Name] = columnName)) > 0
+				RETURN ROW(
+					"TestName", testName,
+					"Expected", "Column '" & tableName & "[" & columnName & "]' should be VISIBLE in metadata",
+					"Actual", IF(_IsVisible, "VISIBLE (correct)", "HIDDEN (unexpected)"),
+					"Passed", _IsVisible
+				)
+		annotation DAXLIB_PackageId = PQL.Assert
+		annotation DAXLIB_PackageVersion = 0.8.0

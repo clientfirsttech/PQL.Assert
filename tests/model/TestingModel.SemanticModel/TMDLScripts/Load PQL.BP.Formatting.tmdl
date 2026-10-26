@@ -1,5 +1,4 @@
 createOrReplace
-
 	/// Formatting Best Practice Validation Functions
 	/// Publisher: PQL (Power Query Lint)
 	/// These functions validate semantic models against formatting best practices
@@ -78,7 +77,7 @@ createOrReplace
 			        "RuleDescription", "Visible measures should have their format string property assigned. Measures without format strings may display inconsistently and make reports harder to understand. Severity: High (3)."
 			    )	
 	    annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.7.0
+		annotation DAXLIB_PackageVersion = 0.8.0
 
 	/// Asserts that numeric columns should have SummarizeBy set to None.
 	/// Numeric columns with SummarizeBy enabled may cause accidental aggregation in reports. Users should create explicit measures instead.
@@ -154,7 +153,7 @@ createOrReplace
 			        "RuleDescription", "Numeric columns (Int64, Decimal, Double) should have their SummarizeBy property set to None to avoid accidental aggregation in Power BI. Users should create explicit measures instead. Severity: High (3)."
 			    )	
 	    annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.7.0
+		annotation DAXLIB_PackageVersion = 0.8.0
 
 	/// Asserts that tables should have at least one column marked as a row label (IsDefaultLabel = true).
 	/// Row labels help Power BI Copilot understand which columns represent the primary identifier for rows in a table.
@@ -224,7 +223,7 @@ createOrReplace
 			        "RuleDescription", "Set the 'RowLabel' property to 'True' for row label columns within the column properties. This helps Power BI Copilot understand which columns represent the primary identifier for rows in a table. Reference: https://blog.crossjoin.co.uk/2024/08/25/tuning-power-bi-copilot-with-row-labels-and-key-columns/. Severity: High (3)."
 			    )	
 	    annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.7.0
+		annotation DAXLIB_PackageVersion = 0.8.0
 
 	/// Asserts that columns on the "One" side of relationships should have the IsKey property set to true.
 	/// Marking primary keys helps Power BI understand table relationships and optimize query performance.
@@ -328,7 +327,143 @@ createOrReplace
 			        "RuleDescription", "Set the 'Key' property to 'True' for primary key columns within the column properties. This helps Power BI understand table relationships and optimize query performance. Severity: High (3)."
 			    )	
 	    annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.7.0
+		annotation DAXLIB_PackageVersion = 0.8.0
+
+	/// Asserts that visible numeric columns used in aggregation measures should be hidden.
+	/// It is a best practice to hide fact table columns that are used for aggregation in measures.
+	/// Reference: https://blog.crossjoin.co.uk/2024/06/09/get-better-results-from-power-bi-copilot-with-linguistic-modelling/
+	function 'PQL.Assert.BP.ShouldHideFactTableColumns' =
+			() =>
+			    VAR _Columns = INFO.VIEW.COLUMNS()
+			    VAR _Tables = INFO.VIEW.TABLES()
+			    VAR _Measures = INFO.MEASURES()
+			    VAR _AllTables = INFO.TABLES()
+			    
+			    // Get hidden tables for filtering
+			    VAR _HiddenTables = 
+			        FILTER(
+			            _Tables,
+			            [IsHidden] = TRUE
+			        )
+			    
+			    // Get visible numeric columns on visible tables
+			    VAR _NumericColumns = 
+			        FILTER(
+			            _Columns,
+			            VAR _TableName = [Table]
+			            VAR _DataType = [DataType]
+			            VAR _IsHidden = [IsHidden]
+			            
+			            // Check if table is hidden
+			            VAR _TableIsHidden = 
+			                COUNTROWS(
+			                    FILTER(
+			                        _HiddenTables,
+			                        [Name] = _TableName
+			                    )
+			                ) > 0
+			            
+			            RETURN
+			                NOT _IsHidden
+			                && NOT _TableIsHidden
+			                && (_DataType = "Integer" || _DataType = "Currency" || _DataType = "Number")
+			        )
+			    
+			    // For each visible numeric column, check if any measure references it in an aggregation function
+			    VAR _ViolatingColumns = 
+			        FILTER(
+			            _NumericColumns,
+			            VAR _ColName = [Name]
+			            VAR _TableName = [Table]
+			            
+			            // Build column reference patterns
+			            VAR _QualifiedRef = "'" & _TableName & "'[" & _ColName & "]"
+			            VAR _UnqualifiedRef = _TableName & "[" & _ColName & "]"
+			            VAR _ShortRef = "[" & _ColName & "]"
+			            
+			            // Check if any measure uses this column in an aggregation function
+			            VAR _IsAggregated = 
+			                COUNTROWS(
+			                    FILTER(
+			                        _Measures,
+			                        VAR _Expr = UPPER([Expression])
+			                        VAR _MeasureTableName = 
+			                            MAXX(
+			                                FILTER(_AllTables, [ID] = EARLIER([TableID])),
+			                                [Name]
+			                            )
+			                        RETURN
+			                            CONTAINSSTRING(_Expr, UPPER("SUM(" & _QualifiedRef))
+			                            || CONTAINSSTRING(_Expr, UPPER("SUM(" & _UnqualifiedRef))
+			                            || CONTAINSSTRING(_Expr, UPPER("COUNT(" & _QualifiedRef))
+			                            || CONTAINSSTRING(_Expr, UPPER("COUNT(" & _UnqualifiedRef))
+			                            || CONTAINSSTRING(_Expr, UPPER("COUNTBLANK(" & _QualifiedRef))
+			                            || CONTAINSSTRING(_Expr, UPPER("COUNTBLANK(" & _UnqualifiedRef))
+			                            || CONTAINSSTRING(_Expr, UPPER("AVERAGE(" & _QualifiedRef))
+			                            || CONTAINSSTRING(_Expr, UPPER("AVERAGE(" & _UnqualifiedRef))
+			                            || CONTAINSSTRING(_Expr, UPPER("DISTINCTCOUNT(" & _QualifiedRef))
+			                            || CONTAINSSTRING(_Expr, UPPER("DISTINCTCOUNT(" & _UnqualifiedRef))
+			                            || CONTAINSSTRING(_Expr, UPPER("MIN(" & _QualifiedRef))
+			                            || CONTAINSSTRING(_Expr, UPPER("MIN(" & _UnqualifiedRef))
+			                            || CONTAINSSTRING(_Expr, UPPER("MAX(" & _QualifiedRef))
+			                            || CONTAINSSTRING(_Expr, UPPER("MAX(" & _UnqualifiedRef))
+			                            || CONTAINSSTRING(_Expr, UPPER("COUNTA(" & _QualifiedRef))
+			                            || CONTAINSSTRING(_Expr, UPPER("COUNTA(" & _UnqualifiedRef))
+			                            || CONTAINSSTRING(_Expr, UPPER("AVERAGEA(" & _QualifiedRef))
+			                            || CONTAINSSTRING(_Expr, UPPER("AVERAGEA(" & _UnqualifiedRef))
+			                            || CONTAINSSTRING(_Expr, UPPER("MAXA(" & _QualifiedRef))
+			                            || CONTAINSSTRING(_Expr, UPPER("MAXA(" & _UnqualifiedRef))
+			                            || CONTAINSSTRING(_Expr, UPPER("MINA(" & _QualifiedRef))
+			                            || CONTAINSSTRING(_Expr, UPPER("MINA(" & _UnqualifiedRef))
+			                            // Same-table unqualified short reference
+			                            || (_MeasureTableName = _TableName && (
+			                                CONTAINSSTRING(_Expr, UPPER("SUM(" & _ShortRef))
+			                                || CONTAINSSTRING(_Expr, UPPER("COUNT(" & _ShortRef))
+			                                || CONTAINSSTRING(_Expr, UPPER("COUNTBLANK(" & _ShortRef))
+			                                || CONTAINSSTRING(_Expr, UPPER("AVERAGE(" & _ShortRef))
+			                                || CONTAINSSTRING(_Expr, UPPER("DISTINCTCOUNT(" & _ShortRef))
+			                                || CONTAINSSTRING(_Expr, UPPER("MIN(" & _ShortRef))
+			                                || CONTAINSSTRING(_Expr, UPPER("MAX(" & _ShortRef))
+			                                || CONTAINSSTRING(_Expr, UPPER("COUNTA(" & _ShortRef))
+			                                || CONTAINSSTRING(_Expr, UPPER("AVERAGEA(" & _ShortRef))
+			                                || CONTAINSSTRING(_Expr, UPPER("MAXA(" & _ShortRef))
+			                                || CONTAINSSTRING(_Expr, UPPER("MINA(" & _ShortRef))
+			                            ))
+			                    )
+			                ) > 0
+			            
+			            RETURN _IsAggregated
+			        )
+			    
+			    VAR _ViolationCount = COUNTROWS(_ViolatingColumns)
+			    
+			    VAR _ColumnsList = 
+			        CONCATENATEX(
+			            _ViolatingColumns,
+			            [Table] & "[" & [Name] & "]",
+			            ", ",
+			            [Table], ASC,
+			            [Name], ASC
+			        )
+			    
+			    VAR _Passed = _ViolationCount = 0
+			    
+			    VAR _ActualMessage = 
+			        IF(
+			            _ViolationCount > 0,
+			            "VISIBLE FACT TABLE COLUMNS USED IN AGGREGATIONS FOUND (" & FORMAT(_ViolationCount, "0") & "): " & _ColumnsList,
+			            "ALL FACT TABLE COLUMNS USED IN AGGREGATIONS ARE HIDDEN"
+			        )
+			    
+			    RETURN ROW(
+			        "TestName", "[Formatting] Hide fact table columns",
+			        "Expected", "Numeric columns used in aggregation measures should be hidden",
+			        "Actual", _ActualMessage,
+			        "Passed", _Passed,
+			        "RuleDescription", "It is a best practice to hide fact table columns that are used for aggregation in measures. Visible numeric columns referenced in SUM, COUNT, AVERAGE, MIN, MAX, DISTINCTCOUNT and other aggregation functions should be hidden to encourage users to use measures instead. Reference: https://blog.crossjoin.co.uk/2024/06/09/get-better-results-from-power-bi-copilot-with-linguistic-modelling/. Severity: High (3)."
+			    )	
+	    annotation DAXLIB_PackageId = PQL.Assert
+		annotation DAXLIB_PackageVersion = 0.8.0
 
 	/// Runs all formatting best practice checks.
 	/// This function executes all formatting validation rules and returns combined results.
@@ -338,7 +473,8 @@ createOrReplace
 			        PQL.Assert.BP.ShouldProvideFormatStringForMeasures(),
 			        PQL.Assert.BP.ShouldNotSummarizeNumericColumns(),
 			        PQL.Assert.BP.ShouldMarkRowLabels(),
-			        PQL.Assert.BP.ShouldMarkPrimaryKeys()
+			        PQL.Assert.BP.ShouldMarkPrimaryKeys(),
+			        PQL.Assert.BP.ShouldHideFactTableColumns()
 			    )
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.7.0
+		annotation DAXLIB_PackageVersion = 0.8.0

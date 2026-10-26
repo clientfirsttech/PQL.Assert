@@ -1,9 +1,7 @@
 createOrReplace
-
 	/// Table Assertions - PQL.Assert.Tbl namespace
 	/// Table-level assertion functions for schema and structure validation
 	/// Publisher: PQL (Power Query Lint)
-
 	/// Asserts that a table has at least one row.
 	function 'PQL.Assert.Tbl.ShouldHaveRows' =
 			(testName : STRING, tableRef : TABLE EXPR) =>
@@ -16,7 +14,7 @@ createOrReplace
 					"Passed", _Passed
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.7.0
+		annotation DAXLIB_PackageVersion = 0.8.0
 
 	/// Asserts that a table has exactly the expected number of rows.
 	function 'PQL.Assert.Tbl.ShouldHaveRowCount' =
@@ -30,7 +28,7 @@ createOrReplace
 					"Passed", _Passed
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.7.0
+		annotation DAXLIB_PackageVersion = 0.8.0
 
 	/// Asserts that a table has more rows than the specified threshold.
 	function 'PQL.Assert.Tbl.ShouldHaveMoreRowsThan' =
@@ -44,7 +42,7 @@ createOrReplace
 					"Passed", _Passed
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.7.0
+		annotation DAXLIB_PackageVersion = 0.8.0
 
 	/// Asserts that a table exists in the model.
 	function 'PQL.Assert.Tbl.ShouldExist' =
@@ -58,14 +56,17 @@ createOrReplace
 					"Passed", _Found
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.7.0
+		annotation DAXLIB_PackageVersion = 0.8.0
 
 	/// Schema & Column Shape
 	/// Asserts that a table has all the specified columns (comma-separated list).
+	/// @param {STRING} testName - Description of the test being performed
+	/// @param {STRING} tableName - Table name as text, e.g. "Sales" (not a table expression or 'Sales')
+	/// @param {STRING} columnNamesList - Comma-separated column names, e.g. "OrderID,Amount"
 	function 'PQL.Assert.Tbl.ShouldHaveColumns' =
-			(testName : STRING, tableRef : STRING, columnNamesList : STRING) =>
+			(testName : STRING, tableName : STRING, columnNamesList : STRING) =>
 				VAR _Columns = INFO.VIEW.COLUMNS()
-				VAR _TableColumns = FILTER(_Columns, [Table] = tableRef)
+				VAR _TableColumns = FILTER(_Columns, [Table] = tableName)
 				VAR _ExpectedCount = LEN(columnNamesList) - LEN(SUBSTITUTE(columnNamesList, ",", "")) + 1
 				VAR _ColumnNamesUpper = UPPER(columnNamesList)
 				VAR _MatchedColumns = FILTER(
@@ -78,18 +79,21 @@ createOrReplace
 				VAR _Passed = _MissingCount <= 0
 				RETURN ROW(
 					"TestName", testName,
-					"Expected", "Table '" & tableRef & "' has columns: " & columnNamesList,
+					"Expected", "Table '" & tableName & "' has columns: " & columnNamesList,
 					"Actual", IF(_Passed, "ALL COLUMNS FOUND", "MISSING " & FORMAT(_MissingCount, "0") & " COLUMN(S). Available: " & _ActualColumnNames),
 					"Passed", _Passed
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.7.0
+		annotation DAXLIB_PackageVersion = 0.8.0
 
 	/// Asserts that a table does not have extra columns beyond the allowed list (comma-separated).
+	/// @param {STRING} testName - Description of the test being performed
+	/// @param {STRING} tableName - Table name as text, e.g. "Sales" (not a table expression or 'Sales')
+	/// @param {STRING} allowedColumnNamesList - Comma-separated allowed column names
 	function 'PQL.Assert.Tbl.ShouldNotHaveExtraColumns' =
-			(testName : STRING, tableRef : STRING, allowedColumnNamesList : STRING) =>
+			(testName : STRING, tableName : STRING, allowedColumnNamesList : STRING) =>
 				VAR _Columns = INFO.VIEW.COLUMNS()
-				VAR _TableColumns = FILTER(_Columns, [Table] = tableRef && [Type] <> "RowNumber")
+				VAR _TableColumns = FILTER(_Columns, [Table] = tableName && [Type] <> "RowNumber")
 				VAR _TableColumnCount = COUNTROWS(_TableColumns)
 				VAR _AllowedUpper = UPPER(allowedColumnNamesList)
 				VAR _ExtraColumns = FILTER(
@@ -106,22 +110,80 @@ createOrReplace
 					"Passed", _Passed
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.7.0
+		annotation DAXLIB_PackageVersion = 0.8.0
 
 	/// Asserts that a column in a table has the expected data type.
+	/// @param {STRING} testName - Description of the test being performed
+	/// @param {STRING} tableName - Table name as text, e.g. "Sales" (not a table expression or 'Sales')
+	/// @param {STRING} columnName - Column name as text
+	/// @param {STRING} expectedType - Expected data type as text
 	function 'PQL.Assert.Tbl.ColumnDataTypeShouldBe' =
-			(testName : STRING, tableRef : STRING, columnName : STRING, expectedType : STRING) =>
+			(testName : STRING, tableName : STRING, columnName : STRING, expectedType : STRING) =>
 				VAR _Columns = INFO.VIEW.COLUMNS()
-				VAR _MatchingColumn = FILTER(_Columns, [Table] = tableRef && [Name] = columnName)
+				VAR _MatchingColumn = FILTER(_Columns, [Table] = tableName && [Name] = columnName)
 				VAR _Found = COUNTROWS(_MatchingColumn) > 0
 				VAR _ActualType = IF(_Found, MAXX(_MatchingColumn, [DataType]), "COLUMN NOT FOUND")
 				VAR _Passed = _Found && UPPER(_ActualType) = UPPER(expectedType)
 				RETURN ROW(
 					"TestName", testName,
-					"Expected", "Column '" & tableRef & "[" & columnName & "]' data type = " & expectedType,
+					"Expected", "Column '" & tableName & "[" & columnName & "]' data type = " & expectedType,
 					"Actual", IF(_Found, "DataType = " & _ActualType, "COLUMN NOT FOUND"),
 					"Passed", _Passed
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.7.0
+		annotation DAXLIB_PackageVersion = 0.8.0
 
+
+	/// Asserts that every row of a key table is distinct, for composite keys of any width. Pass the key columns as a projection, e.g. SELECTCOLUMNS('Sales', "OrderID", 'Sales'[OrderID], "Line", 'Sales'[Line]). Blank key values are compared like any other value.
+	/// @param {STRING} testName - Description of the test being performed
+	/// @param {TABLE} keyTable - Table expression holding only the key columns
+	function 'PQL.Assert.Tbl.RowsShouldBeDistinct' =
+			(testName : STRING, keyTable : TABLE EXPR) =>
+				VAR _Rows = COUNTROWS(keyTable) + 0
+				VAR _Distinct = COUNTROWS(DISTINCT(keyTable)) + 0
+				VAR _Passed = _Rows = _Distinct
+				RETURN ROW(
+					"TestName", testName,
+					"Expected", "All key rows distinct",
+					"Actual", FORMAT(_Distinct, "0") & " distinct of " & FORMAT(_Rows, "0") & " rows",
+					"Passed", _Passed
+				)
+		annotation DAXLIB_PackageId = PQL.Assert
+		annotation DAXLIB_PackageVersion = 0.8.0
+
+	/// Asserts that a filtered table has at most maxCount rows. Pass the rows that break a rule, e.g. FILTER('Orders', NOT 'Orders'[Status] IN {"open", "closed"}).
+	/// @param {STRING} testName - Description of the test being performed
+	/// @param {TABLE} filteredTable - Table expression holding the rows to count
+	/// @param {INT64} maxCount - Largest allowed number of rows
+	function 'PQL.Assert.Tbl.RowCountShouldBeAtMost' =
+			(testName : STRING, filteredTable : TABLE EXPR, maxCount : INT64) =>
+				VAR _Count = COUNTROWS(filteredTable) + 0
+				VAR _Passed = _Count <= maxCount
+				RETURN ROW(
+					"TestName", testName,
+					"Expected", "Matching rows <= " & FORMAT(maxCount, "0"),
+					"Actual", FORMAT(_Count, "0"),
+					"Passed", _Passed
+				)
+		annotation DAXLIB_PackageId = PQL.Assert
+		annotation DAXLIB_PackageVersion = 0.8.0
+
+	/// Asserts that a filtered table's rows are at most maxPct percent (0-100) of a base table's rows. An empty base table gives 0%.
+	/// @param {STRING} testName - Description of the test being performed
+	/// @param {TABLE} filteredTable - Table expression holding the rows to count, e.g. FILTER('Orders', ISBLANK('Orders'[ShipDate]))
+	/// @param {TABLE} baseTable - Table expression to compare against, e.g. 'Orders'
+	/// @param {DOUBLE} maxPct - Largest allowed share, as a percentage (0-100)
+	function 'PQL.Assert.Tbl.RowRateShouldBeAtMost' =
+			(testName : STRING, filteredTable : TABLE EXPR, baseTable : TABLE EXPR, maxPct : DOUBLE) =>
+				VAR _Matching = COUNTROWS(filteredTable) + 0
+				VAR _Rows = COUNTROWS(baseTable) + 0
+				VAR _Pct = IF(_Rows = 0, 0, DIVIDE(_Matching * 100, _Rows))
+				VAR _Passed = _Pct <= maxPct
+				RETURN ROW(
+					"TestName", testName,
+					"Expected", "Matching rows <= " & FORMAT(ROUND(maxPct, 2), "General Number") & "%",
+					"Actual", FORMAT(ROUND(_Pct, 2), "General Number") & "% (" & FORMAT(_Matching, "0") & " of " & FORMAT(_Rows, "0") & " rows)",
+					"Passed", _Passed
+				)
+		annotation DAXLIB_PackageId = PQL.Assert
+		annotation DAXLIB_PackageVersion = 0.8.0

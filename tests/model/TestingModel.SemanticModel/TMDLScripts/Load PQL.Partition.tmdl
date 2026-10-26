@@ -1,4 +1,13 @@
 createOrReplace
+    /// Partition Assertions - PQL.Assert.Partition namespace
+    /// These functions validate partition configurations in semantic models
+    /// Asserts that a table has the expected number of partitions, with optional date range filtering.
+    /// Uses INFO.PARTITIONS() to check partition counts for data quality and model structure validation.
+    /// @param {STRING} testName - Description of the test being performed
+    /// @param {STRING} tableName - Name of the table to check partitions for
+    /// @param {INT64} expectedCount - Expected number of partitions
+    /// @param {DATETIME} [startDate] - Optional start date filter (filters by RangeStart >= startDate)
+    /// @param {DATETIME} [endDate] - Optional end date filter (filters by RangeEnd <= endDate)
     function 'PQL.Assert.Partitions.ShouldBe' =
             (testName: STRING, tableName: STRING, expectedCount: INT64, startDate: DATETIME = BLANK(), endDate: DATETIME = BLANK()) =>
                 VAR _Partitions = INFO.PARTITIONS()
@@ -47,7 +56,7 @@ createOrReplace
                     "Passed", _Passed
                 )
         annotation DAXLIB_PackageId = PQL.Assert
-        annotation DAXLIB_PackageVersion = 0.7.0
+        annotation DAXLIB_PackageVersion = 0.8.0
 
     /// Asserts that at least one partition exists for the specified table, with optional date range filtering.
     /// Uses INFO.PARTITIONS() to verify partition existence for table-level and incremental-refresh checks.
@@ -103,7 +112,7 @@ createOrReplace
                     "Passed", _Passed
                 )
         annotation DAXLIB_PackageId = PQL.Assert
-        annotation DAXLIB_PackageVersion = 0.7.0
+        annotation DAXLIB_PackageVersion = 0.8.0
 
     /// Asserts that a table has at least a minimum number of partitions, with optional date range filtering.
     /// Uses INFO.PARTITIONS() to validate partition volume for incremental and rolling window partition strategies.
@@ -160,4 +169,4 @@ createOrReplace
                     "Passed", _Passed
                 )
         annotation DAXLIB_PackageId = PQL.Assert
-        annotation DAXLIB_PackageVersion = 0.7.0
+        annotation DAXLIB_PackageVersion = 0.8.0

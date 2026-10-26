@@ -7,116 +7,117 @@ createOrReplace
 	/// Scope: Measure. CompatibilityLevel >= 1200.
 	function 'PQL.Assert.BP.ShouldRemoveUnnecessaryMeasures' =
 			() =>
-				VAR _Measures = INFO.MEASURES()
-				VAR _Tables = INFO.TABLES()
-				VAR _Columns = INFO.COLUMNS()
-				
-				// Get hidden table IDs
-				VAR _HiddenTableIDs = 
-					SELECTCOLUMNS(
-						FILTER(_Tables, [IsHidden]),
-						"@ID", VALUE([ID])
-					)
-				
-				// Get all measure expressions for reference checking
-				VAR _AllMeasureExpressions = 
-					SELECTCOLUMNS(
-						_Measures,
-						"@Expr", [Expression]
-					)
-				
-				// Get calculated column expressions for reference checking
-				VAR _CalcColumnExpressions = 
-					SELECTCOLUMNS(
-						FILTER(_Columns, [Type] = 2),
-						"@Expr", [Expression]
-					)
-				
-				// Find hidden measures not referenced by any expression
-				VAR _ViolatingMeasures = 
-					ADDCOLUMNS(
-						FILTER(
-							_Measures,
-							VAR _MeasureName = [Name]
-							VAR _IsHidden = [IsHidden]
-							VAR _TableID = VALUE([TableID])
-							
-							// Check if table is hidden
-							VAR _TableIsHidden = 
-								COUNTROWS(
-									FILTER(
-										_HiddenTableIDs,
-										[@ID] = _TableID
-									)
-								) > 0
-							
-							// Measure must be hidden (directly or via table)
-							VAR _IsHiddenMeasure = _IsHidden || _TableIsHidden
-							
-							// Check if measure name appears in any other measure expression
-							VAR _SearchPattern = "[" & _MeasureName & "]"
-							VAR _ReferencedInMeasures = 
-								COUNTROWS(
-									FILTER(
-										_AllMeasureExpressions,
-										CONTAINSSTRING([@Expr], _SearchPattern)
-									)
-								)
-							
-							// Check if measure name appears in any calculated column expression
-							VAR _ReferencedInColumns = 
-								COUNTROWS(
-									FILTER(
-										_CalcColumnExpressions,
-										CONTAINSSTRING([@Expr], _SearchPattern)
-									)
-								)
-							
-							VAR _IsReferenced = (_ReferencedInMeasures + _ReferencedInColumns) > 0
-							
-							RETURN _IsHiddenMeasure && NOT _IsReferenced
-						),
-						"@TableName",
-							VAR _TableID = VALUE([TableID])
-							RETURN 
-								MAXX(
-									FILTER(
-										_Tables,
-										VALUE([ID]) = _TableID
-									),
-									[Name]
-								)
-					)
-				
-				VAR _ViolationCount = COUNTROWS(_ViolatingMeasures)
-				
-				VAR _MeasuresList = 
-					CONCATENATEX(
-						_ViolatingMeasures,
-						[@TableName] & "[" & [Name] & "]",
-						", ",
-						[@TableName], ASC,
-						[Name], ASC
-					)
-				
-				VAR _Passed = _ViolationCount = 0
-				
-				VAR _ActualMessage = 
-					IF(
-						_ViolationCount > 0,
-						"UNNECESSARY HIDDEN MEASURES FOUND (" & FORMAT(_ViolationCount, "0") & "): " & _MeasuresList,
-						"NO UNNECESSARY HIDDEN MEASURES FOUND"
-					)
-				
-				RETURN ROW(
-					"TestName", "[Maintenance] Remove unnecessary measures",
-					"Expected", "Hidden measures not referenced by any DAX expression should be removed",
-					"Actual", _ActualMessage,
-					"Passed", _Passed,
-					"RuleDescription", "Hidden measures that are not referenced by any DAX expression are unnecessary and should be removed for maintainability. Scope: Measure. CompatibilityLevel: 1200. Severity: High (3)."
-				)	
-		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.7.0
+			    VAR _Measures = INFO.MEASURES()
+			    VAR _Tables = INFO.TABLES()
+			    VAR _Columns = INFO.COLUMNS()
+			    
+			    // Get hidden table IDs
+			    VAR _HiddenTableIDs = 
+			        SELECTCOLUMNS(
+			            FILTER(_Tables, [IsHidden]),
+			            "@ID", VALUE([ID])
+			        )
+			    
+			    // Get all measure expressions for reference checking
+			    VAR _AllMeasureExpressions = 
+			        SELECTCOLUMNS(
+			            _Measures,
+			            "@Expr", [Expression]
+			        )
+			    
+			    // Get calculated column expressions for reference checking
+			    VAR _CalcColumnExpressions = 
+			        SELECTCOLUMNS(
+			            FILTER(_Columns, [Type] = 2),
+			            "@Expr", [Expression]
+			        )
+			    
+			    // Find hidden measures not referenced by any expression
+			    VAR _ViolatingMeasures = 
+			        ADDCOLUMNS(
+			            FILTER(
+			                _Measures,
+			                VAR _MeasureName = [Name]
+			                VAR _IsHidden = [IsHidden]
+			                VAR _TableID = VALUE([TableID])
+			                
+			                // Check if table is hidden
+			                VAR _TableIsHidden = 
+			                    COUNTROWS(
+			                        FILTER(
+			                            _HiddenTableIDs,
+			                            [@ID] = _TableID
+			                        )
+			                    ) > 0
+			                
+			                // Measure must be hidden (directly or via table)
+			                VAR _IsHiddenMeasure = _IsHidden || _TableIsHidden
+			                
+			                // Check if measure name appears in any other measure expression
+			                VAR _SearchPattern = "[" & _MeasureName & "]"
+			                VAR _ReferencedInMeasures = 
+			                    COUNTROWS(
+			                        FILTER(
+			                            _AllMeasureExpressions,
+			                            CONTAINSSTRING([@Expr], _SearchPattern)
+			                        )
+			                    )
+			                
+			                // Check if measure name appears in any calculated column expression
+			                VAR _ReferencedInColumns = 
+			                    COUNTROWS(
+			                        FILTER(
+			                            _CalcColumnExpressions,
+			                            CONTAINSSTRING([@Expr], _SearchPattern)
+			                        )
+			                    )
+			                
+			                VAR _IsReferenced = (_ReferencedInMeasures + _ReferencedInColumns) > 0
+			                
+			                RETURN _IsHiddenMeasure && NOT _IsReferenced
+			            ),
+			            "@TableName",
+			                VAR _TableID = VALUE([TableID])
+			                RETURN 
+			                    MAXX(
+			                        FILTER(
+			                            _Tables,
+			                            VALUE([ID]) = _TableID
+			                        ),
+			                        [Name]
+			                    )
+			        )
+			    
+			    VAR _ViolationCount = COUNTROWS(_ViolatingMeasures)
+			    
+			    VAR _MeasuresList = 
+			        CONCATENATEX(
+			            _ViolatingMeasures,
+			            [@TableName] & "[" & [Name] & "]",
+			            ", ",
+			            [@TableName], ASC,
+			            [Name], ASC
+			        )
+			    
+			    VAR _Passed = _ViolationCount = 0
+			    
+			    VAR _ActualMessage = 
+			        IF(
+			            _ViolationCount > 0,
+			            "UNNECESSARY HIDDEN MEASURES FOUND (" & FORMAT(_ViolationCount, "0") & "): " & _MeasuresList,
+			            "NO UNNECESSARY HIDDEN MEASURES FOUND"
+			        )
+			    
+			    RETURN ROW(
+			        "TestName", "[Maintenance] Remove unnecessary measures",
+			        "Expected", "Hidden measures not referenced by any DAX expression should be removed",
+			        "Actual", _ActualMessage,
+			        "Passed", _Passed,
+			        "RuleDescription", "Hidden measures that are not referenced by any DAX expression are unnecessary and should be removed for maintainability. Scope: Measure. CompatibilityLevel: 1200. Severity: High (3)."
+			    )	
+	    annotation DAXLIB_PackageId = PQL.Assert
+		annotation DAXLIB_PackageVersion = 0.8.0
+
 	/// Asserts that visible objects should have descriptions.
 	/// Add descriptions to visible tables, measures, and columns. Descriptions are shown on hover within the Field List in Power BI Desktop.
 	/// Scope: Table, Measure, DataColumn, CalculatedColumn, CalculatedTable, CalculatedTableColumn, CalculationGroup.
@@ -124,151 +125,310 @@ createOrReplace
 	/// Reference: https://www.elegantbi.com/post/datadictionary
 	function 'PQL.Assert.BP.ShouldHaveObjectDescriptions' =
 			() =>
-				VAR _Tables = INFO.TABLES()
-				VAR _Measures = INFO.MEASURES()
-				VAR _Columns = INFO.COLUMNS()
-				
-				// Get hidden table IDs for lookup
-				VAR _HiddenTableIDs = 
-					SELECTCOLUMNS(
-						FILTER(_Tables, [IsHidden]),
-						"@ID", VALUE([ID])
-					)
-				
-				// Visible tables without description (exclude system tables)
-				VAR _TablesWithoutDesc = 
-					FILTER(
-						_Tables,
-						NOT [IsHidden]
-						&& NOT CONTAINSSTRING([Name], "DateTableTemplate")
-						&& NOT CONTAINSSTRING([Name], "LocalDateTable")
-						&& (ISBLANK([Description]) || [Description] = "")
-					)
-				
-				// Visible measures without description (on visible tables)
-				VAR _MeasuresWithoutDesc = 
-					ADDCOLUMNS(
-						FILTER(
-							_Measures,
-							VAR _TableID = VALUE([TableID])
-							VAR _IsHidden = [IsHidden]
-							VAR _TableIsHidden = 
-								COUNTROWS(
-									FILTER(
-										_HiddenTableIDs,
-										[@ID] = _TableID
-									)
-								) > 0
-							RETURN
-								NOT _IsHidden
-								&& NOT _TableIsHidden
-								&& (ISBLANK([Description]) || [Description] = "")
-						),
-						"@TableName",
-							VAR _TableID = VALUE([TableID])
-							RETURN 
-								MAXX(
-									FILTER(
-										_Tables,
-										VALUE([ID]) = _TableID
-									),
-									[Name]
-								)
-					)
-				
-				// Visible columns without description (types 1, 2, 4 on visible tables)
-				VAR _ColumnsWithoutDesc = 
-					ADDCOLUMNS(
-						FILTER(
-							_Columns,
-							VAR _TableID = VALUE([TableID])
-							VAR _IsHidden = [IsHidden]
-							VAR _ColumnType = [Type]
-							VAR _TableIsHidden = 
-								COUNTROWS(
-									FILTER(
-										_HiddenTableIDs,
-										[@ID] = _TableID
-									)
-								) > 0
-							VAR _IsInScope = _ColumnType = 1 || _ColumnType = 2 || _ColumnType = 4
-							RETURN
-								_IsInScope
-								&& NOT _IsHidden
-								&& NOT _TableIsHidden
-								&& (ISBLANK([Description]) || [Description] = "")
-						),
-						"@TableName",
-							VAR _TableID = VALUE([TableID])
-							RETURN 
-								MAXX(
-									FILTER(
-										_Tables,
-										VALUE([ID]) = _TableID
-									),
-									[Name]
-								)
-					)
-				
-				VAR _TableCount = COUNTROWS(_TablesWithoutDesc)
-				VAR _MeasureCount = COUNTROWS(_MeasuresWithoutDesc)
-				VAR _ColumnCount = COUNTROWS(_ColumnsWithoutDesc)
-				VAR _ViolationCount = _TableCount + _MeasureCount + _ColumnCount
-				
-				VAR _TablesList = 
-					CONCATENATEX(
-						_TablesWithoutDesc,
-						"'" & [Name] & "'",
-						", ",
-						[Name], ASC
-					)
-				
-				VAR _MeasuresList = 
-					CONCATENATEX(
-						_MeasuresWithoutDesc,
-						[@TableName] & "[" & [Name] & "]",
-						", ",
-						[@TableName], ASC,
-						[Name], ASC
-					)
-				
-				VAR _ColumnsList = 
-					CONCATENATEX(
-						_ColumnsWithoutDesc,
-						[@TableName] & "[" & [ExplicitName] & "]",
-						", ",
-						[@TableName], ASC,
-						[ExplicitName], ASC
-					)
-				
-				VAR _Passed = _ViolationCount = 0
-				
-				VAR _ActualMessage = 
-					IF(
-						_ViolationCount > 0,
-						"OBJECTS WITHOUT DESCRIPTIONS (" & FORMAT(_ViolationCount, "0") & ")"
-							& IF(_TableCount > 0, " | Tables (" & FORMAT(_TableCount, "0") & "): " & _TablesList, "")
-							& IF(_MeasureCount > 0, " | Measures (" & FORMAT(_MeasureCount, "0") & "): " & _MeasuresList, "")
-							& IF(_ColumnCount > 0, " | Columns (" & FORMAT(_ColumnCount, "0") & "): " & _ColumnsList, ""),
-						"ALL VISIBLE OBJECTS HAVE DESCRIPTIONS"
-					)
-				
-				RETURN ROW(
-					"TestName", "[Maintenance] Visible objects with no description",
-					"Expected", "All visible tables, measures, and columns should have descriptions",
-					"Actual", _ActualMessage,
-					"Passed", _Passed,
-					"RuleDescription", "Add descriptions to visible objects. Descriptions are shown on hover within the Field List in Power BI Desktop. Additionally, you can leverage these descriptions to create an automated data dictionary. Reference: https://www.elegantbi.com/post/datadictionary. Scope: Table, Measure, DataColumn, CalculatedColumn, CalculatedTable, CalculatedTableColumn, CalculationGroup. CompatibilityLevel: 1200. Severity: High (3)."
-				)	
-		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.7.0
+			    VAR _Tables = INFO.TABLES()
+			    VAR _Measures = INFO.MEASURES()
+			    VAR _Columns = INFO.COLUMNS()
+			    
+			    // Get hidden table IDs for lookup
+			    VAR _HiddenTableIDs = 
+			        SELECTCOLUMNS(
+			            FILTER(_Tables, [IsHidden]),
+			            "@ID", VALUE([ID])
+			        )
+			    
+			    // Visible tables without description (exclude system tables)
+			    VAR _TablesWithoutDesc = 
+			        FILTER(
+			            _Tables,
+			            NOT [IsHidden]
+			            && NOT CONTAINSSTRING([Name], "DateTableTemplate")
+			            && NOT CONTAINSSTRING([Name], "LocalDateTable")
+			            && (ISBLANK([Description]) || [Description] = "")
+			        )
+			    
+			    // Visible measures without description (on visible tables)
+			    VAR _MeasuresWithoutDesc = 
+			        ADDCOLUMNS(
+			            FILTER(
+			                _Measures,
+			                VAR _TableID = VALUE([TableID])
+			                VAR _IsHidden = [IsHidden]
+			                VAR _TableIsHidden = 
+			                    COUNTROWS(
+			                        FILTER(
+			                            _HiddenTableIDs,
+			                            [@ID] = _TableID
+			                        )
+			                    ) > 0
+			                RETURN
+			                    NOT _IsHidden
+			                    && NOT _TableIsHidden
+			                    && (ISBLANK([Description]) || [Description] = "")
+			            ),
+			            "@TableName",
+			                VAR _TableID = VALUE([TableID])
+			                RETURN 
+			                    MAXX(
+			                        FILTER(
+			                            _Tables,
+			                            VALUE([ID]) = _TableID
+			                        ),
+			                        [Name]
+			                    )
+			        )
+			    
+			    // Visible columns without description (types 1, 2, 4 on visible tables)
+			    VAR _ColumnsWithoutDesc = 
+			        ADDCOLUMNS(
+			            FILTER(
+			                _Columns,
+			                VAR _TableID = VALUE([TableID])
+			                VAR _IsHidden = [IsHidden]
+			                VAR _ColumnType = [Type]
+			                VAR _TableIsHidden = 
+			                    COUNTROWS(
+			                        FILTER(
+			                            _HiddenTableIDs,
+			                            [@ID] = _TableID
+			                        )
+			                    ) > 0
+			                VAR _IsInScope = _ColumnType = 1 || _ColumnType = 2 || _ColumnType = 4
+			                RETURN
+			                    _IsInScope
+			                    && NOT _IsHidden
+			                    && NOT _TableIsHidden
+			                    && (ISBLANK([Description]) || [Description] = "")
+			            ),
+			            "@TableName",
+			                VAR _TableID = VALUE([TableID])
+			                RETURN 
+			                    MAXX(
+			                        FILTER(
+			                            _Tables,
+			                            VALUE([ID]) = _TableID
+			                        ),
+			                        [Name]
+			                    )
+			        )
+			    
+			    VAR _TableCount = COUNTROWS(_TablesWithoutDesc)
+			    VAR _MeasureCount = COUNTROWS(_MeasuresWithoutDesc)
+			    VAR _ColumnCount = COUNTROWS(_ColumnsWithoutDesc)
+			    VAR _ViolationCount = _TableCount + _MeasureCount + _ColumnCount
+			    
+			    VAR _TablesList = 
+			        CONCATENATEX(
+			            _TablesWithoutDesc,
+			            "'" & [Name] & "'",
+			            ", ",
+			            [Name], ASC
+			        )
+			    
+			    VAR _MeasuresList = 
+			        CONCATENATEX(
+			            _MeasuresWithoutDesc,
+			            [@TableName] & "[" & [Name] & "]",
+			            ", ",
+			            [@TableName], ASC,
+			            [Name], ASC
+			        )
+			    
+			    VAR _ColumnsList = 
+			        CONCATENATEX(
+			            _ColumnsWithoutDesc,
+			            [@TableName] & "[" & [ExplicitName] & "]",
+			            ", ",
+			            [@TableName], ASC,
+			            [ExplicitName], ASC
+			        )
+			    
+			    VAR _Passed = _ViolationCount = 0
+			    
+			    VAR _ActualMessage = 
+			        IF(
+			            _ViolationCount > 0,
+			            "OBJECTS WITHOUT DESCRIPTIONS (" & FORMAT(_ViolationCount, "0") & ")"
+			                & IF(_TableCount > 0, " | Tables (" & FORMAT(_TableCount, "0") & "): " & _TablesList, "")
+			                & IF(_MeasureCount > 0, " | Measures (" & FORMAT(_MeasureCount, "0") & "): " & _MeasuresList, "")
+			                & IF(_ColumnCount > 0, " | Columns (" & FORMAT(_ColumnCount, "0") & "): " & _ColumnsList, ""),
+			            "ALL VISIBLE OBJECTS HAVE DESCRIPTIONS"
+			        )
+			    
+			    RETURN ROW(
+			        "TestName", "[Maintenance] Visible objects with no description",
+			        "Expected", "All visible tables, measures, and columns should have descriptions",
+			        "Actual", _ActualMessage,
+			        "Passed", _Passed,
+			        "RuleDescription", "Add descriptions to visible objects. Descriptions are shown on hover within the Field List in Power BI Desktop. Additionally, you can leverage these descriptions to create an automated data dictionary. Reference: https://www.elegantbi.com/post/datadictionary. Scope: Table, Measure, DataColumn, CalculatedColumn, CalculatedTable, CalculatedTableColumn, CalculationGroup. CompatibilityLevel: 1200. Severity: High (3)."
+			    )	
+	    annotation DAXLIB_PackageId = PQL.Assert
+		annotation DAXLIB_PackageVersion = 0.8.0
+
+	/// Asserts that hidden columns not referenced by any DAX expressions, relationships, hierarchy levels, or Sort By-properties should be removed.
+	/// Scope: DataColumn, CalculatedColumn, CalculatedTableColumn. CompatibilityLevel >= 1200.
+	function 'PQL.Assert.BP.ShouldRemoveUnnecessaryColumns' =
+			() =>
+			    VAR _Columns = INFO.COLUMNS()
+			    VAR _Tables = INFO.TABLES()
+			    VAR _Dependencies = INFO.CALCDEPENDENCY()
+			    VAR _TablePermissions = INFO.TABLEPERMISSIONS()
+			    
+			    // Get hidden table IDs
+			    VAR _HiddenTableIDs = 
+			        SELECTCOLUMNS(
+			            FILTER(_Tables, [IsHidden]),
+			            "@ID", VALUE([ID])
+			        )
+			    
+			    // All columns referenced by anything (measures, calc columns, relationships, hierarchies)
+			    // REFERENCED_OBJECT_TYPE: COLUMN, CALC_COLUMN for direct refs; ATTRIBUTE_HIERARCHY for hierarchy levels
+			    VAR _ReferencedColumns = 
+			        DISTINCT(
+			            SELECTCOLUMNS(
+			                FILTER(
+			                    _Dependencies,
+			                    [REFERENCED_OBJECT_TYPE] = "COLUMN"
+			                    || [REFERENCED_OBJECT_TYPE] = "CALC_COLUMN"
+			                    || [REFERENCED_OBJECT_TYPE] = "ATTRIBUTE_HIERARCHY"
+			                ),
+			                "@RefTable", [REFERENCED_TABLE],
+			                "@RefColumn", [REFERENCED_OBJECT]
+			            )
+			        )
+			    
+			    // Columns used as SortBy target (SortByColumnID references)
+			    VAR _SortByColumnIDs = 
+			        DISTINCT(
+			            SELECTCOLUMNS(
+			                FILTER(_Columns, NOT ISBLANK([SortByColumnID]) && [SortByColumnID] > 0),
+			                "@SortByID", [SortByColumnID]
+			            )
+			        )
+			    
+			    // RLS filter expressions (if any roles exist)
+			    VAR _RLSExpressions = 
+			        SELECTCOLUMNS(
+			            FILTER(_TablePermissions, NOT ISBLANK([FilterExpression]) && [FilterExpression] <> ""),
+			            "@FilterExpr", [FilterExpression]
+			        )
+			    
+			    // Find hidden columns not referenced by anything
+			    VAR _ViolatingColumns = 
+			        ADDCOLUMNS(
+			            FILTER(
+			                _Columns,
+			                VAR _ColumnType = [Type]
+			                VAR _IsHidden = [IsHidden]
+			                VAR _TableID = VALUE([TableID])
+			                VAR _ColumnID = VALUE([ID])
+			                VAR _ColumnName = [ExplicitName]
+			                
+			                // Scope: DataColumn (1), CalculatedColumn (2), CalculatedTableColumn (4)
+			                VAR _IsInScope = _ColumnType = 1 || _ColumnType = 2 || _ColumnType = 4
+			                
+			                // Check if table is hidden
+			                VAR _TableIsHidden = 
+			                    COUNTROWS(
+			                        FILTER(
+			                            _HiddenTableIDs,
+			                            [@ID] = _TableID
+			                        )
+			                    ) > 0
+			                
+			                // Column or table must be hidden
+			                VAR _IsHiddenColumn = _IsHidden || _TableIsHidden
+			                
+			                // Get table name for reference matching
+			                VAR _TableName = 
+			                    MAXX(
+			                        FILTER(_Tables, VALUE([ID]) = _TableID),
+			                        [Name]
+			                    )
+			                
+			                // Check if referenced by any DAX, relationship, or hierarchy
+			                VAR _IsReferenced = 
+			                    COUNTROWS(
+			                        FILTER(
+			                            _ReferencedColumns,
+			                            [@RefTable] = _TableName && [@RefColumn] = _ColumnName
+			                        )
+			                    ) > 0
+			                
+			                // Check if used as SortBy target by another column
+			                VAR _UsedInSortBy = 
+			                    COUNTROWS(
+			                        FILTER(_SortByColumnIDs, [@SortByID] = _ColumnID)
+			                    ) > 0
+			                
+			                // Check if referenced in RLS filter expressions
+			                VAR _SearchPattern1 = _TableName & "[" & _ColumnName & "]"
+			                VAR _SearchPattern2 = "'" & _TableName & "'[" & _ColumnName & "]"
+			                VAR _UsedInRLS = 
+			                    COUNTROWS(
+			                        FILTER(
+			                            _RLSExpressions,
+			                            CONTAINSSTRING([@FilterExpr], _SearchPattern1)
+			                            || CONTAINSSTRING([@FilterExpr], _SearchPattern2)
+			                        )
+			                    ) > 0
+			                
+			                RETURN
+			                    _IsInScope
+			                    && _IsHiddenColumn
+			                    && NOT _IsReferenced
+			                    && NOT _UsedInSortBy
+			                    && NOT _UsedInRLS
+			            ),
+			            "@TableName",
+			                VAR _TableID = VALUE([TableID])
+			                RETURN 
+			                    MAXX(
+			                        FILTER(
+			                            _Tables,
+			                            VALUE([ID]) = _TableID
+			                        ),
+			                        [Name]
+			                    )
+			        )
+			    
+			    VAR _ViolationCount = COUNTROWS(_ViolatingColumns)
+			    
+			    VAR _ColumnsList = 
+			        CONCATENATEX(
+			            _ViolatingColumns,
+			            [@TableName] & "[" & [ExplicitName] & "]",
+			            ", ",
+			            [@TableName], ASC,
+			            [ExplicitName], ASC
+			        )
+			    
+			    VAR _Passed = _ViolationCount = 0
+			    
+			    VAR _ActualMessage = 
+			        IF(
+			            _ViolationCount > 0,
+			            "UNNECESSARY HIDDEN COLUMNS FOUND (" & FORMAT(_ViolationCount, "0") & "): " & _ColumnsList,
+			            "NO UNNECESSARY HIDDEN COLUMNS FOUND"
+			        )
+			    
+			    RETURN ROW(
+			        "TestName", "[Maintenance] Remove unnecessary columns",
+			        "Expected", "Hidden columns not referenced by any DAX expression, relationship, hierarchy, or SortBy should be removed",
+			        "Actual", _ActualMessage,
+			        "Passed", _Passed,
+			        "RuleDescription", "Hidden columns that are not referenced by any DAX expressions, relationships, hierarchy levels, or Sort By-properties should be removed. Scope: DataColumn, CalculatedColumn, CalculatedTableColumn. CompatibilityLevel: 1200. Severity: High (3)."
+			    )	
+	    annotation DAXLIB_PackageId = PQL.Assert
+		annotation DAXLIB_PackageVersion = 0.8.0
+
 	/// Runs all maintenance best practice checks.
 	/// This function executes all maintenance validation rules and returns combined results.
 	function 'PQL.Assert.BP.CheckMaintenance' =
 			() =>
-				UNION(
-					PQL.Assert.BP.ShouldRemoveUnnecessaryMeasures(),
-					PQL.Assert.BP.ShouldHaveObjectDescriptions()
-				)
+			    UNION(
+			        PQL.Assert.BP.ShouldRemoveUnnecessaryMeasures(),
+			        PQL.Assert.BP.ShouldRemoveUnnecessaryColumns(),
+			        PQL.Assert.BP.ShouldHaveObjectDescriptions()
+			    )
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.7.0
+		annotation DAXLIB_PackageVersion = 0.8.0

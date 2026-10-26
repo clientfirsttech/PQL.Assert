@@ -279,7 +279,7 @@ DEFINE
 		VAR _Tbl_ShouldHaveColumns_Fail = PQL.Assert.Tbl.ShouldHaveColumns("Tbl.ShouldHaveColumns: TestData has FakeCol should fail", "TestData", "FakeCol")
 
 		// PQL.Assert.Tbl.ShouldNotHaveExtraColumns
-		VAR _Tbl_NoExtra_Pass = PQL.Assert.Tbl.ShouldNotHaveExtraColumns("Tbl.ShouldNotHaveExtraColumns: All cols allowed should pass", "TestData", "ID,Name,Value,Category,IsActive,CreatedDate,NullableField,Fixed Decimal,MDX Disabled Column,Order Code,Short Text,Sparse Code")
+		VAR _Tbl_NoExtra_Pass = PQL.Assert.Tbl.ShouldNotHaveExtraColumns("Tbl.ShouldNotHaveExtraColumns: All cols allowed should pass", "TestData", "ID,Name,Value,Category,IsActive,CreatedDate,NullableField,Fixed Decimal,MDX Disabled Column,Order Code,Short Text,Sparse Code,Dup With Blank,Distinct With Blank,Empty Text,Signed With Blank")
 		VAR _Tbl_NoExtra_Fail = PQL.Assert.Tbl.ShouldNotHaveExtraColumns("Tbl.ShouldNotHaveExtraColumns: Only ID allowed should fail", "TestData", "ID")
 
 		// PQL.Assert.Tbl.ColumnDataTypeShouldBe
@@ -311,6 +311,18 @@ DEFINE
 
 		// PQL.Assert.Relationship.ShouldExist — relationship not found with optional params
 		VAR _Rel_NotFound_WithParams_Fail = PQL.Assert.Relationship.ShouldExist("Relationship.ShouldExist: Non-existent relationship with cardinality should fail", "FakeFrom", "Col", "FakeTo", "Col", "One", "One", "OneDirection")
+
+		// ============================================
+		// 0.8.0 ASSERTIONS
+		// ============================================
+
+		VAR _ShouldNotBeBetween_Pass_Low = PQL.Assert.ShouldNotBeBetween("ShouldNotBeBetween: 5 outside [10,20] should pass", 10, 20, 5)
+		VAR _ShouldNotBeBetween_Pass_High = PQL.Assert.ShouldNotBeBetween("ShouldNotBeBetween: 25 outside [10,20] should pass", 10, 20, 25)
+		VAR _ShouldNotBeBetween_Fail = PQL.Assert.ShouldNotBeBetween("ShouldNotBeBetween: 15 outside [10,20] should fail", 10, 20, 15)
+		VAR _ShouldNotBeBetween_Fail_Bound = PQL.Assert.ShouldNotBeBetween("ShouldNotBeBetween: 20 outside [10,20] (bounds are inclusive) should fail", 10, 20, 20)
+		VAR _LibraryVersionFunctionID = MAXX(FILTER(INFO.USERDEFINEDFUNCTIONS(), [Name] = "PQL.Assert.LibraryVersion"), [ID])
+		VAR _LibraryVersionAnnotation = MAXX(FILTER(INFO.ANNOTATIONS(), [Name] = "DAXLIB_PackageVersion" && [ObjectID] = _LibraryVersionFunctionID), [Value])
+		VAR _LibraryVersion_Pass = PQL.Assert.ShouldEqual("LibraryVersion: matches its DAXLIB_PackageVersion annotation should pass", _LibraryVersionAnnotation, PQL.Assert.LibraryVersion())
 
 		// ============================================
 		// Combine All Test Results
@@ -474,7 +486,12 @@ DEFINE
 		    _Rel_SecFilter_Pass,
 		    _Rel_SecFilter_Fail,
 		    _Rel_AllParams_Pass,
-		    _Rel_NotFound_WithParams_Fail
+		    _Rel_NotFound_WithParams_Fail,
+		    _ShouldNotBeBetween_Pass_Low,
+		    _ShouldNotBeBetween_Pass_High,
+		    _ShouldNotBeBetween_Fail,
+		    _ShouldNotBeBetween_Fail_Bound,
+		    _LibraryVersion_Pass
 		)
 
 		// ============================================

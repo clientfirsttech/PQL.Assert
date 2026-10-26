@@ -35,6 +35,10 @@ DEFINE
 		// PQL.Assert.Col.ShouldNotBeNullOrBlank
 		VAR _Col_ShouldNotBeNullOrBlank_Pass = PQL.Assert.Col.ShouldNotBeNullOrBlank("Col.ShouldNotBeNullOrBlank: ID column should pass (no nulls/blanks)", 'TestData'[ID])
 		VAR _Col_ShouldNotBeNullOrBlank_Fail = PQL.Assert.Col.ShouldNotBeNullOrBlank("Col.ShouldNotBeNullOrBlank: Nullable column should fail (has blank)", 'TestData-Fact'[NullableField])
+		VAR _Blank_Pass_AllNull_Deprecated = PQL.Assert.Col.ShouldBeBlank("Col.ShouldBeBlank: Blank Column all NULL (deprecated duplicate of ShouldBeNullOrBlank) should pass", 'TestData-Fact'[Blank Column])
+		VAR _NullCount_Pass_EmptyTextNotNull = PQL.Assert.Col.NullCountShouldBeAtMost("Col.NullCountShouldBeAtMost: Empty Text <=0 nulls (empty strings are not NULL) should pass", 'TestData', 'TestData'[Empty Text], 0)
+		VAR _BlankRateV2_Fail_EmptyText = PQL.Assert.Col.BlankRateShouldBeAtMostV2("Col.BlankRateShouldBeAtMostV2: Empty Text <=99% (5 of 5 rows) should fail", 'TestData', 'TestData'[Empty Text], 99)
+		VAR _NotBlank_Fail_Null_Deprecated = PQL.Assert.Col.ShouldNotBeBlank("Col.ShouldNotBeBlank: NullableField with NULLs and no empty strings (deprecated duplicate of ShouldNotBeNullOrBlank) should fail", 'TestData'[NullableField])
 
 		// PQL.Assert.Col.ShouldBeDistinct
 		VAR _Col_ShouldBeDistinct_Pass = PQL.Assert.Col.ShouldBeDistinct("Col.ShouldBeDistinct: ID column should pass", 'TestData'[ID])
@@ -138,6 +142,17 @@ DEFINE
 
 		// PQL.Assert.Col.ShouldBeNonZero
 		VAR _NonZero_Pass = PQL.Assert.Col.ShouldBeNonZero("Col.ShouldBeNonZero: Value should pass", 'TestData'[Value])
+		VAR _ZerosV2_Pass = PQL.Assert.Col.ShareOfZerosAtMostV2("Col.ShareOfZerosAtMostV2: Signed With Blank <=50% (2 of 4 non-null rows) should pass", 'TestData', 'TestData'[Signed With Blank], 50)
+		VAR _ZerosV2_Fail = PQL.Assert.Col.ShareOfZerosAtMostV2("Col.ShareOfZerosAtMostV2: Signed With Blank <=49% should fail", 'TestData', 'TestData'[Signed With Blank], 49)
+		VAR _ZerosV2_Pass_NullNotZero = PQL.Assert.Col.ShareOfZerosAtMostV2("Col.ShareOfZerosAtMostV2: Dup With Blank <=0% (NULL is not zero) should pass", 'TestData', 'TestData'[Dup With Blank], 0)
+		VAR _EvensV2_Pass = PQL.Assert.Col.ShareOfEvensAtLeastV2("Col.ShareOfEvensAtLeastV2: Signed With Blank >=75% (0, 0, 2 of 4 non-null rows) should pass", 'TestData', 'TestData'[Signed With Blank], 75)
+		VAR _EvensV2_Fail_NullNotEven = PQL.Assert.Col.ShareOfEvensAtLeastV2("Col.ShareOfEvensAtLeastV2: Dup With Blank >=26% (NULL is not even, 1 of 4) should fail", 'TestData', 'TestData'[Dup With Blank], 26)
+		VAR _OddsV2_Pass = PQL.Assert.Col.ShareOfOddsAtLeastV2("Col.ShareOfOddsAtLeastV2: Dup With Blank >=75% (1, 1, 3 of 4 non-null rows) should pass", 'TestData', 'TestData'[Dup With Blank], 75)
+		VAR _OddsV2_Fail = PQL.Assert.Col.ShareOfOddsAtLeastV2("Col.ShareOfOddsAtLeastV2: Signed With Blank >=26% should fail", 'TestData', 'TestData'[Signed With Blank], 26)
+		VAR _NonZero_Pass_NullSkipped = PQL.Assert.Col.ShouldBeNonZero("Col.ShouldBeNonZero: Distinct With Blank (NULL is not zero) should pass", 'TestData'[Distinct With Blank])
+		VAR _NonZero_Fail_Zeros = PQL.Assert.Col.ShouldBeNonZero("Col.ShouldBeNonZero: Signed With Blank (two zeros) should fail", 'TestData'[Signed With Blank])
+		VAR _Positive_Pass_NullSkipped = PQL.Assert.Col.ShouldBePositive("Col.ShouldBePositive: Distinct With Blank (NULL skipped) should pass", 'TestData'[Distinct With Blank])
+		VAR _Positive_Fail_Signed = PQL.Assert.Col.ShouldBePositive("Col.ShouldBePositive: Signed With Blank (-1 and zeros) should fail", 'TestData'[Signed With Blank])
 
 		// PQL.Assert.Col.ShouldBeMonotonicIncreasing
 		// TestData ID: 1,2,3,4,5 ordered by ID is strictly increasing
@@ -277,6 +292,39 @@ DEFINE
 		VAR _NotEndsWith_Fail_EmptySuffix = PQL.Assert.Col.ShouldNotEndWith("Col.ShouldNotEndWith: Short Text ends with '' (empty suffix) should fail", 'TestData'[Short Text], "")
 
 		// ============================================
+		// 0.8.0 ASSERTIONS
+		// ============================================
+
+		VAR _NullCount_Pass = PQL.Assert.Col.NullCountShouldBeAtMost("Col.NullCountShouldBeAtMost: NullableField <=2 nulls should pass", 'TestData', 'TestData'[NullableField], 2)
+		VAR _NullCount_Fail = PQL.Assert.Col.NullCountShouldBeAtMost("Col.NullCountShouldBeAtMost: NullableField <=0 nulls should fail", 'TestData', 'TestData'[NullableField], 0)
+		VAR _NullCount_Pass_NoNulls = PQL.Assert.Col.NullCountShouldBeAtMost("Col.NullCountShouldBeAtMost: ID <=0 nulls should pass", 'TestData', 'TestData'[ID], 0)
+		VAR _NullCount_Pass_EmptyStringNotNull = PQL.Assert.Col.NullCountShouldBeAtMost("Col.NullCountShouldBeAtMost: Short Text <=1 null (empty string is not null) should pass", 'TestData', 'TestData'[Short Text], 1)
+		VAR _NullRateV2_Pass = PQL.Assert.Col.NullRateShouldBeAtMostV2("Col.NullRateShouldBeAtMostV2: NullableField <=40% (2 of 5 rows) should pass", 'TestData', 'TestData'[NullableField], 40)
+		VAR _NullRateV2_Fail = PQL.Assert.Col.NullRateShouldBeAtMostV2("Col.NullRateShouldBeAtMostV2: NullableField <=39.99% should fail", 'TestData', 'TestData'[NullableField], 39.99)
+		VAR _NullRateV2_Pass_EmptyTable = PQL.Assert.Col.NullRateShouldBeAtMostV2("Col.NullRateShouldBeAtMostV2: empty table <=0% should pass", FILTER('TestData', FALSE), 'TestData'[NullableField], 0)
+		VAR _BlankRateV2_Pass = PQL.Assert.Col.BlankRateShouldBeAtMostV2("Col.BlankRateShouldBeAtMostV2: Short Text <=20% (1 empty string of 5 rows) should pass", 'TestData', 'TestData'[Short Text], 20)
+		VAR _BlankRateV2_Fail = PQL.Assert.Col.BlankRateShouldBeAtMostV2("Col.BlankRateShouldBeAtMostV2: Short Text <=10% should fail", 'TestData', 'TestData'[Short Text], 10)
+		VAR _BlankRateV2_Pass_Numeric = PQL.Assert.Col.BlankRateShouldBeAtMostV2("Col.BlankRateShouldBeAtMostV2: ID <=0% (numeric column) should pass", 'TestData', 'TestData'[ID], 0)
+		VAR _NullOrBlankRateV2_Pass = PQL.Assert.Col.NullOrBlankRateShouldBeAtMostV2("Col.NullOrBlankRateShouldBeAtMostV2: Short Text <=40% (2 of 5 rows) should pass", 'TestData', 'TestData'[Short Text], 40)
+		VAR _NullOrBlankRateV2_Fail = PQL.Assert.Col.NullOrBlankRateShouldBeAtMostV2("Col.NullOrBlankRateShouldBeAtMostV2: Short Text <=30% should fail", 'TestData', 'TestData'[Short Text], 30)
+		VAR _PopulatedRateV2_Pass = PQL.Assert.Col.PopulatedRateShouldBeAtLeastV2("Col.PopulatedRateShouldBeAtLeastV2: Short Text >=60% (3 of 5 rows) should pass", 'TestData', 'TestData'[Short Text], 60)
+		VAR _PopulatedRateV2_Fail = PQL.Assert.Col.PopulatedRateShouldBeAtLeastV2("Col.PopulatedRateShouldBeAtLeastV2: Short Text >=61% should fail", 'TestData', 'TestData'[Short Text], 61)
+		VAR _NonNullDistinct_Pass = PQL.Assert.Col.NonNullValuesShouldBeDistinct("Col.NonNullValuesShouldBeDistinct: Distinct With Blank (null ignored) should pass", 'TestData'[Distinct With Blank])
+		VAR _NonNullDistinct_Fail = PQL.Assert.Col.NonNullValuesShouldBeDistinct("Col.NonNullValuesShouldBeDistinct: Dup With Blank {1,1,2,3,BLANK} should fail", 'TestData'[Dup With Blank])
+		VAR _PrimaryKey_Pass = PQL.Assert.Col.ShouldBePrimaryKey("Col.ShouldBePrimaryKey: ID should pass", 'TestData'[ID])
+		VAR _PrimaryKey_Fail_Blank = PQL.Assert.Col.ShouldBePrimaryKey("Col.ShouldBePrimaryKey: Distinct With Blank (one BLANK) should fail", 'TestData'[Distinct With Blank])
+		VAR _PrimaryKey_Fail_Dupes = PQL.Assert.Col.ShouldBePrimaryKey("Col.ShouldBePrimaryKey: Category (duplicates) should fail", 'TestData'[Category])
+		VAR _DupCount_Pass = PQL.Assert.Col.DuplicateCountShouldBeAtMost("Col.DuplicateCountShouldBeAtMost: Dup With Blank <=1 should pass", 'TestData'[Dup With Blank], 1)
+		VAR _DupCount_Fail = PQL.Assert.Col.DuplicateCountShouldBeAtMost("Col.DuplicateCountShouldBeAtMost: Dup With Blank <=0 should fail", 'TestData'[Dup With Blank], 0)
+		VAR _DupCount_Pass_IgnoresBlank = PQL.Assert.Col.DuplicateCountShouldBeAtMost("Col.DuplicateCountShouldBeAtMost: Distinct With Blank <=0 (null ignored) should pass", 'TestData'[Distinct With Blank], 0)
+		VAR _Distinct_Pass_KnownFalsePass = PQL.Assert.Col.ShouldBeDistinct("Col.ShouldBeDistinct: Dup With Blank {1,1,2,3,BLANK} (deprecated, known false pass) should pass", 'TestData'[Dup With Blank])
+		VAR _Distinct_Fail_OneBlank = PQL.Assert.Col.ShouldBeDistinct("Col.ShouldBeDistinct: Distinct With Blank (deprecated, one BLANK fails) should fail", 'TestData'[Distinct With Blank])
+		VAR _MaxDate_Pass = PQL.Assert.Col.MaxDateShouldBeWithinDays("Col.MaxDateShouldBeWithinDays: CreatedDate within 1000000 days should pass", 'TestData'[CreatedDate], 1000000)
+		VAR _MaxDate_Fail = PQL.Assert.Col.MaxDateShouldBeWithinDays("Col.MaxDateShouldBeWithinDays: CreatedDate within 30 days should fail", 'TestData'[CreatedDate], 30)
+		VAR _MaxDateHours_Pass = PQL.Assert.Col.MaxDateShouldBeWithinHours("Col.MaxDateShouldBeWithinHours: CreatedDate within 1000000 hours should pass", 'TestData'[CreatedDate], 1000000)
+		VAR _MaxDateHours_Fail = PQL.Assert.Col.MaxDateShouldBeWithinHours("Col.MaxDateShouldBeWithinHours: CreatedDate within 3 hours should fail", 'TestData'[CreatedDate], 3)
+
+		// ============================================
 		// Combine All Test Results
 		// ============================================
 		VAR _AllTests = UNION(
@@ -291,6 +339,10 @@ DEFINE
 		    _Col_ShouldBeNullOrBlank_Fail,
 		    _Col_ShouldNotBeNullOrBlank_Pass,
 		    _Col_ShouldNotBeNullOrBlank_Fail,
+		    _Blank_Pass_AllNull_Deprecated,
+		    _NullCount_Pass_EmptyTextNotNull,
+		    _BlankRateV2_Fail_EmptyText,
+		    _NotBlank_Fail_Null_Deprecated,
 		    _Col_ShouldBeDistinct_Pass,
 		    _Col_ShouldExist_Pass,
 		    _Col_ShouldExist_Fail,
@@ -333,6 +385,17 @@ DEFINE
 		    _NonNeg_Pass,
 		    _Positive_Pass,
 		    _NonZero_Pass,
+		    _ZerosV2_Pass,
+		    _ZerosV2_Fail,
+		    _ZerosV2_Pass_NullNotZero,
+		    _EvensV2_Pass,
+		    _EvensV2_Fail_NullNotEven,
+		    _OddsV2_Pass,
+		    _OddsV2_Fail,
+		    _NonZero_Pass_NullSkipped,
+		    _NonZero_Fail_Zeros,
+		    _Positive_Pass_NullSkipped,
+		    _Positive_Fail_Signed,
 		    _MonoInc_Pass,
 		    _MonoNonDec_Pass,
 		    _MonoDec_Fail,
@@ -394,7 +457,35 @@ DEFINE
 		    _Contains_Fail_ValueShorterThanSearch,
 		    _NotContains_Pass_SearchLongerThanValue,
 		    _StartsWith_Pass_EmptyPrefix,
-		    _NotEndsWith_Fail_EmptySuffix
+		    _NotEndsWith_Fail_EmptySuffix,
+		    _NullCount_Pass,
+		    _NullCount_Fail,
+		    _NullCount_Pass_NoNulls,
+		    _NullCount_Pass_EmptyStringNotNull,
+		    _NullRateV2_Pass,
+		    _NullRateV2_Fail,
+		    _NullRateV2_Pass_EmptyTable,
+		    _BlankRateV2_Pass,
+		    _BlankRateV2_Fail,
+		    _BlankRateV2_Pass_Numeric,
+		    _NullOrBlankRateV2_Pass,
+		    _NullOrBlankRateV2_Fail,
+		    _PopulatedRateV2_Pass,
+		    _PopulatedRateV2_Fail,
+		    _NonNullDistinct_Pass,
+		    _NonNullDistinct_Fail,
+		    _PrimaryKey_Pass,
+		    _PrimaryKey_Fail_Blank,
+		    _PrimaryKey_Fail_Dupes,
+		    _DupCount_Pass,
+		    _DupCount_Fail,
+		    _DupCount_Pass_IgnoresBlank,
+		    _Distinct_Pass_KnownFalsePass,
+		    _Distinct_Fail_OneBlank,
+		    _MaxDate_Pass,
+		    _MaxDate_Fail,
+		    _MaxDateHours_Pass,
+		    _MaxDateHours_Fail
 		)
 
 		// ============================================

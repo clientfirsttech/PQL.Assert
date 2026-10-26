@@ -11,10 +11,11 @@ match the `version` value in [src/manifest.daxlib](src/manifest.daxlib) and the
 
 ## [0.8.0] - 2026-10-26
 
-No existing function changes name or parameters. Two functions change behavior:
-`Col.ShouldBePositive` and `Col.ShouldBeNonZero` now skip NULL instead of treating it as 0 (see
-"Changed (behavior)"). That can turn a false failure into a pass on columns with NULLs. Every other
-0.7.1 test gives the same result on 0.8.0.
+No existing function changes name or parameters. 0.8.0 applies one NULL (`BLANK()`) policy across the
+library (see "Changed (behavior)" and the README section "NULL vs blank"). Results change only for NULL
+input, all-NULL columns and empty tables, plus mean, percentile and standard deviation on columns with
+repeated values, which 0.7.x computed over distinct values. Deprecated functions keep their 0.7.x
+behavior. A 0.7.1 test on columns and values without NULLs gives the same result on 0.8.0.
 
 ### Added
 - `PQL.Assert.LibraryVersion()` returns the installed version (`"0.8.0"`). Tools can detect 0.8.0+
@@ -51,6 +52,14 @@ No existing function changes name or parameters. Two functions change behavior:
   all-NULL column, `Col.ShouldNotBeBlank` failing on NULL), cases for the `ShouldBePositive` and
   `ShouldBeNonZero` behavior change, and a check that `LibraryVersion()` matches its
   `DAXLIB_PackageVersion` annotation.
+- `NullHandling.ANY.Tests`, a TestingModel suite of 68 cases for the NULL policy: value checks on
+  all-NULL columns (fixture `TestData[Null Text]` and `TestData-Fact[Blank Column]`), row-based
+  statistics, set membership with NULL, empty tables, and scalar checks with a NULL `actual`. It is
+  registered in `daxQueries.json` and the CI gate.
+- `ModelIndependence.ANY.Tests`, 18 cases that run every TABLE-parameter function on virtual tables
+  (`DATATABLE`) that are not in the model, with column names such as `Weird Col #1`, `Name` and
+  `Allowed Code (x)`. No library function assumes a column name on a TABLE parameter; the same
+  functions were also checked against RLS_Model, which has a different schema.
 - `examples/custom-agents/skills/dax-blank-handling/SKILL.md`, a SudoLang skill for reviewing NULL
   (`BLANK()`) and empty-string handling in DAX. Its language rules are summarized from
   [Handling BLANK in DAX](https://www.sqlbi.com/articles/blank-handling-in-dax/) by Marco Russo
@@ -79,11 +88,31 @@ Kept unchanged until 1.0; the descriptions now say what to use instead. The READ
   `Col.NonNullValuesShouldBeDistinct` or `Col.ShouldBePrimaryKey`.
 
 ### Changed (behavior)
-- `Col.ShouldBePositive` and `Col.ShouldBeNonZero` skip NULL. In 0.7.x they counted NULL as
-  non-positive or zero, because `BLANK() <= 0` and `BLANK() = 0` are TRUE in DAX, so
-  `{10, 20, 30, 40, NULL}` failed both. It now passes both. Results change only on columns that
-  contain NULL, and only from fail to pass. This matches `ShouldBeNonNegative`, `MinShouldBeAtLeast`
-  and the other numeric checks, which already skipped NULL.
+NULL policy, from a review with the `dax-blank-handling` skill. In DAX `BLANK() = 0`, `BLANK() = ""`
+and `BLANK() = FALSE` are TRUE, so several checks treated NULL as a value:
+- `Col.ShouldBePositive` and `Col.ShouldBeNonZero` skip NULL. In 0.7.x `{10, 20, 30, 40, NULL}` failed
+  both (`BLANK() <= 0` and `BLANK() = 0`); it now passes.
+- `Col.MeanShouldBeInRange`, `Col.PctileShouldBeInRange` and `Col.StdDevShouldBeAtMost` are computed
+  over rows with NULL skipped. 0.7.x used distinct values, ranked NULL as the lowest value in the
+  percentile and counted it as 0 in the standard deviation: on `{10, 20, 30, 40, NULL}` P50 was 20
+  (now 25) and StdDev 16.77 (now 12.91); on `{1, 1, 2, 3, NULL}` the mean was 2 (now 1.75).
+- Value checks fail with NO VALUES when the column has no non-NULL value: range, min, max, mean,
+  percentile, standard deviation, sign, the text checks, set membership, `ShouldBeUniqueWithin`,
+  `ComboShouldBeDistinct`, and the new uniqueness and share V2 functions. In 0.7.x they passed, or
+  passed only when 0 was inside the range (`ShouldBeInRange(-5, 5)` passed an all-NULL column).
+- The row-based rate V2 functions, `Tbl.RowRateShouldBeAtMost` and `Tbl.RowsShouldBeDistinct` fail
+  with NO ROWS on an empty table. Problem counts (`NullCountShouldBeAtMost`,
+  `Tbl.RowCountShouldBeAtMost`) still pass at zero.
+- `Col.ValuesShouldBeInSet` and `Col.ValuesShouldNotBeInSet` skip NULL. 0.7.x reported a NULL as
+  outside the allowed set.
+- Scalar `ShouldBeGreaterThan`, `ShouldBeLessThan`, `ShouldBeGreaterOrEqual`, `ShouldBeLessOrEqual`,
+  `ShouldBeBetween`, `ShouldStartWith`, `ShouldEndWith`, `ShouldContainString` and `ShouldMatch` fail
+  when `actual` is NULL, shown as "NULL". 0.7.x compared it as 0 or `""`, so
+  `ShouldBeGreaterThan(-1, BLANK())` passed.
+- `ShouldEqualExactly` treats NULL and `""` as different, like `ShouldEqual`.
+- Not changed: `ShouldBeTrue` / `ShouldBeFalse`. Their BOOLEAN parameter converts `BLANK()` to FALSE
+  before the function runs, so `ShouldBeFalse(BLANK())` still passes; the descriptions now say so.
+  Changing it would need a different parameter type.
 
 ### Changed
 - Documentation only: `Col.ShouldNotBeNull` checks that a column has at least one non-NULL value,

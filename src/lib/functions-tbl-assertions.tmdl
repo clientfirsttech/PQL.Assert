@@ -134,24 +134,24 @@ createOrReplace
 		annotation DAXLIB_PackageVersion = 0.8.0
 
 
-	/// Asserts that every row of a key table is distinct, for composite keys of any width. Pass the key columns as a projection, e.g. SELECTCOLUMNS('Sales', "OrderID", 'Sales'[OrderID], "Line", 'Sales'[Line]). Blank key values are compared like any other value.
+	/// Asserts that every row of a key table is distinct, for composite keys of any width. Pass the key columns as a projection, e.g. SELECTCOLUMNS('Sales', "OrderID", 'Sales'[OrderID], "Line", 'Sales'[Line]). Blank key values are compared like any other value. Fails with NO ROWS when keyTable is empty.
 	/// @param {STRING} testName - Description of the test being performed
 	/// @param {TABLE} keyTable - Table expression holding only the key columns
 	function 'PQL.Assert.Tbl.RowsShouldBeDistinct' =
 			(testName : STRING, keyTable : TABLE EXPR) =>
 				VAR _Rows = COUNTROWS(keyTable) + 0
 				VAR _Distinct = COUNTROWS(DISTINCT(keyTable)) + 0
-				VAR _Passed = _Rows = _Distinct
+				VAR _Passed = _Rows > 0 && _Rows = _Distinct
 				RETURN ROW(
 					"TestName", testName,
 					"Expected", "All key rows distinct",
-					"Actual", FORMAT(_Distinct, "0") & " distinct of " & FORMAT(_Rows, "0") & " rows",
+					"Actual", IF(_Rows = 0, "NO ROWS", FORMAT(_Distinct, "0") & " distinct of " & FORMAT(_Rows, "0") & " rows"),
 					"Passed", _Passed
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
 		annotation DAXLIB_PackageVersion = 0.8.0
 
-	/// Asserts that a filtered table has at most maxCount rows. Pass the rows that break a rule, e.g. FILTER('Orders', NOT 'Orders'[Status] IN {"open", "closed"}).
+	/// Asserts that a filtered table has at most maxCount rows. Pass the rows that break a rule, e.g. FILTER('Orders', NOT 'Orders'[Status] IN {"open", "closed"}). Zero matching rows passes, including on an empty table.
 	/// @param {STRING} testName - Description of the test being performed
 	/// @param {TABLE} filteredTable - Table expression holding the rows to count
 	/// @param {INT64} maxCount - Largest allowed number of rows
@@ -168,7 +168,7 @@ createOrReplace
 		annotation DAXLIB_PackageId = PQL.Assert
 		annotation DAXLIB_PackageVersion = 0.8.0
 
-	/// Asserts that a filtered table's rows are at most maxPct percent (0-100) of a base table's rows. An empty base table gives 0%.
+	/// Asserts that a filtered table's rows are at most maxPct percent (0-100) of a base table's rows. Fails with NO ROWS when baseTable is empty.
 	/// @param {STRING} testName - Description of the test being performed
 	/// @param {TABLE} filteredTable - Table expression holding the rows to count, e.g. FILTER('Orders', ISBLANK('Orders'[ShipDate]))
 	/// @param {TABLE} baseTable - Table expression to compare against, e.g. 'Orders'
@@ -178,11 +178,11 @@ createOrReplace
 				VAR _Matching = COUNTROWS(filteredTable) + 0
 				VAR _Rows = COUNTROWS(baseTable) + 0
 				VAR _Pct = IF(_Rows = 0, 0, DIVIDE(_Matching * 100, _Rows))
-				VAR _Passed = _Pct <= maxPct
+				VAR _Passed = _Rows > 0 && _Pct <= maxPct
 				RETURN ROW(
 					"TestName", testName,
 					"Expected", "Matching rows <= " & FORMAT(ROUND(maxPct, 2), "General Number") & "%",
-					"Actual", FORMAT(ROUND(_Pct, 2), "General Number") & "% (" & FORMAT(_Matching, "0") & " of " & FORMAT(_Rows, "0") & " rows)",
+					"Actual", IF(_Rows = 0, "NO ROWS", FORMAT(ROUND(_Pct, 2), "General Number") & "% (" & FORMAT(_Matching, "0") & " of " & FORMAT(_Rows, "0") & " rows)"),
 					"Passed", _Passed
 				)
 		annotation DAXLIB_PackageId = PQL.Assert

@@ -301,7 +301,7 @@ DEFINE
 		VAR _NullCount_Pass_EmptyStringNotNull = PQL.Assert.Col.NullCountShouldBeAtMost("Col.NullCountShouldBeAtMost: Short Text <=1 null (empty string is not null) should pass", 'TestData', 'TestData'[Short Text], 1)
 		VAR _NullRateV2_Pass = PQL.Assert.Col.NullRateShouldBeAtMostV2("Col.NullRateShouldBeAtMostV2: NullableField <=40% (2 of 5 rows) should pass", 'TestData', 'TestData'[NullableField], 40)
 		VAR _NullRateV2_Fail = PQL.Assert.Col.NullRateShouldBeAtMostV2("Col.NullRateShouldBeAtMostV2: NullableField <=39.99% should fail", 'TestData', 'TestData'[NullableField], 39.99)
-		VAR _NullRateV2_Pass_EmptyTable = PQL.Assert.Col.NullRateShouldBeAtMostV2("Col.NullRateShouldBeAtMostV2: empty table <=0% should pass", FILTER('TestData', FALSE), 'TestData'[NullableField], 0)
+		VAR _NullRateV2_Pass_EmptyTable = PQL.Assert.Col.NullRateShouldBeAtMostV2("Col.NullRateShouldBeAtMostV2: empty table (NO ROWS) should fail", FILTER('TestData', FALSE), 'TestData'[NullableField], 0)
 		VAR _BlankRateV2_Pass = PQL.Assert.Col.BlankRateShouldBeAtMostV2("Col.BlankRateShouldBeAtMostV2: Short Text <=20% (1 empty string of 5 rows) should pass", 'TestData', 'TestData'[Short Text], 20)
 		VAR _BlankRateV2_Fail = PQL.Assert.Col.BlankRateShouldBeAtMostV2("Col.BlankRateShouldBeAtMostV2: Short Text <=10% should fail", 'TestData', 'TestData'[Short Text], 10)
 		VAR _BlankRateV2_Pass_Numeric = PQL.Assert.Col.BlankRateShouldBeAtMostV2("Col.BlankRateShouldBeAtMostV2: ID <=0% (numeric column) should pass", 'TestData', 'TestData'[ID], 0)

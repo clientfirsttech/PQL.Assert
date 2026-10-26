@@ -142,6 +142,14 @@ table TestData
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Fixture for "no values" handling in text assertions: every row is NULL (BLANK()).
+	column 'Null Text' = IF([ID] < 0, "x")
+		dataType: string
+		lineageTag: 6b1e9d3f-4a72-4c58-9e0d-2f8a7c5b1e63
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
 	/// Fixture for NULL vs empty-string assertions: every row is an empty string (""), no NULLs.
 	column 'Empty Text' = ""
 		dataType: string

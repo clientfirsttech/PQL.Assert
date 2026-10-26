@@ -19,7 +19,13 @@ EVALUATE PQL.Assert.ShouldEqual("Test 1: 2+2 should equal 4", 4, 2+2)
 
 ## 📚 Function Reference
 
-**NULL vs blank.** Throughout the library, **NULL** means DAX `BLANK()` (a missing value) and **blank** means an empty string `""`. Functions named `…Null…` check `BLANK()` only, `…Blank…` checks `""` only, and `…NullOrBlank…` checks either. For example, `ShouldBeBlank(BLANK())` fails and `ShouldBeNullOrBlank(BLANK())` passes. In DAX, `ISBLANK("")` is FALSE, but `COUNTBLANK` counts both, which is why a few 0.7.x column functions did not follow this rule; they are listed under [Deprecated functions and replacements](#deprecated-functions-and-replacements).
+**NULL vs blank.** Throughout the library, **NULL** means DAX `BLANK()` (a missing value) and **blank** means an empty string `""`. In DAX, `BLANK() = 0`, `BLANK() = ""` and `BLANK() = FALSE` are all TRUE and `COUNTBLANK` counts both NULL and `""` ([SQLBI: Handling BLANK in DAX](https://www.sqlbi.com/articles/blank-handling-in-dax/)), so PQL.Assert applies these rules explicitly:
+
+- Functions named `…Null…` check `BLANK()` only, `…Blank…` checks `""` only, and `…NullOrBlank…` checks either. `ShouldBeBlank(BLANK())` fails; `ShouldBeNullOrBlank(BLANK())` passes.
+- NULL is never treated as 0 or `""`. Numeric, text, set and uniqueness checks skip NULL values; statistics (mean, percentile, standard deviation) are computed over rows with NULL skipped.
+- A check on a column's values fails with **NO VALUES** when the column has no non-NULL value, rather than passing or failing depending on whether 0 is in range. Row-based rates fail with **NO ROWS** on an empty table. Checks that count problems (`NullCountShouldBeAtMost`, `Tbl.RowCountShouldBeAtMost`) pass at zero.
+- A NULL `actual` value fails the scalar numeric and string checks (`ShouldBeGreaterThan`, `ShouldBeBetween`, `ShouldStartWith`, …), and `ShouldEqual` / `ShouldEqualExactly` treat NULL and `""` as different. Exception: `ShouldBeTrue` / `ShouldBeFalse` take a BOOLEAN parameter, and DAX converts `BLANK()` to FALSE before the function runs, so `ShouldBeFalse(BLANK())` passes. Check with `ShouldNotBeNull` first when a condition can be BLANK.
+- Deprecated 0.7.x functions keep their old behavior; see [Deprecated functions and replacements](#deprecated-functions-and-replacements). Functions changed in place are listed in [Behavior changes in 0.8.0](#behavior-changes-in-080).
 
 ### Library Version
 
@@ -76,7 +82,7 @@ EVALUATE PQL.Assert.ShouldEqual("Test 1: 2+2 should equal 4", 4, 2+2)
 
 #### Presence & Completeness Thresholds
 
-These take the table as well as the column, because a column reference alone gives distinct values, not rows. Percentages are 0-100.
+These take the table as well as the column, because a column reference alone gives distinct values, not rows. Percentages are 0-100. An empty table fails with NO ROWS. `tableRef` can be any table expression (a model table, a `FILTER(...)` or a `DATATABLE`), and `columnRef` must be a column of that table; no column names are assumed.
 
 - `PQL.Assert.Col.NullCountShouldBeAtMost(testName, tableRef, columnRef, maxCount)` - Asserts at most `maxCount` rows are NULL. Pass `0` to require that no row is NULL. Empty strings are not counted
 - `PQL.Assert.Col.NullRateShouldBeAtMostV2(testName, tableRef, columnRef, maxNullPct)` - Asserts the share of NULL rows is at most the percentage
@@ -139,12 +145,20 @@ On the TestingModel fixture `TestData[Short Text]` (`"x"`, `""`, `"Error - Timeo
 
 #### Behavior changes in 0.8.0
 
-These functions keep their names and parameters, but now skip NULL the way the other numeric checks do. Only results on columns that contain NULL change, and only from a false failure to a pass:
+These functions keep their names and parameters but follow the NULL rules above. Results change only on NULL input, an all-NULL column or an empty table. Mean, percentile and standard deviation also change on columns with repeated values, because 0.7.x computed them over distinct values.
 
 | Function | 0.7.x | 0.8.0 |
 |---|---|---|
-| `Col.ShouldBePositive(testName, columnRef)` | Counted NULL as non-positive (`BLANK() <= 0` is TRUE). `{10, 20, 30, 40, NULL}` failed with "NON-POSITIVE VALUES FOUND (1, Min=10)" | NULL is skipped; that column passes |
-| `Col.ShouldBeNonZero(testName, columnRef)` | Counted NULL as zero (`BLANK() = 0` is TRUE). `{10, 20, 30, 40, NULL}` failed with "ZEROS FOUND (1 of 5)" | NULL is skipped; that column passes |
+| `Col.ShouldBePositive`, `Col.ShouldBeNonZero` | Counted NULL as non-positive / zero (`BLANK() <= 0` and `BLANK() = 0` are TRUE): `{10, 20, 30, 40, NULL}` failed | NULL skipped; that column passes |
+| `Col.MeanShouldBeInRange` | Averaged distinct values: `{1, 1, 2, 3, NULL}` gave 2 | Averages rows, NULL skipped: 1.75 |
+| `Col.PctileShouldBeInRange` | Distinct values, NULL ranked lowest: P50 of `{10, 20, 30, 40, NULL}` was 20, P0 was blank | Rows, NULL skipped: P50 25, P0 10 |
+| `Col.StdDevShouldBeAtMost` | Distinct values, NULL counted as 0: 16.77 on `{10, 20, 30, 40, NULL}` | Sample standard deviation over rows, NULL skipped: 12.91 |
+| `Col.ShouldBeInRange`, `Col.MinShouldBeAtLeast`, `Col.MaxShouldBeAtMost`, `Col.MeanShouldBeInRange`, `Col.PctileShouldBeInRange`, `Col.StdDevShouldBeAtMost` on an all-NULL column | Passed or failed depending on whether 0 was in range (`ShouldBeInRange(-5, 5)` passed with "Min=, Max=") | Fails with NO VALUES |
+| `Col.ShouldBeNonNegative`, `Col.ShouldBePositive`, `Col.ShouldBeNonZero`, the text checks (`ShouldStartWith`, `ShouldEndWith`, `ShouldContainString` and their `Not` forms, `TextShouldBeTrimmed`, `TextShouldHaveNoLeadingOrTrailingSpaces`, `TextCaseShouldBeUpper`/`Lower`, `TextLengthShouldBeInRange`), `Col.ShouldBeUniqueWithin`, `Col.ComboShouldBeDistinct` on an all-NULL column | Passed (nothing to check) | Fails with NO VALUES |
+| `Col.ValuesShouldBeInSet`, `Col.ValuesShouldNotBeInSet` | Treated NULL as a value: a NULL was "outside" the allowed set | NULL skipped; an all-NULL column fails with NO VALUES |
+| `ShouldBeGreaterThan`, `ShouldBeLessThan`, `ShouldBeGreaterOrEqual`, `ShouldBeLessOrEqual`, `ShouldBeBetween` | Compared a NULL `actual` as 0: `ShouldBeGreaterThan(-1, BLANK())` passed | A NULL `actual` fails, shown as "NULL" |
+| `ShouldStartWith`, `ShouldEndWith`, `ShouldContainString`, `ShouldMatch` | Compared a NULL `actual` as `""`: `ShouldStartWith("", BLANK())` passed | A NULL `actual` fails |
+| `ShouldEqualExactly` | `EXACT` treated NULL as `""`: `ShouldEqualExactly("", BLANK())` passed | NULL equals only NULL, like `ShouldEqual` |
 
 #### Range & Distribution Checks
 
@@ -159,7 +173,7 @@ These functions keep their names and parameters, but now skip NULL the way the o
 - `PQL.Assert.Col.ShareOfOddsAtLeastV2(testName, tableRef, columnRef, minPct)` - Asserts the share of odd values among non-NULL rows is at least the percentage
 - `Col.ShareOfZerosAtMost`, `Col.ShareOfEvensAtLeast` and `Col.ShareOfOddsAtLeast` (no `V2`) are deprecated; see [Deprecated functions and replacements](#deprecated-functions-and-replacements)
 
-Numeric checks skip NULL rows: NULL is a missing value, not 0. Min, max, mean, percentile, range, sign and the V2 share checks all follow this rule.
+Numeric checks skip NULL rows: NULL is a missing value, not 0. Mean, percentile and standard deviation are computed over rows. A column with no non-NULL value fails with NO VALUES.
 
 #### Sign & Monotonicity
 
@@ -211,8 +225,8 @@ DAX has no `STARTSWITH`/`ENDSWITH` functions, so these assertions use `LEFT()` a
 - `PQL.Assert.Tbl.ShouldHaveRowCount(testName, tableRef, expectedRowCount)` - Asserts exact row count
 - `PQL.Assert.Tbl.ShouldHaveMoreRowsThan(testName, threshold, tableToCheck)` - Asserts row count > threshold
 - `PQL.Assert.Tbl.RowCountShouldBeAtMost(testName, filteredTable, maxCount)` - Asserts a filtered table has at most `maxCount` rows, e.g. `FILTER('Orders', NOT 'Orders'[Status] IN {"open", "closed"})`
-- `PQL.Assert.Tbl.RowRateShouldBeAtMost(testName, filteredTable, baseTable, maxPct)` - Asserts a filtered table's rows are at most `maxPct` percent (0-100) of the base table's rows
-- `PQL.Assert.Tbl.RowsShouldBeDistinct(testName, keyTable)` - Asserts every row of a key projection is distinct, for composite keys of any width, e.g. `SELECTCOLUMNS('Sales', "OrderID", 'Sales'[OrderID], "Line", 'Sales'[Line])`
+- `PQL.Assert.Tbl.RowRateShouldBeAtMost(testName, filteredTable, baseTable, maxPct)` - Asserts a filtered table's rows are at most `maxPct` percent (0-100) of the base table's rows. An empty base table fails with NO ROWS
+- `PQL.Assert.Tbl.RowsShouldBeDistinct(testName, keyTable)` - Asserts every row of a key projection is distinct, for composite keys of any width, e.g. `SELECTCOLUMNS('Sales', "OrderID", 'Sales'[OrderID], "Line", 'Sales'[Line])`. An empty key table fails with NO ROWS
 
 #### Schema & Column Shape
 

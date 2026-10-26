@@ -40,7 +40,7 @@ DEFINE
 
 		// PQL.Assert.Tbl.ShouldNotHaveExtraColumns
 		// TestData has 7 columns: ID, Name, Value, Category, IsActive, CreatedDate, NullableField
-		VAR _Tbl_NoExtra_Pass = PQL.Assert.Tbl.ShouldNotHaveExtraColumns("Tbl.ShouldNotHaveExtraColumns: All cols allowed should pass", "TestData", "ID,Name,Value,Category,IsActive,CreatedDate,NullableField,Fixed Decimal,MDX Disabled Column,Order Code,Short Text,Sparse Code,Dup With Blank,Distinct With Blank,Empty Text,Signed With Blank")
+		VAR _Tbl_NoExtra_Pass = PQL.Assert.Tbl.ShouldNotHaveExtraColumns("Tbl.ShouldNotHaveExtraColumns: All cols allowed should pass", "TestData", "ID,Name,Value,Category,IsActive,CreatedDate,NullableField,Fixed Decimal,MDX Disabled Column,Order Code,Short Text,Sparse Code,Dup With Blank,Distinct With Blank,Empty Text,Signed With Blank,Null Text")
 		VAR _Tbl_NoExtra_Fail = PQL.Assert.Tbl.ShouldNotHaveExtraColumns("Tbl.ShouldNotHaveExtraColumns: Only ID allowed should fail", "TestData", "ID")
 
 		// PQL.Assert.Tbl.ColumnDataTypeShouldBe
@@ -55,13 +55,13 @@ DEFINE
 
 		VAR _RowsDistinct_Pass = PQL.Assert.Tbl.RowsShouldBeDistinct("Tbl.RowsShouldBeDistinct: TestData Category+IsActive+ID should pass", SELECTCOLUMNS('TestData', "Category", 'TestData'[Category], "IsActive", 'TestData'[IsActive], "ID", 'TestData'[ID]))
 		VAR _RowsDistinct_Fail = PQL.Assert.Tbl.RowsShouldBeDistinct("Tbl.RowsShouldBeDistinct: TestData Category+IsActive should fail", SELECTCOLUMNS('TestData', "Category", 'TestData'[Category], "IsActive", 'TestData'[IsActive]))
-		VAR _RowsDistinct_Pass_Empty = PQL.Assert.Tbl.RowsShouldBeDistinct("Tbl.RowsShouldBeDistinct: Empty table should pass", _EmptyTable)
+		VAR _RowsDistinct_Pass_Empty = PQL.Assert.Tbl.RowsShouldBeDistinct("Tbl.RowsShouldBeDistinct: Empty table (NO ROWS) should fail", _EmptyTable)
 		VAR _RowCountAtMost_Pass = PQL.Assert.Tbl.RowCountShouldBeAtMost("Tbl.RowCountShouldBeAtMost: TestData null NullableField <=2 should pass", FILTER('TestData', ISBLANK('TestData'[NullableField])), 2)
 		VAR _RowCountAtMost_Fail = PQL.Assert.Tbl.RowCountShouldBeAtMost("Tbl.RowCountShouldBeAtMost: TestData null NullableField <=1 should fail", FILTER('TestData', ISBLANK('TestData'[NullableField])), 1)
 		VAR _RowCountAtMost_Pass_Empty = PQL.Assert.Tbl.RowCountShouldBeAtMost("Tbl.RowCountShouldBeAtMost: Empty table <=0 should pass", _EmptyTable, 0)
 		VAR _RowRate_Pass = PQL.Assert.Tbl.RowRateShouldBeAtMost("Tbl.RowRateShouldBeAtMost: TestData Category A <=40% (2 of 5) should pass", FILTER('TestData', 'TestData'[Category] = "A"), 'TestData', 40)
 		VAR _RowRate_Fail = PQL.Assert.Tbl.RowRateShouldBeAtMost("Tbl.RowRateShouldBeAtMost: TestData Category A <=25% should fail", FILTER('TestData', 'TestData'[Category] = "A"), 'TestData', 25)
-		VAR _RowRate_Pass_EmptyBase = PQL.Assert.Tbl.RowRateShouldBeAtMost("Tbl.RowRateShouldBeAtMost: Empty base table <=0% should pass", _EmptyTable, _EmptyTable, 0)
+		VAR _RowRate_Pass_EmptyBase = PQL.Assert.Tbl.RowRateShouldBeAtMost("Tbl.RowRateShouldBeAtMost: Empty base table (NO ROWS) should fail", _EmptyTable, _EmptyTable, 0)
 
 		// ============================================
 		// Combine All Test Results

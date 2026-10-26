@@ -78,7 +78,8 @@ user-invokable: true
     x == ""                 errors when x is a number: "comparison operations do not support
                               comparing values of type Integer with values of type Text"
     COUNTAX(VALUES(c), IF(cond, 1, BLANK())) on a column whose only value is "" raised
-      "Type mismatch" for query-scoped columns (Col.ShouldBeBlank, Col.ShouldBeNullOrBlank).
+      "Type mismatch" only for columns defined inside a query (DEFINE COLUMN). The same functions work on
+      a real model column of only "", so test with model columns before concluding a function is broken.
   }
 
   ## Idioms {
@@ -105,6 +106,31 @@ user-invokable: true
     - Rates need a row denominator from a table, not from a column reference.
     - A function's name, description, Expected/Actual text and tests must all use NULL and
       blank in the sense defined in Vocabulary.
+  }
+
+  ## UdfParameterFacts {
+    // Verified on TestingModel (Power BI Desktop, 2026-10)
+    DOUBLE, STRING, VARIANT, SCALAR VARIANT EXPR parameters keep BLANK: ISBLANK(param) works inside.
+    BOOLEAN parameters convert BLANK to FALSE at the call, before the body runs: ISBLANK(param) is FALSE.
+    AVERAGE / STDEV.S / PERCENTILE.INC / MIN / MAX / COUNTA on a column parameter work over rows
+      and skip BLANK; wrap in CALCULATE(..., REMOVEFILTERS()) for whole-column scope.
+    STDEV.S over a single value returns infinity/NaN; guard with a count > 1.
+  }
+
+  ## PQLAssertPolicy {
+    // The rules PQL.Assert 0.8.0 follows. Use them when writing or reviewing a library function.
+    - NULL is never treated as 0, "" or FALSE inside a check. Guard comparisons with NOT ISBLANK.
+    - Value checks (range, statistics, sign, text, set membership, uniqueness, shares) skip NULL
+      values and fail with "NO VALUES" when the column has no non-NULL value:
+        VAR _HasValues = NOT ISEMPTY(FILTER(ALLNOBLANKROW(c), NOT ISBLANK(c)))
+    - Statistics are computed over rows, not distinct values.
+    - Row-based rates fail with "NO ROWS" on an empty table; problem counts pass at zero.
+    - Scalar numeric and string checks fail when actual is NULL and show it as "NULL".
+      ShouldEqual / ShouldEqualExactly treat NULL and "" as different.
+    - BOOLEAN parameters cannot see BLANK (see UdfParameterFacts); document instead of guarding.
+    - Shipped functions keep their name and parameters. Fix behavior in place when only NULL input
+      changes; deprecate and add a V2 when the signature must change.
+    - Every rule above has pass and fail cases in TestingModel NullHandling.ANY.Tests.
   }
 
   ## Functions {

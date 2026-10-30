@@ -18,13 +18,16 @@ depend on when the suite runs.
 ### Added
 - `Tbl.LastRefreshShouldBeWithinHours(testName, tableName, maxAgeHours)` checks refresh recency
   (ODCS `frequency`): the table's newest partition `RefreshedTime` from `INFO.PARTITIONS()` must be at
-  most `maxAgeHours` before `UTCNOW()`. `Actual` is `Last refresh N hour(s) ago`, `TABLE NOT FOUND` or
-  `NEVER REFRESHED`; the last two fail. An empty table that refreshed passes.
+  most `maxAgeHours` before `UTCNOW()`. `Actual` is `Last refresh N hour(s) ago`, `TABLE NOT FOUND`,
+  `DIRECTQUERY (no refresh)` or `NEVER REFRESHED`; the last three fail. An empty table that refreshed
+  passes.
 - README section "Freshness: latency vs frequency", with an ODCS SLA mapping, and a note on the
   permissions `INFO.PARTITIONS()` needs (workspace Contributor or above).
 - Live checks in Power BI Desktop, recorded in the function description: a never-refreshed partition
   reports `RefreshedTime` 1699-12-31 (`NEVER REFRESHED`), `RefreshedTime` is UTC, and calculated
-  tables get a `RefreshedTime` from the model refresh.
+  tables get a `RefreshedTime` from the model refresh. DirectQuery partitions (Azure SQL and
+  DirectQuery to a Power BI semantic model) report `Mode` 1 and the same 1699-12-31 placeholder, so
+  they report `DIRECTQUERY (no refresh)` instead of passing on a meaningless time.
 - Tests: five cases in `Tbl.ANY.Tests` (pass, tight-threshold fail, unknown table, and checks on the
   `Actual` text), and a 24-hour case in `Partition.SVC.Tests`, which runs in the service after the CI
   refresh.

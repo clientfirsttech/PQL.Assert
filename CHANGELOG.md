@@ -29,7 +29,8 @@ depend on when the suite runs.
   DirectQuery to a Power BI semantic model) report `Mode` 1 and the same 1699-12-31 placeholder, so
   they report `DIRECTQUERY (no refresh)` instead of passing on a meaningless time. On Direct Lake
   (`Mode` 5, checked in the service), `RefreshedTime` moved when an automatic update reframed the
-  table after rows were appended; a table whose Delta table didn't change kept its older time.
+  table after rows were appended; a table whose Delta table didn't change kept its older time. A
+  manual Refresh now then reframed every table, unchanged ones included.
 - Tests: five cases in `Tbl.ANY.Tests` (pass, tight-threshold fail, unknown table, and checks on the
   `Actual` text), and a 24-hour case in `Partition.SVC.Tests`, which runs in the service after the CI
   refresh.

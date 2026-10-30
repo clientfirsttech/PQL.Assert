@@ -1,0 +1,131 @@
+table TestData-Fact
+	lineageTag: 1addc5b5-4f03-4c77-91b3-47bf01d6ee5c
+	sourceLineageTag: 9eca8f14-b5f4-4598-accb-95d0d61a4308
+
+	/// Test measure with UNQUALIFIED column reference (should fail BP rule)
+	measure 'Total Value Unqualified' = EXTERNALMEASURE("Total Value Unqualified", DOUBLE, "DirectQuery to AS - TestingModel")
+		formatString: 0.0
+		lineageTag: 4c05b01b-bfa2-4d3d-bd1f-c9d8aafaf868
+		sourceLineageTag: aa1111aa-1111-1111-aaaa-111111111111
+		dataCategory: Uncategorized
+
+	/// Test measure with FULLY QUALIFIED column reference (should pass BP rule)
+	measure 'Total Value Qualified' = EXTERNALMEASURE("Total Value Qualified", DOUBLE, "DirectQuery to AS - TestingModel")
+		formatString: 0.0
+		lineageTag: d7a77c51-261d-4ec6-9b7e-45f1ee76d82e
+		sourceLineageTag: bb2222bb-2222-2222-bbbb-222222222222
+		dataCategory: Uncategorized
+
+	/// Test measure WITHOUT format string (should fail formatting BP rule)
+	measure 'Measure Without Format' = EXTERNALMEASURE("Measure Without Format", INTEGER, "DirectQuery to AS - TestingModel")
+		formatString: 0
+		lineageTag: 9f7925f6-0d25-462b-89a0-6c26a42b12f2
+		sourceLineageTag: cc3333cc-3333-3333-cccc-333333333333
+		dataCategory: Uncategorized
+
+	/// Test measure using INTERSECT (should fail DAX expressions BP rule - should use TREATAS instead)
+	measure 'Test INTERSECT Usage' = EXTERNALMEASURE("Test INTERSECT Usage", DOUBLE, "DirectQuery to AS - TestingModel")
+		lineageTag: 297b3c3a-ce8e-4c79-8cf4-144cf1258f18
+		sourceLineageTag: 2556e5d5-f543-4ed3-a559-bd88e0bb1bf6
+		dataCategory: Uncategorized
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column ID
+		dataType: int64
+		isNullable: false
+		formatString: 0
+		lineageTag: 05541670-8976-48fa-b8c3-916ede809f8a
+		sourceLineageTag: 70de7d88-c05f-4e64-ac83-fb6f873a4fb4
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: ID
+
+		annotation SummarizationSetBy = User
+
+	column Name
+		dataType: string
+		lineageTag: 199da50f-7ad1-406f-ac0a-b4a17fb7960f
+		sourceLineageTag: 7e0e46ea-9c85-41a5-b711-813fc8a5dcd6
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: Name
+
+		annotation SummarizationSetBy = User
+
+	column Value
+		dataType: double
+		lineageTag: 4b345168-e2ae-40ac-9749-ac42b5712025
+		sourceLineageTag: 65668e87-a3d9-40da-b337-9c13ecb64295
+		dataCategory: Uncategorized
+		summarizeBy: sum
+		sourceColumn: Value
+
+		annotation SummarizationSetBy = User
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Category
+		dataType: string
+		lineageTag: 1f61b535-9b6e-4a3e-9980-49f65baae1fc
+		sourceLineageTag: 90523877-256a-4738-87db-9b5207a9758c
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: Category
+
+		annotation SummarizationSetBy = User
+
+	column IsActive
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: cecb6794-dc42-4e0e-83f8-16796a813d25
+		sourceLineageTag: 59366d6c-8eb1-4431-82a4-e6079edd1de6
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: IsActive
+
+		annotation SummarizationSetBy = User
+
+	column CreatedDate
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 4dabaf66-8e8d-4daa-bfc9-13774435552a
+		sourceLineageTag: 630707dd-787e-49ac-9711-52b9d686aaaf
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: CreatedDate
+
+		variation Variation
+			isDefault
+			relationship: 551faae2-d8d7-4423-9eb1-b59a8ed55110
+			defaultHierarchy: LocalDateTable_a54a7c29-b72a-43ab-91d9-98883b3951c0.'Date Hierarchy'
+
+		annotation SummarizationSetBy = User
+
+	column NullableField
+		dataType: string
+		lineageTag: 0460bab4-a50c-4c55-be21-9b79c71f3e3c
+		sourceLineageTag: a63bf5f2-eb00-4c73-8b8e-573cc3ecaf88
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: NullableField
+
+		annotation SummarizationSetBy = User
+
+	column 'Blank Column'
+		dataType: int64
+		formatString: 0
+		lineageTag: ba86e0c3-a1c3-4f96-83c3-518da023d662
+		sourceLineageTag: 1cacb884-a371-416c-b98a-245dd3135222
+		dataCategory: Uncategorized
+		summarizeBy: sum
+		sourceColumn: Blank Column
+
+		annotation SummarizationSetBy = User
+
+	partition TestData-Fact = entity
+		mode: directQuery
+		source
+			entityName: TestData-Fact
+			expressionSource: 'DirectQuery to AS - TestingModel'
+

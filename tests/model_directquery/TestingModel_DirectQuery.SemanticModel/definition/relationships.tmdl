@@ -1,0 +1,48 @@
+relationship 2d818446-a94a-4087-8ac2-07368cf6b3d6
+	crossFilteringBehavior: bothDirections
+	fromCardinality: one
+	fromColumn: TestData.ID
+	toColumn: TestData-Fact.ID
+
+relationship cf69697a-2426-4979-b256-3fa3f7bc9ada
+	fromColumn: TestData.CreatedDate
+	toColumn: LocalDateTable_17ce7050-4f98-45da-a82b-200d19f39223.Date
+
+relationship b38db2ae-22b2-4a6d-b1f1-c35aa278007a
+	crossFilteringBehavior: bothDirections
+	fromCardinality: one
+	fromColumn: TestData.Name
+	toColumn: Calendar.'Date ID'
+
+relationship 551faae2-d8d7-4423-9eb1-b59a8ed55110
+	fromColumn: TestData-Fact.CreatedDate
+	toColumn: LocalDateTable_a54a7c29-b72a-43ab-91d9-98883b3951c0.Date
+
+relationship a900927a-7c15-408b-a22d-429ef105fa78
+	fromColumn: Calendar.Date
+	toColumn: LocalDateTable_7bc6f273-e8e4-4cb5-b3b7-85cdcead9c39.Date
+
+relationship c016caf4-5a3d-4533-a88b-51ee0679ffc7
+	fromColumn: Mock-Fact.'Date ID'
+	toColumn: Calendar.'Date ID'
+
+relationship aba1c87b-c987-4de0-8880-4820766089b9
+	crossFilteringBehavior: bothDirections
+	fromCardinality: one
+	fromColumn: LargeTableOneMillion.ID
+	toColumn: LargeTable-Dimension.ID
+
+relationship 1a3fb9f2-0187-4556-b359-573f7c321d40
+	crossFilteringBehavior: bothDirections
+	fromCardinality: one
+	fromColumn: LargeTableOneMillionOne.ID
+	toColumn: LargeTable-Dimension.ID
+
+relationship 54eeb512-39cc-48a6-9fcb-cd0653e94378
+	fromColumn: LargeTable-Dimension.ID
+	toColumn: LargeTableOneMillionOne-2.ID
+
+relationship e017afeb-5874-451e-a67c-f71487db8414
+	fromColumn: 'Group Fact'.Group
+	toColumn: Groups.Group
+

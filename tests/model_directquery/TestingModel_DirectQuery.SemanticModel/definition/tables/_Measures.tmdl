@@ -1,0 +1,29 @@
+table _Measures
+	lineageTag: 6676f964-083b-409f-bcc5-c3c539de96a6
+	sourceLineageTag: 4633a2f3-99e3-44d0-8262-2210da2ab81e
+
+	measure 'Current User' = EXTERNALMEASURE("Current User", STRING, "DirectQuery to AS - TestingModel")
+		lineageTag: 38bc5fdc-a81e-4571-909a-6f86fecfed13
+		sourceLineageTag: ffb7f8df-f0dc-471b-b3d4-7619c54c998e
+		dataCategory: Uncategorized
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	column Column1
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 2dfeb393-3a05-4eb0-a179-817edc1a7228
+		sourceLineageTag: 5ac13579-c915-4985-a20c-8914821d252b
+		dataCategory: Uncategorized
+		summarizeBy: sum
+		sourceColumn: Column1
+
+		annotation SummarizationSetBy = User
+
+	partition _Measures = entity
+		mode: directQuery
+		source
+			entityName: _Measures
+			expressionSource: 'DirectQuery to AS - TestingModel'
+

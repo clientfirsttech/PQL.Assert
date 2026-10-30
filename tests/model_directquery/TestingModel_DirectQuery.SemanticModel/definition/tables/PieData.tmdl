@@ -1,0 +1,77 @@
+table PieData
+	lineageTag: c1e471f7-9a6d-4d80-b10c-ac7108bc09f3
+
+	column PieID
+		dataType: int64
+		isNullable: false
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: bfd7d1e2-bb83-4079-b373-0f4e555d8071
+		summarizeBy: count
+		sourceColumn: PieID
+
+		annotation SummarizationSetBy = Automatic
+
+	column PieName
+		dataType: string
+		sourceProviderType: nvarchar(100)
+		lineageTag: cc524d8c-4e59-405d-87bc-8c14b8c42343
+		summarizeBy: none
+		sourceColumn: PieName
+
+		annotation SummarizationSetBy = Automatic
+
+	column SlicesRemaining
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: b8baafb6-cfaf-4335-9460-2207f92eebbc
+		summarizeBy: sum
+		sourceColumn: SlicesRemaining
+
+		annotation SummarizationSetBy = Automatic
+
+	column IsDelicious
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		sourceProviderType: bit
+		lineageTag: a7c1cb83-2e86-443a-b5cf-bbfaff2779ac
+		summarizeBy: none
+		sourceColumn: IsDelicious
+
+		annotation SummarizationSetBy = Automatic
+
+	column LastBaked
+		dataType: dateTime
+		formatString: General Date
+		sourceProviderType: datetime
+		lineageTag: f9ce509f-95c2-479a-b833-66701b35b79f
+		summarizeBy: none
+		sourceColumn: LastBaked
+
+		annotation SummarizationSetBy = Automatic
+
+	column SlicesRemainingAsPerc
+		dataType: double
+		sourceProviderType: decimal(4, 3)
+		lineageTag: 8199f891-fb51-49a5-8b78-62cc32a8bd61
+		summarizeBy: sum
+		sourceColumn: SlicesRemainingAsPerc
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition PieData = m
+		mode: directQuery
+		source =
+				let
+				    Source = Sql.Database("azure-sql-db-jk.database.windows.net", "escape-room"),
+				    dbo_PieData = Source{[Schema="dbo",Item="PieData"]}[Data]
+				in
+				    dbo_PieData
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

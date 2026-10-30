@@ -31,6 +31,10 @@ depend on when the suite runs.
 - Tests: five cases in `Tbl.ANY.Tests` (pass, tight-threshold fail, unknown table, and checks on the
   `Actual` text), and a 24-hour case in `Partition.SVC.Tests`, which runs in the service after the CI
   refresh.
+- Desktop-only fixture `tests/model_directquery` (TestingModel_DirectQuery: DirectQuery to Azure SQL
+  and to the published TestingModel) with `Freshness.DirectQuery.Tests`, 9 cases that assert
+  `DIRECTQUERY (no refresh)` and data age on a DirectQuery column. `ci/build_stage.py` checks and syncs
+  it (`DESKTOP_MODELS`) but never stages or deploys it, so it stays out of the CI gate.
 
 ### Changed (documentation only)
 - `Col.MaxDateShouldBeWithinDays` / `…Hours` descriptions say what the column decides: a load or

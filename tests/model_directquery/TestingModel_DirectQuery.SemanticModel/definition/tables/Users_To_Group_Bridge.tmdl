@@ -1,0 +1,35 @@
+table Users_To_Group_Bridge
+	isHidden
+	lineageTag: 6b6670a6-4314-43bd-9de1-01592225facf
+	sourceLineageTag: bb469257-7f65-4e4c-bb83-6fd4a454fba5
+
+	column 'User ID'
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 3355bbec-332f-4526-8e25-14d3262e1c91
+		sourceLineageTag: d3fe56ba-9293-422a-9ff6-a168a0aef5eb
+		dataCategory: Uncategorized
+		summarizeBy: count
+		sourceColumn: User ID
+
+		annotation SummarizationSetBy = User
+
+	column Group
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 5ce04ef5-e9ca-4292-9dca-39930982febc
+		sourceLineageTag: 7119b136-668b-4af8-a7ee-9523afb01c38
+		dataCategory: Uncategorized
+		summarizeBy: sum
+		sourceColumn: Group
+
+		annotation SummarizationSetBy = User
+
+	partition Users_To_Group_Bridge = entity
+		mode: directQuery
+		source
+			entityName: Users_To_Group_Bridge
+			expressionSource: 'DirectQuery to AS - TestingModel'
+

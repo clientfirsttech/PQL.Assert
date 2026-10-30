@@ -1,0 +1,31 @@
+table Users
+	lineageTag: aec03cac-1634-42c7-8a50-f11461b0e85c
+	sourceLineageTag: 9b171526-72e2-4e55-bd59-dc5d7609aaaa
+
+	column 'UPN ID'
+		dataType: int64
+		formatString: 0
+		lineageTag: 45ef8302-4bf5-45d8-818c-d768a1894c8b
+		sourceLineageTag: b56be1cd-c6bc-431b-95cc-9d70a991594c
+		dataCategory: Uncategorized
+		summarizeBy: count
+		sourceColumn: UPN ID
+
+		annotation SummarizationSetBy = User
+
+	column UPN
+		dataType: string
+		lineageTag: 38587643-2bca-40f9-9c40-b806163fe91e
+		sourceLineageTag: 79d301ff-f25e-4231-972e-274df877b440
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: UPN
+
+		annotation SummarizationSetBy = User
+
+	partition Users = entity
+		mode: directQuery
+		source
+			entityName: Users
+			expressionSource: 'DirectQuery to AS - TestingModel'
+

@@ -1,0 +1,22 @@
+table LargeTableOneMillionOne-2
+	lineageTag: 830e357a-6672-4717-a7cd-09cecb8b9f9f
+	sourceLineageTag: 3a0772f8-2390-4b45-a549-d78757aea119
+
+	column ID
+		dataType: int64
+		isNullable: false
+		formatString: 0
+		lineageTag: 22eb44f7-0f6f-4ef9-9cb1-20af4720a9a4
+		sourceLineageTag: ddf3fe12-df91-41db-9180-79ebea1052ce
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: ID
+
+		annotation SummarizationSetBy = User
+
+	partition LargeTableOneMillionOne-2 = entity
+		mode: directQuery
+		source
+			entityName: LargeTableOneMillionOne-2
+			expressionSource: 'DirectQuery to AS - TestingModel'
+

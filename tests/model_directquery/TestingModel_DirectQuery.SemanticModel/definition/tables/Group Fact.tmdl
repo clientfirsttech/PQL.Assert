@@ -1,0 +1,31 @@
+table 'Group Fact'
+	lineageTag: 265a5683-e607-4e68-9ef2-4e9562c27d76
+	sourceLineageTag: a5f2b3c1-5c87-42c9-876e-a1531143c25a
+
+	column Group
+		dataType: string
+		lineageTag: 29d89794-9579-4e44-aa3c-db39e86d77cd
+		sourceLineageTag: fa535e95-ed1b-45d5-b6d9-96bc5e796f98
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: Group
+
+		annotation SummarizationSetBy = User
+
+	column Total
+		dataType: int64
+		formatString: 0
+		lineageTag: a9d64f74-1e65-4cec-9d7e-ece095f150d0
+		sourceLineageTag: 7eff806b-8af8-415e-a607-1cc65f83ea15
+		dataCategory: Uncategorized
+		summarizeBy: sum
+		sourceColumn: Total
+
+		annotation SummarizationSetBy = User
+
+	partition 'Group Fact' = entity
+		mode: directQuery
+		source
+			entityName: Group Fact
+			expressionSource: 'DirectQuery to AS - TestingModel'
+

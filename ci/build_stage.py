@@ -5,7 +5,8 @@ Commands:
   sync    Rewrite each test model's functions.tmdl with the src/lib functions,
           keeping test-suite UDFs, lineageTags and the model's function order.
   stage   Copy the test PBIPs to an output folder (default: _stage) with the
-          merged functions.tmdl, ready for deployment.
+          merged functions.tmdl, ready for deployment. Desktop-only models
+          (DESKTOP_MODELS) are checked and synced but never staged.
 
 Drift ignores lineageTag, annotations, /// and // comment lines, and whitespace,
 so a Power BI Desktop round-trip does not count as drift.
@@ -26,6 +27,13 @@ LIBRARY_PREFIX = "PQL.Assert."
 MODELS = [
     (REPO / "tests" / "model", "TestingModel"),
     (REPO / "tests" / "rls_model", "RLS_Model"),
+]
+
+# Kept in sync with src/lib but not deployed or run in CI. TestingModel_DirectQuery
+# reads Azure SQL and the published TestingModel in DirectQuery; CI has no credentials
+# for either, so its suites run in Power BI Desktop only.
+DESKTOP_MODELS = [
+    (REPO / "tests" / "model_directquery", "TestingModel_DirectQuery"),
 ]
 
 FUNCTION_RE = re.compile(r"^function\s+'([^']+)'\s*=")
@@ -208,7 +216,7 @@ def drift(library, model_blocks):
 
 def cmd_check(library, verbose):
     failed = False
-    for folder, model in MODELS:
+    for folder, model in MODELS + DESKTOP_MODELS:
         blocks = read_model(folder, model)
         missing, removed, changed, model_lib = drift(library, blocks)
         suites = [b.name for b in blocks if not b.name.startswith(LIBRARY_PREFIX)]
@@ -231,7 +239,7 @@ def cmd_check(library, verbose):
 
 
 def cmd_sync(library):
-    for folder, model in MODELS:
+    for folder, model in MODELS + DESKTOP_MODELS:
         path = functions_path(folder, model)
         blocks = parse_blocks(path.read_text(encoding="utf-8-sig").splitlines())
         missing, removed, changed, _ = drift(library, blocks)

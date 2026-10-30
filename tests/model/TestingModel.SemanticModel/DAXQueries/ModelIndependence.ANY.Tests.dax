@@ -26,6 +26,13 @@ DEFINE
 		VAR _MI_MoreRowsThan_Fail = PQL.Assert.Tbl.ShouldHaveMoreRowsThan("Tbl.ShouldHaveMoreRowsThan: virtual table > 4 should fail", 4, _T)
 		VAR _MI_InSet_Pass = PQL.Assert.Col.ValuesShouldBeInSet("Col.ValuesShouldBeInSet: Category in virtual [Allowed Code (x)] should pass", 'TestData'[Category], _Allowed, [Allowed Code (x)])
 		VAR _MI_NotInSet_Fail = PQL.Assert.Col.ValuesShouldNotBeInSet("Col.ValuesShouldNotBeInSet: Category not in virtual [Allowed Code (x)] should fail", 'TestData'[Category], _Allowed, [Allowed Code (x)])
+		// Tbl.LastRefreshShouldBeWithinHours takes a table name, not a TABLE: check names that are awkward to match
+		VAR _MI_LastRefresh_Case_Pass = PQL.Assert.Tbl.LastRefreshShouldBeWithinHours("Tbl.LastRefreshShouldBeWithinHours: ""testdata"" (different case) within 1000000 hours should pass", "testdata", 1000000)
+		VAR _MI_LastRefresh_Symbols_Pass = PQL.Assert.Tbl.LastRefreshShouldBeWithinHours("Tbl.LastRefreshShouldBeWithinHours: ""Test Import 1 & 3"" (spaces, &) within 1000000 hours should pass", "Test Import 1 & 3", 1000000)
+		VAR _MI_LastRefresh_Calculated_Pass = PQL.Assert.Tbl.LastRefreshShouldBeWithinHours("Tbl.LastRefreshShouldBeWithinHours: ""LargeTable-Dimension"" (calculated table, hyphen) within 1000000 hours should pass", "LargeTable-Dimension", 1000000)
+		VAR _MI_LastRefresh_MeasureTable_Pass = PQL.Assert.Tbl.LastRefreshShouldBeWithinHours("Tbl.LastRefreshShouldBeWithinHours: ""_Measures"" (measure-only table) within 1000000 hours should pass", "_Measures", 1000000)
+		VAR _MI_LastRefresh_Padded_Fail = PQL.Assert.Tbl.LastRefreshShouldBeWithinHours("Tbl.LastRefreshShouldBeWithinHours: "" TestData "" (padded, TABLE NOT FOUND) should fail", " TestData ", 1000000)
+		VAR _MI_LastRefresh_Virtual_Fail = PQL.Assert.Tbl.LastRefreshShouldBeWithinHours("Tbl.LastRefreshShouldBeWithinHours: ""_T"" (query variable, not a model table) should fail", "_T", 1000000)
 		VAR _AllTests = UNION(
 		    _MI_NullCount_Pass,
 		    _MI_NullCount_Fail,
@@ -44,7 +51,13 @@ DEFINE
 		    _MI_RowCountExact_Pass,
 		    _MI_MoreRowsThan_Fail,
 		    _MI_InSet_Pass,
-		    _MI_NotInSet_Fail
+		    _MI_NotInSet_Fail,
+		    _MI_LastRefresh_Case_Pass,
+		    _MI_LastRefresh_Symbols_Pass,
+		    _MI_LastRefresh_Calculated_Pass,
+		    _MI_LastRefresh_MeasureTable_Pass,
+		    _MI_LastRefresh_Padded_Fail,
+		    _MI_LastRefresh_Virtual_Fail
 		)
 		VAR _ValidationResults =
 		    ADDCOLUMNS(

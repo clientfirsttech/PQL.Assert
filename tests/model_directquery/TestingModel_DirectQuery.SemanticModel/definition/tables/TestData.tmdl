@@ -1,0 +1,108 @@
+table TestData
+	lineageTag: b35bbe0a-c013-4770-acbd-9b3e8cccf527
+	sourceLineageTag: f0000001-test-data-0001-000000000001
+
+	measure 'Invalid     Measures' = EXTERNALMEASURE("Invalid     Measures", INTEGER, "DirectQuery to AS - TestingModel")
+		formatString: 0
+		lineageTag: d9ca4618-65c2-496d-af62-62eb795fa02f
+		sourceLineageTag: ca582bd4-9c09-4213-901a-9eb433aa27f9
+		dataCategory: Uncategorized
+
+	column ID
+		dataType: int64
+		isNullable: false
+		formatString: 0
+		lineageTag: 839bddfb-ea9b-42d3-a9b2-3fb8da95475a
+		sourceLineageTag: f0000001-test-data-0002-000000000001
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: ID
+
+		annotation SummarizationSetBy = User
+
+	column Name
+		dataType: string
+		isNullable: false
+		lineageTag: 45d6c1aa-8068-4d8c-bb01-3d032e9b38ff
+		sourceLineageTag: f0000001-test-data-0003-000000000001
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: Name
+
+		annotation SummarizationSetBy = User
+
+	column Value
+		dataType: double
+		formatString: 0.0
+		lineageTag: 5cfab8ec-d030-4094-afc8-9b5432d7f0a5
+		sourceLineageTag: f0000001-test-data-0004-000000000001
+		dataCategory: Uncategorized
+		summarizeBy: sum
+		sourceColumn: Value
+
+		annotation SummarizationSetBy = User
+
+	column Category
+		dataType: string
+		lineageTag: 1738e594-3488-48a9-956e-793c0af3c549
+		sourceLineageTag: f0000001-test-data-0005-000000000001
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: Category
+
+		annotation SummarizationSetBy = User
+
+	column IsActive
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 88e64eba-179f-4af3-b3b3-05e94d11498f
+		sourceLineageTag: f0000001-test-data-0006-000000000001
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: IsActive
+
+		annotation SummarizationSetBy = User
+
+	column CreatedDate
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 5c7b7a54-a324-4dd5-80aa-57fb6a5c3774
+		sourceLineageTag: f0000001-test-data-0007-000000000001
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: CreatedDate
+
+		variation Variation
+			isDefault
+			relationship: cf69697a-2426-4979-b256-3fa3f7bc9ada
+			defaultHierarchy: LocalDateTable_17ce7050-4f98-45da-a82b-200d19f39223.'Date Hierarchy'
+
+		annotation SummarizationSetBy = User
+
+	column NullableField
+		dataType: string
+		lineageTag: ed6ad6ad-cac7-420b-829d-8a6539dad449
+		sourceLineageTag: f0000001-test-data-0008-000000000001
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: NullableField
+
+		annotation SummarizationSetBy = User
+
+	column 'Fixed Decimal'
+		dataType: decimal
+		formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+		lineageTag: 42da680c-850b-46a4-b600-a03a023397e5
+		sourceLineageTag: 4ee9a45b-fd3a-4400-98bf-b9ba86db4505
+		dataCategory: Uncategorized
+		summarizeBy: sum
+		sourceColumn: Fixed Decimal
+
+		annotation SummarizationSetBy = User
+
+	partition TestData = entity
+		mode: directQuery
+		source
+			entityName: TestData
+			expressionSource: 'DirectQuery to AS - TestingModel'
+

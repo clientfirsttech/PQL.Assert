@@ -1,0 +1,11 @@
+expression 'DirectQuery to AS - TestingModel' =
+		let
+		    Source = AnalysisServices.Database("powerbi://api.powerbi.com/v1.0/myorg/pqlint-demos%20%5BDev%5D", "TestingModel"),
+		    Cubes = Table.Combine(Source[Data]),
+		    Cube = Cubes{[Id="Model", Kind="Cube"]}[Data]
+		in
+		    Cube
+	lineageTag: 484d3707-66fe-4388-8bb4-1c9fb1451d6b
+
+	annotation PBI_IncludeFutureArtifacts = True
+

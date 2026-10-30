@@ -9,6 +9,47 @@ match the `version` value in [src/manifest.daxlib](src/manifest.daxlib) and the
 
 ---
 
+## [0.9.0] - 2026-10-29
+
+Additive only. No existing function changes name, parameters or result, and no existing `Expected` or
+`Actual` text changes. A 0.8.0 suite gives the same results on 0.9.0, apart from freshness ages, which
+depend on when the suite runs.
+
+### Added
+- `Tbl.LastRefreshShouldBeWithinHours(testName, tableName, maxAgeHours)` checks refresh recency
+  (ODCS `frequency`): the table's newest partition `RefreshedTime` from `INFO.PARTITIONS()` must be at
+  most `maxAgeHours` before `UTCNOW()`. `Actual` is `Last refresh N hour(s) ago`, `TABLE NOT FOUND`,
+  `DIRECTQUERY (no refresh)` or `NEVER REFRESHED`; the last three fail. An empty table that refreshed
+  passes.
+- README section "Freshness: latency vs frequency", with an ODCS SLA mapping, and a note on the
+  permissions `INFO.PARTITIONS()` needs (workspace Contributor or above).
+- Live checks in Power BI Desktop, recorded in the function description: a never-refreshed partition
+  reports `RefreshedTime` 1699-12-31 (`NEVER REFRESHED`), `RefreshedTime` is UTC (also in the service: the CI gate measured 0.01 hours right after its refresh), and calculated
+  tables get a `RefreshedTime` from the model refresh. DirectQuery partitions (Azure SQL and
+  DirectQuery to a Power BI semantic model) report `Mode` 1 and the same 1699-12-31 placeholder, so
+  they report `DIRECTQUERY (no refresh)` instead of passing on a meaningless time. On Direct Lake
+  (`Mode` 5, checked in the service), `RefreshedTime` moved when an automatic update reframed the
+  table after rows were appended; a table whose Delta table didn't change kept its older time. A
+  manual Refresh now then reframed every table, unchanged ones included.
+- Tests: five cases in `Tbl.ANY.Tests` (pass, tight-threshold fail, unknown table, and checks on the
+  `Actual` text), and a 24-hour case in `Partition.SVC.Tests`, which runs in the service after the CI
+  refresh.
+- Desktop-only fixture `tests/model_directquery` (TestingModel_DirectQuery: DirectQuery to Azure SQL
+  and to the published TestingModel) with `Freshness.DirectQuery.Tests`, 9 cases that assert
+  `DIRECTQUERY (no refresh)` and data age on a DirectQuery column. `ci/build_stage.py` checks and syncs
+  it (`DESKTOP_MODELS`) but never stages or deploys it, so it stays out of the CI gate.
+
+### Changed (documentation only)
+- `Col.MaxDateShouldBeWithinDays` / `…Hours` descriptions say what the column decides: a load or
+  ingestion timestamp checks data age (ODCS `latency`), a refresh-log column checks refresh recency
+  (use `Tbl.LastRefreshShouldBeWithinHours` instead), and a business date gives false failures. The
+  refresh-log example is replaced by a load timestamp.
+- `Partitions.ShouldBe`, `Partitions.ShouldExist` and `Partitions.ShouldBeAtLeast` descriptions say
+  they check partition structure, not freshness.
+- `LibraryVersion()` returns `"0.9.0"`.
+
+---
+
 ## [0.8.0] - 2026-10-26
 
 No existing function changes name or parameters. 0.8.0 applies one NULL (`BLANK()`) policy across the

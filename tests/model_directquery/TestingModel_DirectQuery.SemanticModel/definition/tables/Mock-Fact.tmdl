@@ -1,0 +1,49 @@
+table Mock-Fact
+	lineageTag: 6d617b77-4ba0-4018-bc4d-a00161a8c9c0
+	sourceLineageTag: 720117e7-cd86-45ba-a1c0-e54f596d7e86
+
+	/// Test measure for ShouldHideFactTableColumns - aggregates a visible numeric column
+	measure 'Total Sales' = EXTERNALMEASURE("Total Sales", INTEGER, "DirectQuery to AS - TestingModel")
+		formatString: #,##0
+		lineageTag: d7935542-0ee8-45d7-bb32-cbb3d785a65c
+		sourceLineageTag: b1e2f3a4-5678-90ab-cdef-123456789abc
+		dataCategory: Uncategorized
+
+	column 'Date ID'
+		dataType: int64
+		formatString: 0
+		lineageTag: d3f6cd5b-8e7e-456b-af3a-5b87d1ce2935
+		sourceLineageTag: 9d80be96-7a87-496b-b1e8-5725403ce94e
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: Date ID
+
+		annotation SummarizationSetBy = User
+
+	column 'Sales Region'
+		dataType: string
+		lineageTag: 99666927-dd20-476b-976f-c3a5302f3cd0
+		sourceLineageTag: ac295bfa-b25f-4df9-8f59-ec940d743e79
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: Sales Region
+
+		annotation SummarizationSetBy = User
+
+	column Total
+		dataType: int64
+		formatString: 0
+		lineageTag: 5da49bd1-30f4-4d66-b991-e36b68d529c9
+		sourceLineageTag: 83d51f3f-ec0d-4a63-85fb-b1c40a72beea
+		dataCategory: Uncategorized
+		summarizeBy: sum
+		sourceColumn: Total
+
+		annotation SummarizationSetBy = User
+
+	partition Mock-Fact = entity
+		mode: directQuery
+		source
+			entityName: Mock-Fact
+			expressionSource: 'DirectQuery to AS - TestingModel'
+

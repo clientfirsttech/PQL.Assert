@@ -1,0 +1,58 @@
+DEFINE
+	FUNCTION Freshness.DirectQuery.Tests = () =>
+		// ============================================
+		// Refresh recency on DirectQuery tables (Power BI Desktop only)
+		// PieData: DirectQuery to Azure SQL. TestData: DirectQuery to the published TestingModel.
+		// A DirectQuery table is never refreshed, so Tbl.LastRefreshShouldBeWithinHours must fail
+		// with DIRECTQUERY (no refresh). Data age still works on a DirectQuery column.
+		// ============================================
+		VAR _PieData_24h = PQL.Assert.Tbl.LastRefreshShouldBeWithinHours("Tbl.LastRefreshShouldBeWithinHours: PieData (DQ to Azure SQL) within 24 hours should fail", "PieData", 24)
+		VAR _PieData_Huge = PQL.Assert.Tbl.LastRefreshShouldBeWithinHours("Tbl.LastRefreshShouldBeWithinHours: PieData (DQ to Azure SQL) within 1000000 hours should fail", "PieData", 1000000)
+		VAR _TestData_24h = PQL.Assert.Tbl.LastRefreshShouldBeWithinHours("Tbl.LastRefreshShouldBeWithinHours: TestData (DQ to semantic model) within 24 hours should fail", "TestData", 24)
+		VAR _NotFound = PQL.Assert.Tbl.LastRefreshShouldBeWithinHours("Tbl.LastRefreshShouldBeWithinHours: No Such Table should fail", "No Such Table", 24)
+		VAR _PieData_Actual = PQL.Assert.ShouldEqual("Tbl.LastRefreshShouldBeWithinHours: PieData Actual is DIRECTQUERY (no refresh) should pass", "DIRECTQUERY (no refresh)", MAXX(_PieData_24h, [Actual]))
+		VAR _TestData_Actual = PQL.Assert.ShouldEqual("Tbl.LastRefreshShouldBeWithinHours: TestData Actual is DIRECTQUERY (no refresh) should pass", "DIRECTQUERY (no refresh)", MAXX(_TestData_24h, [Actual]))
+		VAR _NotFound_Actual = PQL.Assert.ShouldEqual("Tbl.LastRefreshShouldBeWithinHours: No Such Table Actual is TABLE NOT FOUND should pass", "TABLE NOT FOUND", MAXX(_NotFound, [Actual]))
+		VAR _DataAge_Pass = PQL.Assert.Col.MaxDateShouldBeWithinDays("Col.MaxDateShouldBeWithinDays: PieData[LastBaked] (DQ) within 1000000 days should pass", 'PieData'[LastBaked], 1000000)
+		VAR _DataAge_Fail = PQL.Assert.Col.MaxDateShouldBeWithinDays("Col.MaxDateShouldBeWithinDays: PieData[LastBaked] (DQ) within 1 day should fail", 'PieData'[LastBaked], 1)
+		VAR _AllTests = UNION(
+		    _PieData_24h,
+		    _PieData_Huge,
+		    _TestData_24h,
+		    _NotFound,
+		    _PieData_Actual,
+		    _TestData_Actual,
+		    _NotFound_Actual,
+		    _DataAge_Pass,
+		    _DataAge_Fail
+		)
+		VAR _ValidationResults =
+		    ADDCOLUMNS(
+		        _AllTests,
+		        "ValidationStatus",
+		            SWITCH(
+		                TRUE(),
+		                CONTAINSSTRING([TestName], "should pass") && [Passed] = TRUE, "✅ CORRECT",
+		                CONTAINSSTRING([TestName], "should fail") && [Passed] = FALSE, "✅ CORRECT",
+		                CONTAINSSTRING([TestName], "should pass") && [Passed] = FALSE, "❌ MISMATCH: Expected PASS but got FAIL",
+		                CONTAINSSTRING([TestName], "should fail") && [Passed] = TRUE, "❌ MISMATCH: Expected FAIL but got PASS",
+		                "⚠️ NO CLEAR EXPECTATION"
+		            )
+		    )
+		RETURN
+		    SELECTCOLUMNS(
+		        _ValidationResults,
+		        "TestName", [TestName],
+		        "Expected", [Expected],
+		        "Actual", [Actual] & " [" & [ValidationStatus] & "]",
+		        "Passed",
+		            SWITCH(
+		                TRUE(),
+		                CONTAINSSTRING([ValidationStatus], "MISMATCH"), FALSE,
+		                CONTAINSSTRING([ValidationStatus], "CORRECT"), TRUE,
+		                [Passed]
+		            )
+		    )
+
+EVALUATE Freshness.DirectQuery.Tests()
+ORDER BY [Passed], [TestName]

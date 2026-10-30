@@ -1,0 +1,38 @@
+table Calendar
+	lineageTag: 8c63976e-2429-4d6c-a8f5-0e5e1c5e2f0a
+	sourceLineageTag: a1f424bc-1c2c-4348-a0f9-f91c7cb0acf8
+
+	column 'Date ID'
+		dataType: int64
+		isNullable: false
+		formatString: 0
+		lineageTag: 0e5a3f0c-f0c1-43ac-a25d-99423c93de4a
+		sourceLineageTag: 86bd71a0-fb51-4ac2-a7a6-a411063ef338
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: Date ID
+
+		annotation SummarizationSetBy = User
+
+	column Date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: c5cb430a-dc7d-4897-bbfc-07702a52c1a4
+		sourceLineageTag: 4796ad7b-eec7-4e49-9a35-6ea3047ad49f
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: Date
+
+		variation Variation
+			isDefault
+			relationship: a900927a-7c15-408b-a22d-429ef105fa78
+			defaultHierarchy: LocalDateTable_7bc6f273-e8e4-4cb5-b3b7-85cdcead9c39.'Date Hierarchy'
+
+		annotation SummarizationSetBy = User
+
+	partition Calendar = entity
+		mode: directQuery
+		source
+			entityName: Calendar
+			expressionSource: 'DirectQuery to AS - TestingModel'
+

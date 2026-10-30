@@ -1,0 +1,118 @@
+table 'Test Import 1 & 3'
+	lineageTag: a6d770d9-6275-4c52-9339-09a8f61f9eb1
+	sourceLineageTag: 895b007e-4655-444e-856e-efa2fd4d73cb
+
+	measure 'Row Count' = EXTERNALMEASURE("Row Count", INTEGER, "DirectQuery to AS - TestingModel")
+		formatString: 0
+		lineageTag: e1c1cfe9-a866-4c27-9f7b-7334b83ae0c2
+		sourceLineageTag: f8ba4c30-f820-4ef6-87eb-f8b6768edf7e
+		dataCategory: Uncategorized
+
+	column project_name
+		dataType: string
+		lineageTag: 5b36a741-fe6b-440b-8286-0ace36e95a88
+		sourceLineageTag: d2ca20c5-1d38-4c85-b61b-3d30281d1820
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: project_name
+
+		annotation SummarizationSetBy = User
+
+	column project_description
+		dataType: string
+		lineageTag: a7889260-f992-4dba-84b5-0db2eb4dfeea
+		sourceLineageTag: 542df1ab-dfd6-45a9-bdf6-887b56c70604
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: project_description
+
+		annotation SummarizationSetBy = User
+
+	column start_date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: d7c43206-4b35-47a3-a1d9-d69f33a6adf6
+		sourceLineageTag: e12de29c-a363-4add-87e5-fa83331d4df5
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: start_date
+
+		annotation SummarizationSetBy = User
+
+	column end_date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 06a4dd6b-5d5a-46ce-8d28-a4b3d5a86570
+		sourceLineageTag: 0aa9b344-5a8d-4b99-b0d5-950c30036343
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: end_date
+
+		annotation SummarizationSetBy = User
+
+	column project_manager
+		dataType: string
+		lineageTag: a3ba3f3b-50e4-489f-8507-12029675724a
+		sourceLineageTag: a905f6b6-f62b-4c0a-b380-fb59bc9e6574
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: project_manager
+
+		annotation SummarizationSetBy = User
+
+	column project_budget
+		dataType: string
+		lineageTag: 731ab7de-fe86-4514-afdb-fae1ce20d2d6
+		sourceLineageTag: eff71f8f-6199-4fec-a4c0-d1d0b129bdc4
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: project_budget
+
+		annotation SummarizationSetBy = User
+
+	column project_status
+		dataType: string
+		lineageTag: 12900316-2c8f-407f-995a-df5ef070fb96
+		sourceLineageTag: 0b2015b0-7cde-479d-b555-1a9b773b470d
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: project_status
+
+		annotation SummarizationSetBy = User
+
+	column client_name
+		dataType: string
+		lineageTag: be337c03-751b-4d11-8030-9ea4355d2b4b
+		sourceLineageTag: 828b908f-cda5-4742-80c8-611fdf83ebf3
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: client_name
+
+		annotation SummarizationSetBy = User
+
+	column client_email
+		dataType: string
+		lineageTag: 66c2ded6-ca71-4615-9eef-0dd4a1e35307
+		sourceLineageTag: 2f9362d3-8f04-4cfb-a03f-98af157ded00
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: client_email
+
+		annotation SummarizationSetBy = User
+
+	column client_phone
+		dataType: string
+		lineageTag: 6ba8f185-87c6-4017-8c3e-8a0f3dbb1cc9
+		sourceLineageTag: d1852274-f778-408e-98d8-b75f1d3db5ba
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: client_phone
+
+		annotation SummarizationSetBy = User
+
+	partition 'Test Import 1 & 3' = entity
+		mode: directQuery
+		source
+			entityName: Test Import 1 & 3
+			expressionSource: 'DirectQuery to AS - TestingModel'
+

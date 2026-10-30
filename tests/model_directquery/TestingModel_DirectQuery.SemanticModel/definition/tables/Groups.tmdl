@@ -1,0 +1,32 @@
+table Groups
+	lineageTag: c059a924-ed3e-4e68-b93d-3fe5ec3db86a
+	sourceLineageTag: 824d3192-8cb7-40d5-a462-a308b9d5b19a
+
+	column Group
+		dataType: int64
+		isNullable: false
+		formatString: 0
+		lineageTag: 37a59a69-117a-4a92-9f39-87a526c9bbf2
+		sourceLineageTag: 2c8c534a-2bf8-4c7b-bd5e-17eac4d76028
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: Group
+
+		annotation SummarizationSetBy = User
+
+	column 'Group Name'
+		dataType: string
+		lineageTag: 903cf6ae-a340-4c81-9e75-e78cce753213
+		sourceLineageTag: 707f19f4-f974-4306-8bdd-b86687180d95
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: Group Name
+
+		annotation SummarizationSetBy = User
+
+	partition Groups = entity
+		mode: directQuery
+		source
+			entityName: Groups
+			expressionSource: 'DirectQuery to AS - TestingModel'
+

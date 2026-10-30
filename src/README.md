@@ -29,7 +29,7 @@ EVALUATE PQL.Assert.ShouldEqual("Test 1: 2+2 should equal 4", 4, 2+2)
 
 ### Library Version
 
-- `PQL.Assert.LibraryVersion()` - Returns the installed version as text, e.g. `"0.8.0"`. Added in 0.8.0, so if `EVALUATE { PQL.Assert.LibraryVersion() }` errors, the model has 0.7.x or older
+- `PQL.Assert.LibraryVersion()` - Returns the installed version as text, e.g. `"0.9.0"`. Added in 0.8.0, so if `EVALUATE { PQL.Assert.LibraryVersion() }` errors, the model has 0.7.x or older
 
 ### Basic Assertions
 
@@ -209,8 +209,10 @@ DAX has no `STARTSWITH`/`ENDSWITH` functions, so these assertions use `LEFT()` a
 
 #### Freshness
 
-- `PQL.Assert.Col.MaxDateShouldBeWithinDays(testName, columnRef, maxAgeDays)` - Asserts the latest date is at most `maxAgeDays` days before `UTCNOW()`. Fails when the column has no values. A column stored in local time is off by the UTC offset
-- `PQL.Assert.Col.MaxDateShouldBeWithinHours(testName, columnRef, maxAgeHours)` - Asserts the latest datetime is at most `maxAgeHours` hours before `UTCNOW()`, e.g. a refresh-log timestamp that must be no older than 3 hours: `PQL.Assert.Col.MaxDateShouldBeWithinHours("Refreshed in last 3h", 'Refresh Log'[Refreshed At UTC], 3)`. Fails when the column has no values. Store the column in UTC
+These check data age (ODCS `latency`) when pointed at a load or ingestion timestamp column. See [Freshness: latency vs frequency](#freshness-latency-vs-frequency).
+
+- `PQL.Assert.Col.MaxDateShouldBeWithinDays(testName, columnRef, maxAgeDays)` - Asserts the newest value is at most `maxAgeDays` days before `UTCNOW()`. Fails when the column has no values. A column stored in local time is off by the UTC offset
+- `PQL.Assert.Col.MaxDateShouldBeWithinHours(testName, columnRef, maxAgeHours)` - Asserts the newest value is at most `maxAgeHours` hours before `UTCNOW()`, e.g. `PQL.Assert.Col.MaxDateShouldBeWithinHours("Orders loaded within 3 hours", 'Orders'[LoadedAtUtc], 3)`. Fails when the column has no values. Store the column in UTC
 
 #### Schema & Existence
 
@@ -236,6 +238,38 @@ DAX has no `STARTSWITH`/`ENDSWITH` functions, so these assertions use `LEFT()` a
 - `PQL.Assert.Tbl.ColumnDataTypeShouldBe(testName, tableName, columnName, expectedType)` - Asserts column has the expected data type
 
 These three functions take `tableName` as a text string, not a table reference. For example: `PQL.Assert.Tbl.ShouldHaveColumns("Sales has key columns", "Sales", "OrderID,Amount")`.
+
+#### Refresh Recency
+
+- `PQL.Assert.Tbl.LastRefreshShouldBeWithinHours(testName, tableName, maxAgeHours)` - Asserts the table's newest partition refresh is at most `maxAgeHours` hours before `UTCNOW()`. Checks that the refresh ran (ODCS `frequency`), not that the data is fresh. `Actual` is `Last refresh N hour(s) ago`, `TABLE NOT FOUND`, `DIRECTQUERY (no refresh)` or `NEVER REFRESHED`; the last three fail. A partition that has never been refreshed reports `RefreshedTime` 1699-12-31, which counts as never refreshed. A DirectQuery table (every partition `Mode` 1) is never refreshed, so check data age on it with `Col.MaxDateShouldBeWithinHours` instead. On Direct Lake (`Mode` 5), `RefreshedTime` moves when the table reframes, including automatic updates. An automatic update reframes only the tables whose Delta table changed, so a table that rarely changes (a holiday list, say) keeps an old time and can fail while the model is up to date. A refresh (**Refresh now**) reframes every table, unchanged ones included. So either point the check at a table that changes on every load, or refresh the model on a schedule. `RefreshedTime` is UTC in Power BI Desktop and the service, so it compares directly with `UTCNOW()`. An empty table that refreshed passes (use `Tbl.ShouldHaveRows` for rows). With incremental refresh, only recent partitions refresh, and the newest one counts. Takes `tableName` as text and reads `INFO.TABLES()` and `INFO.PARTITIONS()`, like the [Partition Assertions](#partition-assertions)
+
+### Freshness: latency vs frequency
+
+"Fresh" means two different things. Check both: each catches a failure the other misses.
+
+| | Data age (ODCS `latency`) | Refresh recency (ODCS `frequency`) |
+|---|---|---|
+| Question | How old is the newest data in the model? | Did the model refresh on schedule? |
+| Function | `Col.MaxDateShouldBeWithinHours` / `…Days` | `Tbl.LastRefreshShouldBeWithinHours` |
+| Point it at | A load or ingestion timestamp column | A table |
+| Catches | A refresh that succeeded against stale source data | A refresh that failed or stopped running |
+| Misses | A refresh that stopped while the newest row is still within the limit | Stale source data that refreshed successfully |
+
+```dax
+PQL.Assert.Col.MaxDateShouldBeWithinHours("Orders loaded within 3 hours", 'Orders'[LoadedAtUtc], 3)
+PQL.Assert.Tbl.LastRefreshShouldBeWithinHours("Orders refreshed within 26 hours", "Orders", 26)
+```
+
+Avoid a business date (such as an order date) for data age: it can lag for legitimate reasons, such as no sales on a weekend.
+
+Mapping from ODCS (Open Data Contract Standard) SLA properties:
+
+| ODCS SLA | `element` | PQL.Assert |
+|---|---|---|
+| `latency` | `table.column` (a load timestamp) | `Col.MaxDateShouldBeWithinHours` / `…Days` |
+| `frequency` | `table` | `Tbl.LastRefreshShouldBeWithinHours` |
+
+`Tbl.LastRefreshShouldBeWithinHours` uses each partition's `RefreshedTime`, not `ModifiedTime`, which changes on deployment. Calculated tables have a `RefreshedTime` from the model refresh too.
 
 ### Relationship Assertions
 
@@ -263,6 +297,10 @@ EVALUATE PQL.Assert.Relationship.ShouldExist(
 ### Partition Assertions
 
 PQL.Assert provides functions for validating partition configurations in semantic models, useful for incremental refresh scenarios and data quality monitoring.
+
+These check partition structure, not freshness: an incremental refresh policy creates a partition for a date range whether or not the source delivered rows for it. For freshness, see [Freshness: latency vs frequency](#freshness-latency-vs-frequency).
+
+**Permissions.** These functions and `Tbl.LastRefreshShouldBeWithinHours` read `INFO.PARTITIONS()` and `INFO.TABLES()`. Microsoft documents that [INFO functions require semantic model admin permissions](https://learn.microsoft.com/dax/info-functions-dax) on Power BI semantic models. In the service, a workspace Viewer has no Build permission, so it can't query the model over XMLA at all; Contributor, Member and Admin have Build and Write ([semantic model permissions](https://learn.microsoft.com/power-bi/connect-data/service-datasets-permissions)). Run these tests as a Contributor or above, or as a service principal with that role.
 
 - `PQL.Assert.Partitions.ShouldBe(testName, tableName, expectedCount, [startDate], [endDate])` - Asserts that a table has the expected number of partitions. Optional date parameters filter partitions by `RangeStart` and `RangeEnd` for targeted testing of time-based partition strategies.
 - `PQL.Assert.Partitions.ShouldExist(testName, tableName, [startDate], [endDate])` - Asserts that at least one partition exists for a table (or within the filtered date window).

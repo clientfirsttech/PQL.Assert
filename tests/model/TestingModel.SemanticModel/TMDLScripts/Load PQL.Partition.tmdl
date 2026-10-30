@@ -2,7 +2,7 @@ createOrReplace
     /// Partition Assertions - PQL.Assert.Partition namespace
     /// These functions validate partition configurations in semantic models
     /// Asserts that a table has the expected number of partitions, with optional date range filtering.
-    /// Uses INFO.PARTITIONS() to check partition counts for data quality and model structure validation.
+    /// Uses INFO.PARTITIONS() to check partition counts for data quality and model structure validation. This checks partition structure, not freshness: an incremental refresh policy creates a partition for a date range whether or not the source delivered rows for it.
     /// @param {STRING} testName - Description of the test being performed
     /// @param {STRING} tableName - Name of the table to check partitions for
     /// @param {INT64} expectedCount - Expected number of partitions
@@ -56,10 +56,10 @@ createOrReplace
                     "Passed", _Passed
                 )
         annotation DAXLIB_PackageId = PQL.Assert
-        annotation DAXLIB_PackageVersion = 0.8.0
+        annotation DAXLIB_PackageVersion = 0.9.0
 
     /// Asserts that at least one partition exists for the specified table, with optional date range filtering.
-    /// Uses INFO.PARTITIONS() to verify partition existence for table-level and incremental-refresh checks.
+    /// Uses INFO.PARTITIONS() to verify partition existence for table-level and incremental-refresh checks. This checks partition structure, not freshness: an incremental refresh policy creates a partition for a date range whether or not the source delivered rows for it.
     /// @param {STRING} testName - Description of the test being performed
     /// @param {STRING} tableName - Name of the table to check partitions for
     /// @param {DATETIME} [startDate] - Optional start date filter (filters by RangeStart >= startDate)
@@ -112,10 +112,10 @@ createOrReplace
                     "Passed", _Passed
                 )
         annotation DAXLIB_PackageId = PQL.Assert
-        annotation DAXLIB_PackageVersion = 0.8.0
+        annotation DAXLIB_PackageVersion = 0.9.0
 
     /// Asserts that a table has at least a minimum number of partitions, with optional date range filtering.
-    /// Uses INFO.PARTITIONS() to validate partition volume for incremental and rolling window partition strategies.
+    /// Uses INFO.PARTITIONS() to validate partition volume for incremental and rolling window partition strategies. This checks partition structure, not freshness: an incremental refresh policy creates a partition for a date range whether or not the source delivered rows for it.
     /// @param {STRING} testName - Description of the test being performed
     /// @param {STRING} tableName - Name of the table to check partitions for
     /// @param {INT64} minimumCount - Minimum partition count threshold (actual must be greater than or equal to this value)
@@ -169,4 +169,4 @@ createOrReplace
                     "Passed", _Passed
                 )
         annotation DAXLIB_PackageId = PQL.Assert
-        annotation DAXLIB_PackageVersion = 0.8.0
+        annotation DAXLIB_PackageVersion = 0.9.0

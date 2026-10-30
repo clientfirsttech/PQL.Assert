@@ -33,6 +33,12 @@ pql-test only runs suites that are **UDFs in the model** (`PQL.Assert.RetrieveTe
 
 Suites that only hold in the service use `SVC` as their environment, e.g. `Partition.SVC.Tests`. It needs the incremental refresh policy applied, which Desktop never does, so it fails in local runs by design.
 
+`tests/model_directquery` (TestingModel_DirectQuery) is a Desktop-only fixture. Its tables are DirectQuery to Azure SQL (`PieData`) and to the published TestingModel, and CI has no credentials for either, so it is never staged, deployed or run in CI. `build_stage.py check` and `sync` still cover it (`DESKTOP_MODELS`), so its library can't drift. Run its `Freshness.DirectQuery.Tests` suite locally with the model open in Power BI Desktop:
+
+```powershell
+pql-test run-tests local/TestingModel_DirectQuery --verbose
+```
+
 ## Running the tests locally
 
 With TestingModel open in Power BI Desktop:

@@ -64,6 +64,20 @@ DEFINE
 		VAR _RowRate_Pass_EmptyBase = PQL.Assert.Tbl.RowRateShouldBeAtMost("Tbl.RowRateShouldBeAtMost: Empty base table (NO ROWS) should fail", _EmptyTable, _EmptyTable, 0)
 
 		// ============================================
+		// 0.9.0 ASSERTIONS
+		// ============================================
+
+		// PQL.Assert.Tbl.LastRefreshShouldBeWithinHours
+		// Thresholds that hold in Desktop and the service: any loaded table refreshed less than
+		// 1,000,000 hours ago and more than 0.0001 hours (0.36 s) ago. The 24-hour case after a
+		// CI refresh is in Partition.SVC.Tests.
+		VAR _LastRefresh_Pass = PQL.Assert.Tbl.LastRefreshShouldBeWithinHours("Tbl.LastRefreshShouldBeWithinHours: TestData within 1000000 hours should pass", "TestData", 1000000)
+		VAR _LastRefresh_Fail = PQL.Assert.Tbl.LastRefreshShouldBeWithinHours("Tbl.LastRefreshShouldBeWithinHours: TestData within 0.0001 hours should fail", "TestData", 0.0001)
+		VAR _LastRefresh_NotFound = PQL.Assert.Tbl.LastRefreshShouldBeWithinHours("Tbl.LastRefreshShouldBeWithinHours: No Such Table should fail", "No Such Table", 24)
+		VAR _LastRefresh_ActualAge = PQL.Assert.ShouldStartWith("Tbl.LastRefreshShouldBeWithinHours: TestData Actual starts with Last refresh should pass", "Last refresh", MAXX(_LastRefresh_Pass, [Actual]))
+		VAR _LastRefresh_ActualNotFound = PQL.Assert.ShouldEqual("Tbl.LastRefreshShouldBeWithinHours: No Such Table Actual is TABLE NOT FOUND should pass", "TABLE NOT FOUND", MAXX(_LastRefresh_NotFound, [Actual]))
+
+		// ============================================
 		// Combine All Test Results
 		// ============================================
 		VAR _AllTests = UNION(
@@ -93,7 +107,14 @@ DEFINE
 		    _RowCountAtMost_Pass_Empty,
 		    _RowRate_Pass,
 		    _RowRate_Fail,
-		    _RowRate_Pass_EmptyBase
+		    _RowRate_Pass_EmptyBase,
+
+		    // Refresh recency
+		    _LastRefresh_Pass,
+		    _LastRefresh_Fail,
+		    _LastRefresh_NotFound,
+		    _LastRefresh_ActualAge,
+		    _LastRefresh_ActualNotFound
 		)
 
 		// ============================================

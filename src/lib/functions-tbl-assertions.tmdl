@@ -14,7 +14,7 @@ createOrReplace
 					"Passed", _Passed
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.8.0
+		annotation DAXLIB_PackageVersion = 0.9.0
 
 	/// Asserts that a table has exactly the expected number of rows.
 	function 'PQL.Assert.Tbl.ShouldHaveRowCount' =
@@ -28,7 +28,7 @@ createOrReplace
 					"Passed", _Passed
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.8.0
+		annotation DAXLIB_PackageVersion = 0.9.0
 
 	/// Asserts that a table has more rows than the specified threshold.
 	function 'PQL.Assert.Tbl.ShouldHaveMoreRowsThan' =
@@ -42,7 +42,7 @@ createOrReplace
 					"Passed", _Passed
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.8.0
+		annotation DAXLIB_PackageVersion = 0.9.0
 
 	/// Asserts that a table exists in the model.
 	function 'PQL.Assert.Tbl.ShouldExist' =
@@ -56,7 +56,7 @@ createOrReplace
 					"Passed", _Found
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.8.0
+		annotation DAXLIB_PackageVersion = 0.9.0
 
 	/// Schema & Column Shape
 	/// Asserts that a table has all the specified columns (comma-separated list).
@@ -84,7 +84,7 @@ createOrReplace
 					"Passed", _Passed
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.8.0
+		annotation DAXLIB_PackageVersion = 0.9.0
 
 	/// Asserts that a table does not have extra columns beyond the allowed list (comma-separated).
 	/// @param {STRING} testName - Description of the test being performed
@@ -110,7 +110,7 @@ createOrReplace
 					"Passed", _Passed
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.8.0
+		annotation DAXLIB_PackageVersion = 0.9.0
 
 	/// Asserts that a column in a table has the expected data type.
 	/// @param {STRING} testName - Description of the test being performed
@@ -131,7 +131,7 @@ createOrReplace
 					"Passed", _Passed
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.8.0
+		annotation DAXLIB_PackageVersion = 0.9.0
 
 
 	/// Asserts that every row of a key table is distinct, for composite keys of any width. Pass the key columns as a projection, e.g. SELECTCOLUMNS('Sales', "OrderID", 'Sales'[OrderID], "Line", 'Sales'[Line]). Blank key values are compared like any other value. Fails with NO ROWS when keyTable is empty.
@@ -149,7 +149,7 @@ createOrReplace
 					"Passed", _Passed
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.8.0
+		annotation DAXLIB_PackageVersion = 0.9.0
 
 	/// Asserts that a filtered table has at most maxCount rows. Pass the rows that break a rule, e.g. FILTER('Orders', NOT 'Orders'[Status] IN {"open", "closed"}). Zero matching rows passes, including on an empty table.
 	/// @param {STRING} testName - Description of the test being performed
@@ -166,7 +166,7 @@ createOrReplace
 					"Passed", _Passed
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.8.0
+		annotation DAXLIB_PackageVersion = 0.9.0
 
 	/// Asserts that a filtered table's rows are at most maxPct percent (0-100) of a base table's rows. Fails with NO ROWS when baseTable is empty.
 	/// @param {STRING} testName - Description of the test being performed
@@ -186,4 +186,34 @@ createOrReplace
 					"Passed", _Passed
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.8.0
+		annotation DAXLIB_PackageVersion = 0.9.0
+
+	/// Freshness: refresh recency (ODCS frequency)
+	/// Asserts that the table's partitions were refreshed at most maxAgeHours hours before UTCNOW(). This checks that the refresh ran, not that the data is fresh: a refresh that succeeds against stale source data passes. To check data age (ODCS latency), use Col.MaxDateShouldBeWithinHours on a load or ingestion timestamp column. The newest partition refresh counts, so an incremental refresh that refreshes only recent partitions passes. An empty table that refreshed passes; use Tbl.ShouldHaveRows for row presence. Fails when the table is not found or none of its partitions has a refresh time; a partition that has never been refreshed reports RefreshedTime 1699-12-31 (seen in Power BI Desktop), which counts as no refresh. RefreshedTime is UTC in Power BI Desktop, so it compares directly with UTCNOW(). Reads INFO.TABLES() and INFO.PARTITIONS(), like Partitions.ShouldExist.
+	/// @param {STRING} testName - Description of the test being performed
+	/// @param {STRING} tableName - Name of the table whose refresh to check, as text, e.g. "Orders"
+	/// @param {DOUBLE} maxAgeHours - Largest allowed time since the last refresh, in hours
+	function 'PQL.Assert.Tbl.LastRefreshShouldBeWithinHours' =
+			(testName : STRING, tableName : STRING, maxAgeHours : DOUBLE) =>
+				VAR _TableID = MAXX(FILTER(INFO.TABLES(), [Name] = tableName), [ID])
+				VAR _Refreshed =
+					MAXX(
+						FILTER(INFO.PARTITIONS(), [TableID] = _TableID && [RefreshedTime] > DATE(1900, 1, 1)),
+						[RefreshedTime]
+					)
+				VAR _AgeHours = IF(ISBLANK(_Refreshed), BLANK(), (UTCNOW() - _Refreshed) * 24.0)
+				VAR _Passed = NOT ISBLANK(_AgeHours) && _AgeHours <= maxAgeHours
+				RETURN ROW(
+					"TestName", testName,
+					"Expected", "Last refresh within " & FORMAT(ROUND(maxAgeHours, 2), "General Number") & " hour(s)",
+					"Actual",
+						SWITCH(
+							TRUE(),
+							ISBLANK(_TableID), "TABLE NOT FOUND",
+							ISBLANK(_Refreshed), "NEVER REFRESHED",
+							"Last refresh " & FORMAT(ROUND(_AgeHours, 2), "General Number") & " hour(s) ago"
+						),
+					"Passed", _Passed
+				)
+		annotation DAXLIB_PackageId = PQL.Assert
+		annotation DAXLIB_PackageVersion = 0.9.0

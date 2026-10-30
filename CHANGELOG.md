@@ -27,7 +27,9 @@ depend on when the suite runs.
   reports `RefreshedTime` 1699-12-31 (`NEVER REFRESHED`), `RefreshedTime` is UTC (also in the service: the CI gate measured 0.01 hours right after its refresh), and calculated
   tables get a `RefreshedTime` from the model refresh. DirectQuery partitions (Azure SQL and
   DirectQuery to a Power BI semantic model) report `Mode` 1 and the same 1699-12-31 placeholder, so
-  they report `DIRECTQUERY (no refresh)` instead of passing on a meaningless time.
+  they report `DIRECTQUERY (no refresh)` instead of passing on a meaningless time. On Direct Lake
+  (`Mode` 5, checked in the service), `RefreshedTime` moved when an automatic update reframed the
+  table after rows were appended; a table whose Delta table didn't change kept its older time.
 - Tests: five cases in `Tbl.ANY.Tests` (pass, tight-threshold fail, unknown table, and checks on the
   `Actual` text), and a 24-hour case in `Partition.SVC.Tests`, which runs in the service after the CI
   refresh.

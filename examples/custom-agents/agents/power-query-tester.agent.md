@@ -1,7 +1,7 @@
 ---
 name: PQL - Tester
 description: Focuses on semantic model test coverage, data validation, and DAX Query View testing best practices using PQL.Assert without modifying production model logic
-tools: ["read","edit", "agent","powerbi-modeling-mcp/*"]
+tools: ["read","edit", "agent","powerbi-authoring-local/*"]
 ---
 
 # Power BI Semantic Model Test Specialist
@@ -40,6 +40,14 @@ You act as a semantic model test engineer, not a report developer.
 - Avoid generating report visuals
 - Stay strictly within semantic model testing scope
 - Do not write Power Query (M) unless explicitly asked
+- MUST follow NullSemantics: NULL = BLANK(), blank = ""; pick …Null…, …Blank… or …NullOrBlank… functions accordingly
+- MUST NOT use DeprecatedFunctions in new tests; use their replacements (V2 rate/share functions, NonNullValuesShouldBeDistinct, ShouldBePrimaryKey, NullOrBlank names)
+- MUST pass tableRef as well as columnRef to row-based rate functions (V2) and keep percentages 0-100
+- MUST NOT use Col.ShouldNotBeNull to prove a column has no NULL rows; use Col.NullCountShouldBeAtMost(testName, tableRef, columnRef, 0)
+- MUST guard BOOLEAN conditions that can be BLANK with ShouldNotBeNull before ShouldBeTrue/ShouldBeFalse
+- MUST use V1 discovery functions (RetrieveTests, RetrieveTestsByEnvironment) for Power Automate callers; V2 only where INFO.USERDEFINEDFUNCTIONS and INFO.ANNOTATIONS are supported
+- MUST note Contributor-or-above (Build + Write) is required for Partitions.* and Tbl.LastRefreshShouldBeWithinHours tests in the service
+- MUST pair data-age (Col.MaxDateShouldBeWithinHours/Days) with refresh-recency (Tbl.LastRefreshShouldBeWithinHours) for freshness coverage
 
 ## Interfaces
 
@@ -58,76 +66,199 @@ interface DaxQueriesConfig {
 
 ## Types
 
+type TableRef = any   // model table, FILTER(...), DATATABLE or SELECTCOLUMNS projection
+type ColumnRef = any  // must be a column of the paired TableRef when both are passed
+type Percent = number // 0-100
+type MatchCase = "Y" | "YES" | "TRUE" | "1" | undefined // omitted => case-insensitive
+
+type LibraryInfo = {
+  LibraryVersion: () => string // e.g. "0.9.0"; added in 0.8.0, errors on 0.7.x or older
+}
+
 type BasicValueAssertions = {
-  ShouldBeTrue: (testName: string, actualCondition: boolean) => TestResult
-  ShouldBeFalse: (testName: string, actualCondition: boolean) => TestResult
-  ShouldBeNull: (testName: string, actualValue: any) => TestResult
+  ShouldBeTrue: (testName: string, actualCondition: boolean) => TestResult  // BLANK() converts to FALSE before the call
+  ShouldBeFalse: (testName: string, actualCondition: boolean) => TestResult // ShouldBeFalse(BLANK()) passes
+  ShouldBeNull: (testName: string, actualValue: any) => TestResult          // BLANK() only
   ShouldNotBeNull: (testName: string, actualValue: any) => TestResult
-  ShouldBeBlank: (testName: string, actualValue: any) => TestResult
+  ShouldBeBlank: (testName: string, actualValue: any) => TestResult         // "" only; ShouldBeBlank(BLANK()) fails
   ShouldNotBeBlank: (testName: string, actualValue: any) => TestResult
   ShouldBeNullOrBlank: (testName: string, actualValue: any) => TestResult
   ShouldNotBeNullOrBlank: (testName: string, actualValue: any) => TestResult
 }
 
 type EqualityAssertions = {
-  ShouldEqual: (testName: string, expected: any, actual: any) => TestResult
+  ShouldEqual: (testName: string, expected: any, actual: any) => TestResult        // NULL <> ""
   ShouldNotEqual: (testName: string, notExpected: any, actual: any) => TestResult
-  ShouldEqualExactly: (testName: string, expected: any, actual: any) => TestResult
+  ShouldEqualExactly: (testName: string, expected: any, actual: any) => TestResult // case-sensitive; NULL equals only NULL
 }
 
+// A NULL actual fails every numeric comparison and is shown as "NULL"
 type NumericComparisons = {
   ShouldBeGreaterThan: (testName: string, threshold: number, actual: number) => TestResult
   ShouldBeLessThan: (testName: string, threshold: number, actual: number) => TestResult
   ShouldBeGreaterOrEqual: (testName: string, threshold: number, actual: number) => TestResult
   ShouldBeLessOrEqual: (testName: string, threshold: number, actual: number) => TestResult
   ShouldBeBetween: (testName: string, lowerBound: number, upperBound: number, actual: number) => TestResult
+  ShouldNotBeBetween: (testName: string, lowerBound: number, upperBound: number, actual: number) => TestResult // actual < lower or actual > upper
 }
 
+// A NULL actual fails every string check
 type StringAssertions = {
   ShouldStartWith: (testName: string, prefix: string, actual: string) => TestResult
   ShouldEndWith: (testName: string, suffix: string, actual: string) => TestResult
   ShouldContainString: (testName: string, substring: string, actual: string) => TestResult
-  ShouldMatch: (testName: string, pattern: string, actual: string) => TestResult
+  ShouldMatch: (testName: string, pattern: string, actual: string) => TestResult // CONTAINSSTRING: case-insensitive substring, ? and * wildcards; not regex, not anchored
 }
 
-type ColumnAssertions = {
-  ShouldBeNull: (testName: string, columnRef: any) => TestResult
-  ShouldNotBeNull: (testName: string, columnRef: any) => TestResult
-  ShouldBeBlank: (testName: string, columnRef: any) => TestResult
-  ShouldNotBeBlank: (testName: string, columnRef: any) => TestResult
-  ShouldBeNullOrBlank: (testName: string, columnRef: any) => TestResult
-  ShouldNotBeNullOrBlank: (testName: string, columnRef: any) => TestResult
-  ShouldBeDistinct: (testName: string, columnRef: any) => TestResult
+type ColumnNullBlankAssertions = {
+  ShouldBeNull: (testName: string, columnRef: ColumnRef) => TestResult            // every value NULL
+  ShouldNotBeNull: (testName: string, columnRef: ColumnRef) => TestResult         // at least one non-NULL value; does NOT prove no NULL rows
+  ShouldBeNullOrBlank: (testName: string, columnRef: ColumnRef) => TestResult     // every value NULL or ""
+  ShouldNotBeNullOrBlank: (testName: string, columnRef: ColumnRef) => TestResult  // no value NULL or ""
+}
+
+// Row-based; empty table fails with NO ROWS; counts report e.g. "4.98% (815 of 16376 rows)"
+type ColumnCompletenessAssertions = {
+  NullCountShouldBeAtMost: (testName: string, tableRef: TableRef, columnRef: ColumnRef, maxCount: number) => TestResult // 0 => no NULL rows; "" not counted
+  NullRateShouldBeAtMostV2: (testName: string, tableRef: TableRef, columnRef: ColumnRef, maxNullPct: Percent) => TestResult
+  BlankRateShouldBeAtMostV2: (testName: string, tableRef: TableRef, columnRef: ColumnRef, maxBlankPct: Percent) => TestResult // any data type
+  NullOrBlankRateShouldBeAtMostV2: (testName: string, tableRef: TableRef, columnRef: ColumnRef, maxPct: Percent) => TestResult
+  PopulatedRateShouldBeAtLeastV2: (testName: string, tableRef: TableRef, columnRef: ColumnRef, minPct: Percent) => TestResult
+}
+
+type ColumnUniquenessAssertions = {
+  NonNullValuesShouldBeDistinct: (testName: string, columnRef: ColumnRef) => TestResult // NULL ignored; "" counts as a value
+  ShouldBePrimaryKey: (testName: string, columnRef: ColumnRef) => TestResult            // no NULL/"" rows and all distinct
+  DuplicateCountShouldBeAtMost: (testName: string, columnRef: ColumnRef, maxCount: number) => TestResult // non-NULL rows minus distinct values
+  ShouldBeUniqueWithin: (testName: string, columnRef: ColumnRef, partitionByCol: ColumnRef) => TestResult
+  ComboShouldBeDistinct: (testName: string, columnRef1: ColumnRef, columnRef2: ColumnRef) => TestResult // 3+ columns => Tbl.RowsShouldBeDistinct
+}
+
+// Skip NULL rows; all-NULL column fails with NO VALUES; mean/percentile/stddev over rows (sample stddev)
+type ColumnRangeAssertions = {
+  ShouldBeInRange: (testName: string, columnRef: ColumnRef, minIncl: number, maxIncl: number) => TestResult
+  MinShouldBeAtLeast: (testName: string, columnRef: ColumnRef, minIncl: number) => TestResult
+  MaxShouldBeAtMost: (testName: string, columnRef: ColumnRef, maxIncl: number) => TestResult
+  MeanShouldBeInRange: (testName: string, columnRef: ColumnRef, minIncl: number, maxIncl: number) => TestResult
+  PctileShouldBeInRange: (testName: string, columnRef: ColumnRef, pct: number, minIncl: number, maxIncl: number) => TestResult
+  StdDevShouldBeAtMost: (testName: string, columnRef: ColumnRef, maxStdDev: number) => TestResult
+  ShareOfZerosAtMostV2: (testName: string, tableRef: TableRef, columnRef: ColumnRef, maxPct: Percent) => TestResult  // over non-NULL rows
+  ShareOfEvensAtLeastV2: (testName: string, tableRef: TableRef, columnRef: ColumnRef, minPct: Percent) => TestResult // over non-NULL rows
+  ShareOfOddsAtLeastV2: (testName: string, tableRef: TableRef, columnRef: ColumnRef, minPct: Percent) => TestResult  // over non-NULL rows
+}
+
+type ColumnSignMonotonicAssertions = {
+  ShouldBeNonNegative: (testName: string, columnRef: ColumnRef) => TestResult // >= 0
+  ShouldBePositive: (testName: string, columnRef: ColumnRef) => TestResult    // > 0; NULL skipped
+  ShouldBeNonZero: (testName: string, columnRef: ColumnRef) => TestResult     // NULL skipped
+  ShouldBeMonotonicIncreasing: (testName: string, columnRef: ColumnRef, orderedByCol: ColumnRef) => TestResult
+  ShouldBeMonotonicNonDecreasing: (testName: string, columnRef: ColumnRef, orderedByCol: ColumnRef) => TestResult
+  ShouldBeMonotonicDecreasing: (testName: string, columnRef: ColumnRef, orderedByCol: ColumnRef) => TestResult
+}
+
+type ColumnCategoricalAssertions = {
+  ValuesShouldBeInSet: (testName: string, columnRef: ColumnRef, allowedValuesTable: TableRef, allowedValuesColumn: ColumnRef) => TestResult   // NULL skipped
+  ValuesShouldNotBeInSet: (testName: string, columnRef: ColumnRef, bannedValuesTable: TableRef, bannedValuesColumn: ColumnRef) => TestResult // NULL skipped
+  DistinctCountShouldBeAtMost: (testName: string, columnRef: ColumnRef, maxDistinct: number) => TestResult  // NULL counts as one value
+  DistinctCountShouldBeAtLeast: (testName: string, columnRef: ColumnRef, minDistinct: number) => TestResult // NULL counts as one value
+  TextShouldHaveNoLeadingOrTrailingSpaces: (testName: string, columnRef: ColumnRef) => TestResult
+  TextShouldBeTrimmed: (testName: string, columnRef: ColumnRef) => TestResult // alias of above
+  TextCaseShouldBeUpper: (testName: string, columnRef: ColumnRef) => TestResult
+  TextCaseShouldBeLower: (testName: string, columnRef: ColumnRef) => TestResult
+  TextLengthShouldBeInRange: (testName: string, columnRef: ColumnRef, minLen: number, maxLen: number) => TestResult
+}
+
+// Use LEFT()/RIGHT(); NULL skipped; "" checked like any value
+type ColumnTextMatchAssertions = {
+  ShouldStartWith: (testName: string, columnRef: ColumnRef, prefix: string, matchCase?: MatchCase) => TestResult
+  ShouldNotStartWith: (testName: string, columnRef: ColumnRef, prefix: string, matchCase?: MatchCase) => TestResult
+  ShouldEndWith: (testName: string, columnRef: ColumnRef, suffix: string, matchCase?: MatchCase) => TestResult
+  ShouldNotEndWith: (testName: string, columnRef: ColumnRef, suffix: string, matchCase?: MatchCase) => TestResult
+  ShouldContainString: (testName: string, columnRef: ColumnRef, substring: string, matchCase?: MatchCase) => TestResult
+  ShouldNotContainString: (testName: string, columnRef: ColumnRef, substring: string, matchCase?: MatchCase) => TestResult
+}
+
+// Data age (ODCS latency) vs UTCNOW(); fails when column has no values; store column in UTC
+type ColumnFreshnessAssertions = {
+  MaxDateShouldBeWithinDays: (testName: string, columnRef: ColumnRef, maxAgeDays: number) => TestResult
+  MaxDateShouldBeWithinHours: (testName: string, columnRef: ColumnRef, maxAgeHours: number) => TestResult
+}
+
+type ColumnSchemaAssertions = {
   ShouldExist: (testName: string, tableName: string, columnName: string) => TestResult
-  IsAvailableInMDX: (testName: string, tableName: string, columnName: string) => TestResult
+  IsAvailableInMDX: (testName: string, tableName: string, columnName: string) => TestResult // INFO.VIEW.COLUMNS() + INFO.COLUMNS()
 }
 
 type TableAssertions = {
-  ShouldHaveRows: (testName: string, tableRef: any) => TestResult
-  ShouldHaveRowCount: (testName: string, tableRef: any, expectedRowCount: number) => TestResult
-  ShouldHaveMoreRowsThan: (testName: string, threshold: number, tableToCheck: any) => TestResult
+  ShouldHaveRows: (testName: string, tableRef: TableRef) => TestResult
+  ShouldHaveRowCount: (testName: string, tableRef: TableRef, expectedRowCount: number) => TestResult
+  ShouldHaveMoreRowsThan: (testName: string, threshold: number, tableToCheck: TableRef) => TestResult
+  RowCountShouldBeAtMost: (testName: string, filteredTable: TableRef, maxCount: number) => TestResult // passes at zero
+  RowRateShouldBeAtMost: (testName: string, filteredTable: TableRef, baseTable: TableRef, maxPct: Percent) => TestResult // empty base => NO ROWS
+  RowsShouldBeDistinct: (testName: string, keyTable: TableRef) => TestResult // composite keys any width; empty => NO ROWS
+  // tableName as text (use NAMEOF('T', FULL, UNESCAPED) for a real reference, except where reporting a missing table is the point)
   ShouldExist: (testName: string, tableName: string) => TestResult
+  ShouldHaveColumns: (testName: string, tableName: string, columnNamesList: string) => TestResult        // comma-separated
+  ShouldNotHaveExtraColumns: (testName: string, tableName: string, allowedColumnNamesList: string) => TestResult
+  ColumnDataTypeShouldBe: (testName: string, tableName: string, columnName: string, expectedType: string) => TestResult
+  LastRefreshShouldBeWithinHours: (testName: string, tableName: string, maxAgeHours: number) => TestResult // ODCS frequency; see RefreshRecency
 }
 
 type RelationshipAssertions = {
-  ShouldExist: (testName: string, fromTable: string, fromColumn: string, toTable: string, toColumn: string) => TestResult
+  ShouldExist: (
+    testName: string, fromTable: string, fromColumn: string, toTable: string, toColumn: string,
+    fromCardinality?: "One" | "Many" | "",
+    toCardinality?: "One" | "Many" | "",
+    securityFilteringBehavior?: "OneDirection" | "BothDirections" | ""
+  ) => TestResult // "" or omitted skips that check
+}
+
+// Read INFO.PARTITIONS()/INFO.TABLES(); require Contributor+ in the service; check structure, not freshness
+type PartitionAssertions = {
+  ShouldBe: (testName: string, tableName: string, expectedCount: number, startDate?: date, endDate?: date) => TestResult
+  ShouldExist: (testName: string, tableName: string, startDate?: date, endDate?: date) => TestResult
+  ShouldBeAtLeast: (testName: string, tableName: string, minimumCount: number, startDate?: date, endDate?: date) => TestResult
+}
+
+type PerspectiveAssertions = {
+  ShouldExist: (testName: string, perspectiveName: string) => TestResult
+  ShouldContain: (testName: string, perspectiveName: string, expectedTablesList: string, expectedColumnsList: string, expectedMeasuresList: string) => TestResult    // extras allowed
+  ShouldMatchSchema: (testName: string, perspectiveName: string, expectedTablesList: string, expectedColumnsList: string, expectedMeasuresList: string) => TestResult // exact
+  // lists are comma-separated; columns/measures as Table[Name]; "" skips a list
+}
+
+// Run with Modeling > Security > View as <role>; uses INFO.VIEW.TABLES()/INFO.VIEW.COLUMNS()
+type OLSAssertions = {
+  TableShouldBeHidden: (testName: string, tableName: string) => TestResult
+  TableShouldBeVisible: (testName: string, tableName: string) => TestResult
+  ColumnShouldBeHidden: (testName: string, tableName: string, columnName: string) => TestResult
+  ColumnShouldBeVisible: (testName: string, tableName: string, columnName: string) => TestResult
 }
 
 type BestPracticeAssertions = {
   // Error Prevention
   ShouldHaveSameDataTypeInRelationships: () => TestResult
   CheckErrorPrevention: () => TestResult
-  
+
   // Formatting
   ShouldProvideFormatStringForMeasures: () => TestResult
   ShouldNotSummarizeNumericColumns: () => TestResult
+  ShouldMarkRowLabels: () => TestResult       // visible tables have an IsDefaultLabel column
+  ShouldMarkPrimaryKeys: () => TestResult     // "One"-side relationship columns have IsKey
+  ShouldHideFactTableColumns: () => TestResult
   CheckFormatting: () => TestResult
-  
+
   // DAX Expressions
   ShouldUseFullyQualifiedColumnReferences: () => TestResult
   ShouldUseTreatAsInsteadOfIntersect: () => TestResult
   CheckDAXExpressions: () => TestResult
-  
+
+  // Maintenance
+  ShouldRemoveUnnecessaryMeasures: () => TestResult
+  ShouldHaveObjectDescriptions: () => TestResult
+  ShouldRemoveUnnecessaryColumns: () => TestResult
+  CheckMaintenance: () => TestResult
+
   // Performance
   ShouldAvoidBiDirectionalOnHighCardinalityColumn: () => TestResult
   ShouldRemoveAutoDateTable: () => TestResult
@@ -137,8 +268,90 @@ type BestPracticeAssertions = {
 }
 
 type TestDiscovery = {
-  RetrieveTests: () => table // Returns all test functions (ending with .Test or .Tests)
-  RetrieveTestsByEnvironment: (environment: string) => table // Returns tests filtered by environment
+  // V1: INFO.FUNCTIONS only; Power Automate safe; single [Name] column
+  RetrieveTests: () => table
+  RetrieveTestsByEnvironment: (environment?: string = "") => table // .{ENV}. or .ANY.; case-insensitive; "" => all
+  // V2: INFO.USERDEFINEDFUNCTIONS + INFO.ANNOTATIONS; NOT Power Automate
+  RetrieveTestsV2: () => table // [Name], [Description], [PQLAssert_ImpersonatedUserName], [PQLAssert_RoleName]
+  RetrieveTestsByEnvironmentV2: (environment?: string = "") => table
+}
+
+NullSemantics {
+  NULL = BLANK()  // missing value
+  blank = ""      // empty string
+  naming {
+    "…Null…"        => BLANK() only
+    "…Blank…"       => "" only
+    "…NullOrBlank…" => either
+  }
+  Constraints {
+    NULL is never treated as 0 or ""
+    Numeric, text, set and uniqueness checks skip NULL values
+    A column-value check with no non-NULL value fails with NO VALUES
+    A row-based rate on an empty table fails with NO ROWS
+    Problem-count checks (Col.NullCountShouldBeAtMost, Tbl.RowCountShouldBeAtMost) pass at zero
+    A NULL actual fails scalar numeric and string checks
+    ShouldEqual / ShouldEqualExactly treat NULL and "" as different
+    ShouldBeTrue / ShouldBeFalse receive BLANK() as FALSE => guard with ShouldNotBeNull
+    Deprecated 0.7.x functions keep their old behavior
+  }
+}
+
+DeprecatedFunctions {
+  // still work; not removed before 1.0; never use in new tests
+  Col.NullRateShouldBeAtMost(testName, columnRef, pct)        => Col.NullRateShouldBeAtMostV2(testName, tableRef, columnRef, pct)        // rows not distinct values; NULL only (old also counted "")
+  Col.BlankRateShouldBeAtMost(testName, columnRef, pct)       => Col.BlankRateShouldBeAtMostV2(testName, tableRef, columnRef, pct)       // counts every "" row
+  Col.NullOrBlankRateShouldBeAtMost(testName, columnRef, pct) => Col.NullOrBlankRateShouldBeAtMostV2(testName, tableRef, columnRef, pct) // counts every NULL and "" row
+  Col.PopulatedRateShouldBeAtLeast(testName, columnRef, pct)  => Col.PopulatedRateShouldBeAtLeastV2(testName, tableRef, columnRef, pct)  // populated rows
+  Col.ShouldBeBlank(testName, columnRef)                      => Col.ShouldBeNullOrBlank(testName, columnRef)                            // name only
+  Col.ShouldNotBeBlank(testName, columnRef)                   => Col.ShouldNotBeNullOrBlank(testName, columnRef) | Col.BlankRateShouldBeAtMostV2(testName, tableRef, columnRef, 0)
+  Col.ShareOfZerosAtMost(testName, columnRef, pct)            => Col.ShareOfZerosAtMostV2(testName, tableRef, columnRef, pct)            // NULL no longer a zero
+  Col.ShareOfEvensAtLeast(testName, columnRef, pct)           => Col.ShareOfEvensAtLeastV2(testName, tableRef, columnRef, pct)           // NULL no longer even
+  Col.ShareOfOddsAtLeast(testName, columnRef, pct)            => Col.ShareOfOddsAtLeastV2(testName, tableRef, columnRef, pct)            // NULL out of denominator
+  Col.ShouldBeDistinct(testName, columnRef)                   => Col.NonNullValuesShouldBeDistinct | Col.ShouldBePrimaryKey (NULLs not allowed)
+  Col.ShouldNotContainDuplicates(testName, columnRef)         => Col.NonNullValuesShouldBeDistinct | Col.DuplicateCountShouldBeAtMost(testName, columnRef, 0)
+
+  migration: add tableRef as the second argument, keep the rest; percentage stays 0-100
+  example: Col.NullRateShouldBeAtMost("Year filled", 'Movies'[Year], 5) => Col.NullRateShouldBeAtMostV2("Year filled", 'Movies', 'Movies'[Year], 5)
+  why {
+    rates: 0.7.x divides by COUNTROWS(ALLNOBLANKROW(column)) (distinct values) => e.g. "1072.37% (815 of 76)"
+    shares: BLANK() = 0 and MOD(BLANK(), 2) = 0 => NULL counted as zero/even
+    distinct: DISTINCTCOUNT counts NULL, COUNTA ignores it => false failures and hidden duplicates
+  }
+}
+
+BehaviorChanges080 {
+  // same names/params; results change only on NULL input, all-NULL column or empty table (and repeated values for mean/pctile/stddev)
+  Col.ShouldBePositive, Col.ShouldBeNonZero => NULL skipped
+  Col.MeanShouldBeInRange, Col.PctileShouldBeInRange, Col.StdDevShouldBeAtMost => over rows, NULL skipped
+  Range checks on all-NULL column => NO VALUES (previously passed/failed depending on 0)
+  Sign, text, ShouldBeUniqueWithin, ComboShouldBeDistinct on all-NULL column => NO VALUES (previously passed)
+  Col.ValuesShouldBeInSet / ValuesShouldNotBeInSet => NULL skipped
+  Scalar numeric comparisons => NULL actual fails, shown as "NULL"
+  Scalar string checks => NULL actual fails
+  ShouldEqualExactly => NULL equals only NULL
+}
+
+Freshness {
+  dataAge (ODCS latency) {
+    question: "How old is the newest data?"
+    use: Col.MaxDateShouldBeWithinHours | Col.MaxDateShouldBeWithinDays on a load/ingestion UTC timestamp
+    catches: successful refresh over stale source data
+    avoid: business dates (e.g. order date) that lag legitimately
+  }
+  refreshRecency (ODCS frequency) {
+    question: "Did the model refresh on schedule?"
+    use: Tbl.LastRefreshShouldBeWithinHours(testName, tableName, hours)
+    actual: "Last refresh N hour(s) ago" | TABLE NOT FOUND | DIRECTQUERY (no refresh) | NEVER REFRESHED // last three fail
+    notes {
+      uses partition RefreshedTime (UTC), not ModifiedTime; newest partition counts
+      RefreshedTime 1699-12-31 => never refreshed
+      DirectQuery (all partitions Mode 1) => use Col.MaxDateShouldBeWithinHours instead
+      Direct Lake (Mode 5): automatic updates reframe only changed tables => target a table that changes every load, or schedule refresh
+      empty table that refreshed passes => pair with Tbl.ShouldHaveRows
+    }
+  }
+  Constraints { check both; each catches a failure the other misses }
 }
 
 ## Constants
@@ -152,6 +365,8 @@ const TEST_CATEGORIES_BY_ENV = {
 }
 
 const NAMING_FORMAT = "[Area].[Environment].Test" | "[Area].[Environment].Tests"
+
+const MIN_LIBRARY_VERSION = "0.8.0" // V2 functions, NullSemantics, freshness, LibraryVersion()
 
 const STANDARD_SCHEMA = {
   TestName: "string",
@@ -190,6 +405,10 @@ verifyPQLAssert() => {
   if not installed:
     inform: "PQL.Assert needs to be installed by loading functions.tmdl and refreshing the model"
     halt
+  execute: EVALUATE { PQL.Assert.LibraryVersion() }
+  if errors:
+    warn: "Model has PQL.Assert 0.7.x or older; V2, freshness, partition and NULL-semantics fixes are unavailable. Recommend upgrading."
+    restrict: generated tests to functions available in 0.7.x
 }
 
 identifyTestType() => {
@@ -204,8 +423,22 @@ identifyTablesForValidation() => {
 
 identifyColumnsForValidation() => {
   analyze: key columns requiring validation
-  validate for: nulls, blanks, uniqueness, referential integrity
-  use: Col.ShouldNotBeNull, Col.ShouldNotBeBlank, Col.ShouldBeDistinct, Relationship.ShouldExist
+  validate for: NULLs, empty strings, uniqueness, referential integrity, ranges, text format, freshness
+  match (need) {
+    no NULL rows               => Col.NullCountShouldBeAtMost(testName, tableRef, columnRef, 0)
+    no NULL or "" rows         => Col.ShouldNotBeNullOrBlank
+    completeness threshold     => Col.NullRateShouldBeAtMostV2 | NullOrBlankRateShouldBeAtMostV2 | PopulatedRateShouldBeAtLeastV2
+    single-column key          => Col.ShouldBePrimaryKey
+    unique when present        => Col.NonNullValuesShouldBeDistinct | Col.DuplicateCountShouldBeAtMost
+    two-column composite key   => Col.ComboShouldBeDistinct
+    3+ column composite key    => Tbl.RowsShouldBeDistinct(testName, SELECTCOLUMNS(...))
+    allowed values             => Col.ValuesShouldBeInSet
+    numeric bounds             => Col.ShouldBeInRange | MinShouldBeAtLeast | MaxShouldBeAtMost
+    text hygiene               => Col.TextShouldBeTrimmed | TextLengthShouldBeInRange | Col.ShouldStartWith...
+    load timestamp             => Col.MaxDateShouldBeWithinHours
+    relationship               => Relationship.ShouldExist with cardinality and filter direction
+  }
+  never: DeprecatedFunctions
 }
 
 identifyMeasuresForValidation() => {
@@ -348,6 +581,34 @@ updateChangelog(releaseVersion, releaseDate, changes) => {
   return: changed sections and missing release-note items
 }
 
+migrateDeprecatedFunctions() => {
+  scan: [ModelName].SemanticModel\DAXQueries\*.dax and user test functions in functions.tmdl
+  find: calls listed in DeprecatedFunctions
+  for each match:
+    rewrite: to replacement; insert tableRef as 2nd argument for rate/share functions
+    flag: where results will change (rows vs distinct values, NULL handling)
+  call: upsertFunctionToModel(), upsertFunctionToTmdl()
+  executeTests()
+  report: migrated calls and any test whose Passed value changed
+}
+
+createFreshnessTests(tableName, timestampColumn, maxAgeHours, refreshWindowHours) => {
+  clarifyEnvironment()
+  generate: UNION(
+    Col.MaxDateShouldBeWithinHours("<table> loaded within <maxAgeHours> hours", '<table>'[<timestampColumn>], maxAgeHours),
+    Tbl.LastRefreshShouldBeWithinHours("<table> refreshed within <refreshWindowHours> hours", "<table>", refreshWindowHours),
+    Tbl.ShouldHaveRows("<table> has rows", '<table>')
+  )
+  warn if: storage mode is DirectQuery (use data-age only) or Direct Lake (target a table that changes every load)
+}
+
+selectDiscoveryFunction(caller) => {
+  match (caller) {
+    Power Automate | no INFO.USERDEFINEDFUNCTIONS support => RetrieveTests | RetrieveTestsByEnvironment
+    DAX Query View | Power BI MCP                         => RetrieveTestsV2 | RetrieveTestsByEnvironmentV2
+  }
+}
+
 ## Commands
 
 create-test(type, environment) => createTest()
@@ -358,18 +619,37 @@ create-measure-test(measureName, environment: "DEV") =>
   Creates DEV calculation tests using ShouldEqual or numeric comparisons
 
 validate-data-quality(tableName) => 
-  Creates column and table assertions for nulls, uniqueness, row counts, ranges
+  Creates column and table assertions for NULLs, empty strings, uniqueness, row counts, ranges using non-deprecated functions
 
 validate-model-structure => 
-  Creates tests using Tbl.ShouldExist, Col.ShouldExist, Relationship.ShouldExist
+  Creates tests using Tbl.ShouldExist, Tbl.ShouldHaveColumns, Tbl.ShouldNotHaveExtraColumns, Tbl.ColumnDataTypeShouldBe, Col.ShouldExist, Relationship.ShouldExist
+
+validate-freshness(tableName, timestampColumn) => createFreshnessTests()
+
+validate-partitions(tableName) =>
+  Creates Partitions.ShouldBe | ShouldExist | ShouldBeAtLeast tests; warns Contributor+ required
+
+validate-perspective(perspectiveName) =>
+  Creates Perspective.ShouldExist plus ShouldContain or ShouldMatchSchema
+
+validate-ols(roleName) =>
+  Creates OLS.TableShouldBeHidden/Visible and OLS.ColumnShouldBeHidden/Visible tests named OLS_<Role>.ANY.Tests; reminds to run with View as <role>
+
+migrate-deprecated => migrateDeprecatedFunctions()
+
+library-version => 
+  Returns: EVALUATE { PQL.Assert.LibraryVersion() }
 
 retrieve-tests => 
   Returns: EVALUATE PQL.Assert.RetrieveTests()
 
-retrieve-tests-by-env(environment: "DEV" | "TEST" | "PROD" | "ANY") => 
-  Returns: EVALUATE PQL.Assert.RetrieveTestsByEnvironment(environment)
+retrieve-tests-v2 => 
+  Returns: EVALUATE PQL.Assert.RetrieveTestsV2()
 
-validate-best-practices(category: "ErrorPrevention" | "Formatting" | "DAXExpressions" | "Performance") =>
+retrieve-tests-by-env(environment: "DEV" | "TEST" | "PROD" | "ANY" | string) => 
+  Returns: EVALUATE PQL.Assert.RetrieveTestsByEnvironment(environment) // V2 variant outside Power Automate
+
+validate-best-practices(category: "ErrorPrevention" | "Formatting" | "DAXExpressions" | "Maintenance" | "Performance") =>
   Returns appropriate PQL.Assert.BP.Check* function
 
 audit-model-independence => auditModelIndependence()
@@ -383,6 +663,13 @@ match userRequest {
   /validate.*data quality/ => validateDataQuality()
   /validate.*model structure/ => validateModelStructure()
   /validate.*best practice/ => validateBestPractices()
+  /fresh|stale|latency|last refresh/ => createFreshnessTests()
+  /partition/ => validatePartitions()
+  /perspective/ => validatePerspective()
+  /OLS|object level security|view as/ => validateOls()
+  /deprecat|migrate|V2|upgrade.*PQL/ => migrateDeprecatedFunctions()
+  /library version|which version/ => libraryVersion()
+  /power automate/ => selectDiscoveryFunction("Power Automate")
   /find.*test/ => retrieveTests()
   /run.*test/ => retrieveTestsByEnvironment()
   /create.*test/ => createTest(userRequest)

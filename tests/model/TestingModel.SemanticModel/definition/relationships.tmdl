@@ -49,3 +49,10 @@ relationship 63733ad7-bdb1-13d8-80ea-df87415f334b
 	fromColumn: 'Group Fact'.Group
 	toColumn: Groups.Group
 
+relationship 'TestData-Fact CreatedDate to Calendar Date (inactive)'
+	isActive: false
+	fromColumn: TestData-Fact.CreatedDate
+	toColumn: Calendar.Date
+
+	annotation PQLAssert_Purpose = Inactive on purpose: TestData-Fact already reaches Calendar through TestData, so an active relationship here would be ambiguous. It is the isActive FALSE case for Relationship.ShouldExist in Assert.ANY.Tests.
+

@@ -137,10 +137,12 @@ EVALUATE PQL.Assert.ShouldEqual("Test 1: 2+2 should equal 4", 4, 2+2)
 
 ### Relationship Assertions
 
-- `PQL.Assert.Relationship.ShouldExist(testName, fromTable, fromColumn, toTable, toColumn, [fromCardinality], [toCardinality], [securityFilteringBehavior])` - Asserts a relationship exists between two columns, with optional cardinality and security filtering checks. Pass `""` (or omit) any optional argument to skip that check.
-  - `fromCardinality` (optional) — expected From-side cardinality: `"One"` or `"Many"`.
-  - `toCardinality` (optional) — expected To-side cardinality: `"One"` or `"Many"`.
-  - `securityFilteringBehavior` (optional) — expected filter direction: `"OneDirection"` or `"BothDirections"`.
+- `PQL.Assert.Relationship.ShouldExist(testName, fromTable, fromColumn, toTable, toColumn, [fromCardinality], [toCardinality], [securityFilteringBehavior], [crossFilteringBehavior], [isActive])` - Asserts a relationship exists between two columns, with optional checks of the settings on Power BI's Edit relationship dialog. Each optional argument is named after the TMDL property it checks, and values compare case-insensitively. Pass `""` (or omit) any optional argument to skip that check.
+  - `fromCardinality` (optional) — Cardinality, From side: `"One"` or `"Many"`.
+  - `toCardinality` (optional) — Cardinality, To side: `"One"` or `"Many"`.
+  - `securityFilteringBehavior` (optional) — the **Apply security filter in both directions** checkbox, which affects row-level security only: `"OneDirection"` (unchecked) or `"BothDirections"` (checked). `"None"` applies to limited relationships and is set outside Power BI Desktop. This is not the cross-filter direction.
+  - `crossFilteringBehavior` (optional, 0.9.1) — **Cross-filter direction**: `"OneDirection"` (Single) or `"BothDirections"` (Both). `"Automatic"` is set outside Power BI Desktop.
+  - `isActive` (optional, 0.9.1) — **Make this relationship active**: `"TRUE"` or `"FALSE"`.
 
 ### Test Discovery
 
@@ -314,7 +316,7 @@ DEFINE
 		PQL.Assert.Tbl.ShouldExist("Sales table exists", "Sales"),
 		PQL.Assert.Col.ShouldExist("Customer ID column exists", "Customers", "CustomerID"),
 		PQL.Assert.Relationship.ShouldExist("Sales-Customer relationship", "Sales", "CustomerID", "Customers", "CustomerID"),
-		PQL.Assert.Relationship.ShouldExist("Sales-Customer is Many-to-One, single direction", "Sales", "CustomerID", "Customers", "CustomerID", "Many", "One", "OneDirection")
+		PQL.Assert.Relationship.ShouldExist("Sales-Customer is Many-to-One, single direction", "Sales", "CustomerID", "Customers", "CustomerID", "Many", "One", "", "OneDirection")
 	)
 
 EVALUATE Schema.ANY.Tests()

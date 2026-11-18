@@ -14,7 +14,7 @@ createOrReplace
                     "Passed", _Passed
                 )
         annotation DAXLIB_PackageId = PQL.Assert
-        annotation DAXLIB_PackageVersion = 0.9.0
+        annotation DAXLIB_PackageVersion = 0.9.1
 
     /// Asserts that a condition is FALSE. The BOOLEAN parameter converts BLANK() to FALSE before the function runs, so a BLANK condition passes. Use ShouldNotBeNull first when the value can be BLANK.
     function 'PQL.Assert.ShouldBeFalse' =
@@ -27,7 +27,7 @@ createOrReplace
                     "Passed", _Passed
                 )
         annotation DAXLIB_PackageId = PQL.Assert
-        annotation DAXLIB_PackageVersion = 0.9.0
+        annotation DAXLIB_PackageVersion = 0.9.1
 
     /// Asserts that a value is NULL (DAX BLANK()).
     function 'PQL.Assert.ShouldBeNull' =
@@ -40,7 +40,7 @@ createOrReplace
                     "Passed", _Passed
                 )
         annotation DAXLIB_PackageId = PQL.Assert
-        annotation DAXLIB_PackageVersion = 0.9.0
+        annotation DAXLIB_PackageVersion = 0.9.1
 
     /// Asserts that a value is not NULL (not DAX BLANK()). Accepts both simple values and expressions.
     function 'PQL.Assert.ShouldNotBeNull' =
@@ -54,7 +54,7 @@ createOrReplace
                     "Passed", _Passed
                 )
         annotation DAXLIB_PackageId = PQL.Assert
-        annotation DAXLIB_PackageVersion = 0.9.0
+        annotation DAXLIB_PackageVersion = 0.9.1
 
     /// Asserts that a value is BLANK (empty string "").
     function 'PQL.Assert.ShouldBeBlank' =
@@ -67,7 +67,7 @@ createOrReplace
                     "Passed", _Passed
                 )
         annotation DAXLIB_PackageId = PQL.Assert
-        annotation DAXLIB_PackageVersion = 0.9.0
+        annotation DAXLIB_PackageVersion = 0.9.1
 
     /// Asserts that a value is not BLANK (not empty string "").
     function 'PQL.Assert.ShouldNotBeBlank' =
@@ -81,7 +81,7 @@ createOrReplace
                     "Passed", _Passed
                 )
         annotation DAXLIB_PackageId = PQL.Assert
-        annotation DAXLIB_PackageVersion = 0.9.0
+        annotation DAXLIB_PackageVersion = 0.9.1
 
     /// Asserts that a value is NULL or BLANK (BLANK() or empty string "").
     function 'PQL.Assert.ShouldBeNullOrBlank' =
@@ -95,7 +95,7 @@ createOrReplace
                 )
 
         annotation DAXLIB_PackageId = PQL.Assert
-        annotation DAXLIB_PackageVersion = 0.9.0
+        annotation DAXLIB_PackageVersion = 0.9.1
 
     /// Asserts that a value is not NULL and not BLANK (has actual content).
     function 'PQL.Assert.ShouldNotBeNullOrBlank' =
@@ -109,7 +109,7 @@ createOrReplace
                     "Passed", _Passed
                 )
         annotation DAXLIB_PackageId = PQL.Assert
-        annotation DAXLIB_PackageVersion = 0.9.0
+        annotation DAXLIB_PackageVersion = 0.9.1
 
     function 'PQL.Assert.ShouldEqual' =
             (testName : STRING, expected : VARIANT, actual : VARIANT) =>
@@ -123,7 +123,7 @@ createOrReplace
                     "Passed", _Passed
                 )
         annotation DAXLIB_PackageId = PQL.Assert
-        annotation DAXLIB_PackageVersion = 0.9.0
+        annotation DAXLIB_PackageVersion = 0.9.1
 
     function 'PQL.Assert.ShouldNotEqual' =
             (testName : STRING, notExpected : VARIANT, actual : VARIANT) =>
@@ -137,7 +137,7 @@ createOrReplace
                     "Passed", _Passed
                 )
         annotation DAXLIB_PackageId = PQL.Assert
-        annotation DAXLIB_PackageVersion = 0.9.0
+        annotation DAXLIB_PackageVersion = 0.9.1
 
     /// Asserts that two strings are exactly equal (case-sensitive comparison). NULL (BLANK()) equals only NULL, not "", like ShouldEqual (changed in 0.8.0; 0.7.x treated NULL as "").
     function 'PQL.Assert.ShouldEqualExactly' =
@@ -150,7 +150,7 @@ createOrReplace
                     "Passed", _Passed
                 )
         annotation DAXLIB_PackageId = PQL.Assert
-        annotation DAXLIB_PackageVersion = 0.9.0
+        annotation DAXLIB_PackageVersion = 0.9.1
 
     /// Asserts that a number is greater than a threshold. A NULL (BLANK()) actual value fails (changed in 0.8.0; 0.7.x compared it as 0).
     function 'PQL.Assert.ShouldBeGreaterThan' =
@@ -163,7 +163,7 @@ createOrReplace
                     "Passed", _Passed
                 )
         annotation DAXLIB_PackageId = PQL.Assert
-        annotation DAXLIB_PackageVersion = 0.9.0
+        annotation DAXLIB_PackageVersion = 0.9.1
 
     /// Asserts that a number is less than a threshold. A NULL (BLANK()) actual value fails (changed in 0.8.0; 0.7.x compared it as 0).
     function 'PQL.Assert.ShouldBeLessThan' =
@@ -176,7 +176,7 @@ createOrReplace
                     "Passed", _Passed
                 )
         annotation DAXLIB_PackageId = PQL.Assert
-        annotation DAXLIB_PackageVersion = 0.9.0
+        annotation DAXLIB_PackageVersion = 0.9.1
 
     /// Asserts that a number is greater than or equal to a threshold. A NULL (BLANK()) actual value fails (changed in 0.8.0; 0.7.x compared it as 0).
     function 'PQL.Assert.ShouldBeGreaterOrEqual' =
@@ -189,7 +189,7 @@ createOrReplace
                     "Passed", _Passed
                 )
         annotation DAXLIB_PackageId = PQL.Assert
-        annotation DAXLIB_PackageVersion = 0.9.0
+        annotation DAXLIB_PackageVersion = 0.9.1
 
     /// Asserts that a number is less than or equal to a threshold. A NULL (BLANK()) actual value fails (changed in 0.8.0; 0.7.x compared it as 0).
     function 'PQL.Assert.ShouldBeLessOrEqual' =
@@ -202,7 +202,7 @@ createOrReplace
                     "Passed", _Passed
                 )
         annotation DAXLIB_PackageId = PQL.Assert
-        annotation DAXLIB_PackageVersion = 0.9.0
+        annotation DAXLIB_PackageVersion = 0.9.1
 
     /// Asserts that a number is within an inclusive range. A NULL (BLANK()) actual value fails (changed in 0.8.0; 0.7.x compared it as 0).
     function 'PQL.Assert.ShouldBeBetween' =
@@ -215,7 +215,7 @@ createOrReplace
                     "Passed", _Passed
                 )
         annotation DAXLIB_PackageId = PQL.Assert
-        annotation DAXLIB_PackageVersion = 0.9.0
+        annotation DAXLIB_PackageVersion = 0.9.1
 
     /// Asserts that a value is outside an inclusive range: actual < lowerBound or actual > upperBound. Argument order matches ShouldBeBetween. A NULL (BLANK()) actual value fails.
     function 'PQL.Assert.ShouldNotBeBetween' =
@@ -228,7 +228,7 @@ createOrReplace
                     "Passed", _Passed
                 )
         annotation DAXLIB_PackageId = PQL.Assert
-        annotation DAXLIB_PackageVersion = 0.9.0
+        annotation DAXLIB_PackageVersion = 0.9.1
 
     /// String Assertions - PQL.Assert namespace
     /// Asserts that a string starts with the specified prefix (case-insensitive). A NULL (BLANK()) actual value fails (changed in 0.8.0; 0.7.x compared it as "").
@@ -242,7 +242,7 @@ createOrReplace
                     "Passed", _Passed
                 )
         annotation DAXLIB_PackageId = PQL.Assert
-        annotation DAXLIB_PackageVersion = 0.9.0
+        annotation DAXLIB_PackageVersion = 0.9.1
 
     /// Asserts that a string ends with the specified suffix (case-insensitive). A NULL (BLANK()) actual value fails (changed in 0.8.0; 0.7.x compared it as "").
     function 'PQL.Assert.ShouldEndWith' =
@@ -255,7 +255,7 @@ createOrReplace
                     "Passed", _Passed
                 )
         annotation DAXLIB_PackageId = PQL.Assert
-        annotation DAXLIB_PackageVersion = 0.9.0
+        annotation DAXLIB_PackageVersion = 0.9.1
 
     /// Asserts that a string contains the specified substring (case-insensitive). A NULL (BLANK()) actual value fails (changed in 0.8.0; 0.7.x compared it as "").
     function 'PQL.Assert.ShouldContainString' =
@@ -268,7 +268,7 @@ createOrReplace
                     "Passed", _Passed
                 )
         annotation DAXLIB_PackageId = PQL.Assert
-        annotation DAXLIB_PackageVersion = 0.9.0
+        annotation DAXLIB_PackageVersion = 0.9.1
 
     /// Asserts that a string contains a pattern (case-insensitive). Uses CONTAINSSTRING: a substring match where ? matches one character and * matches any run of characters. It is not a regular expression and does not need to match the whole value. A NULL (BLANK()) actual value fails (changed in 0.8.0; 0.7.x compared it as "").
     function 'PQL.Assert.ShouldMatch' =
@@ -281,17 +281,18 @@ createOrReplace
                     "Passed", _Passed
                 )
         annotation DAXLIB_PackageId = PQL.Assert
-        annotation DAXLIB_PackageVersion = 0.9.0
+        annotation DAXLIB_PackageVersion = 0.9.1
 
 
     /// Relationship Assertions - PQL.Assert.Relationship namespace
-    /// Asserts that a relationship exists between two columns, with optional cardinality and security filtering checks.
-    /// Uses INFO.RELATIONSHIPS() to validate FromCardinality, ToCardinality, and SecurityFilteringBehavior.
-    /// Cardinality values: "One" or "Many". SecurityFilteringBehavior values: "OneDirection" or "BothDirections".
-    /// Omit or pass "" for any optional parameter to skip that check.
-    /// @param {STRING} fromCardinality - Optional. Expected cardinality on the From side ("One" or "Many"). Default "" skips check.
-    /// @param {STRING} toCardinality - Optional. Expected cardinality on the To side ("One" or "Many"). Default "" skips check.
-    /// @param {STRING} securityFilteringBehavior - Optional. Expected security filtering behavior ("OneDirection" or "BothDirections"). Default "" skips check.
+    /// Asserts that a relationship exists between two columns, with optional checks of the settings on Power BI's Edit relationship dialog.
+    /// Arguments are named after the TMDL property each one checks, and values compare case-insensitively. Omit or pass "" for any optional argument to skip that check.
+    /// Uses INFO.VIEW.RELATIONSHIPS() to find the relationship and INFO.RELATIONSHIPS() to read its settings.
+    /// @param {STRING} fromCardinality - Optional. Cardinality on the From side: "One" or "Many".
+    /// @param {STRING} toCardinality - Optional. Cardinality on the To side: "One" or "Many".
+    /// @param {STRING} securityFilteringBehavior - Optional. "Apply security filter in both directions" (row-level security only): "OneDirection" (unchecked) or "BothDirections" (checked); "None" for limited relationships, set outside Power BI Desktop. Not the cross-filter direction.
+    /// @param {STRING} crossFilteringBehavior - Optional. "Cross-filter direction": "OneDirection" (Single) or "BothDirections" (Both); "Automatic" is set outside Power BI Desktop. Added in 0.9.1.
+    /// @param {STRING} isActive - Optional. "Make this relationship active": "TRUE" or "FALSE". Added in 0.9.1.
     function 'PQL.Assert.Relationship.ShouldExist' =
             (
                 testName : STRING,
@@ -301,7 +302,9 @@ createOrReplace
                 toColumn : STRING,
                 fromCardinality : STRING = "",
                 toCardinality : STRING = "",
-                securityFilteringBehavior : STRING = ""
+                securityFilteringBehavior : STRING = "",
+                crossFilteringBehavior : STRING = "",
+                isActive : STRING = ""
             ) =>
                 // Existence check using INFO.VIEW.RELATIONSHIPS (human-readable table/column names)
                 VAR _ViewRels = INFO.VIEW.RELATIONSHIPS()
@@ -328,22 +331,30 @@ createOrReplace
                 VAR _ActualFromCard = MAXX(_MatchingRel, SWITCH([FromCardinality], 1, "One", 2, "Many", "Unknown"))
                 VAR _ActualToCard = MAXX(_MatchingRel, SWITCH([ToCardinality], 1, "One", 2, "Many", "Unknown"))
 
-                // SecurityFilteringBehavior: 1 = OneDirection, 2 = BothDirections
-                VAR _ActualSecFiltering = MAXX(_MatchingRel, SWITCH([SecurityFilteringBehavior], 1, "OneDirection", 2, "BothDirections", "Unknown"))
+                // SecurityFilteringBehavior: 1 = OneDirection, 2 = BothDirections, 3 = None (limited relationships)
+                VAR _ActualSecFiltering = MAXX(_MatchingRel, SWITCH([SecurityFilteringBehavior], 1, "OneDirection", 2, "BothDirections", 3, "None", "Unknown"))
+
+                // CrossFilteringBehavior: 1 = OneDirection, 2 = BothDirections, 3 = Automatic
+                VAR _ActualCrossFiltering = MAXX(_MatchingRel, SWITCH([CrossFilteringBehavior], 1, "OneDirection", 2, "BothDirections", 3, "Automatic", "Unknown"))
+                VAR _ActualIsActive = MAXX(_MatchingRel, IF([IsActive], "TRUE", "FALSE"))
 
                 // Evaluate optional checks (skip when parameter is "" or relationship not found)
                 VAR _FromCardOk = IF(fromCardinality = "" || NOT _Found, TRUE, UPPER(_ActualFromCard) = UPPER(fromCardinality))
                 VAR _ToCardOk = IF(toCardinality = "" || NOT _Found, TRUE, UPPER(_ActualToCard) = UPPER(toCardinality))
                 VAR _SecFilterOk = IF(securityFilteringBehavior = "" || NOT _Found, TRUE, UPPER(_ActualSecFiltering) = UPPER(securityFilteringBehavior))
+                VAR _CrossFilterOk = IF(crossFilteringBehavior = "" || NOT _Found, TRUE, UPPER(_ActualCrossFiltering) = UPPER(crossFilteringBehavior))
+                VAR _IsActiveOk = IF(isActive = "" || NOT _Found, TRUE, UPPER(_ActualIsActive) = UPPER(isActive))
 
-                VAR _Passed = _Found && _FromCardOk && _ToCardOk && _SecFilterOk
+                VAR _Passed = _Found && _FromCardOk && _ToCardOk && _SecFilterOk && _CrossFilterOk && _IsActiveOk
 
                 // Build descriptive Expected message
                 VAR _RelKey = fromTable & "[" & fromColumn & "] -> " & toTable & "[" & toColumn & "]"
                 VAR _ExpectedSuffix =
                     IF(fromCardinality <> "", " | FromCardinality: " & fromCardinality, "") &
                     IF(toCardinality <> "", " | ToCardinality: " & toCardinality, "") &
-                    IF(securityFilteringBehavior <> "", " | SecurityFiltering: " & securityFilteringBehavior, "")
+                    IF(securityFilteringBehavior <> "", " | SecurityFiltering: " & securityFilteringBehavior, "") &
+                    IF(crossFilteringBehavior <> "", " | CrossFiltering: " & crossFilteringBehavior, "") &
+                    IF(isActive <> "", " | IsActive: " & isActive, "")
 
                 // Build Actual message showing values for each checked attribute
                 VAR _ActualDetails =
@@ -351,7 +362,9 @@ createOrReplace
                         _Found,
                         IF(fromCardinality <> "", " | FromCardinality: " & IF(ISBLANK(_ActualFromCard), "N/A", _ActualFromCard), "") &
                         IF(toCardinality <> "", " | ToCardinality: " & IF(ISBLANK(_ActualToCard), "N/A", _ActualToCard), "") &
-                        IF(securityFilteringBehavior <> "", " | SecurityFiltering: " & IF(ISBLANK(_ActualSecFiltering), "N/A", _ActualSecFiltering), ""),
+                        IF(securityFilteringBehavior <> "", " | SecurityFiltering: " & IF(ISBLANK(_ActualSecFiltering), "N/A", _ActualSecFiltering), "") &
+                        IF(crossFilteringBehavior <> "", " | CrossFiltering: " & IF(ISBLANK(_ActualCrossFiltering), "N/A", _ActualCrossFiltering), "") &
+                        IF(isActive <> "", " | IsActive: " & IF(ISBLANK(_ActualIsActive), "N/A", _ActualIsActive), ""),
                         ""
                     )
 
@@ -362,14 +375,14 @@ createOrReplace
                     "Passed", _Passed
                 )
         annotation DAXLIB_PackageId = PQL.Assert
-        annotation DAXLIB_PackageVersion = 0.9.0
+        annotation DAXLIB_PackageVersion = 0.9.1
 
     /// Library Version - PQL.Assert namespace
-    /// Returns the installed PQL.Assert version as text, e.g. "0.9.0". Added in 0.8.0: if EVALUATE { PQL.Assert.LibraryVersion() } errors, the model has 0.7.x or older.
+    /// Returns the installed PQL.Assert version as text, e.g. "0.9.1". Added in 0.8.0: if EVALUATE { PQL.Assert.LibraryVersion() } errors, the model has 0.7.x or older.
     function 'PQL.Assert.LibraryVersion' =
-            () => "0.9.0"
+            () => "0.9.1"
         annotation DAXLIB_PackageId = PQL.Assert
-        annotation DAXLIB_PackageVersion = 0.9.0
+        annotation DAXLIB_PackageVersion = 0.9.1
 
     /// Test Discovery Functions - PQL.Assert namespace
     /// Uses INFO.FUNCTIONS only - compatible with Power Automate REST API.
@@ -385,7 +398,7 @@ createOrReplace
                     "Name", [FUNCTION_NAME]
                 )
         annotation DAXLIB_PackageId = PQL.Assert
-        annotation DAXLIB_PackageVersion = 0.9.0
+        annotation DAXLIB_PackageVersion = 0.9.1
 
     /// Retrieves tests filtered by environment. Looks for .{ENV}. or .ANY. in function names.
     /// If environment is blank, returns all tests.
@@ -410,7 +423,7 @@ createOrReplace
                         "Name", [FUNCTION_NAME]
                     )
         annotation DAXLIB_PackageId = PQL.Assert
-        annotation DAXLIB_PackageVersion = 0.9.0
+        annotation DAXLIB_PackageVersion = 0.9.1
 
     /// Retrieves all test functions with full metadata (Description, RLS ImpersonatedUserName, RoleName).
     /// Uses INFO.USERDEFINEDFUNCTIONS and INFO.ANNOTATIONS - NOT compatible with Power Automate REST API.
@@ -475,7 +488,7 @@ createOrReplace
                         )
                     )
         annotation DAXLIB_PackageId = PQL.Assert
-        annotation DAXLIB_PackageVersion = 0.9.0
+        annotation DAXLIB_PackageVersion = 0.9.1
 
     /// Retrieves tests filtered by environment with full metadata (Description, RLS ImpersonatedUserName, RoleName).
     /// Looks for .{ENV}. or .ANY. in function names. If environment is blank, returns all tests.
@@ -548,7 +561,7 @@ createOrReplace
                         )
                     )
         annotation DAXLIB_PackageId = PQL.Assert
-        annotation DAXLIB_PackageVersion = 0.9.0
+        annotation DAXLIB_PackageVersion = 0.9.1
 
 	/// Object Level Security (OLS) Assertions - PQL.Assert.OLS namespace
 	/// Publisher: PQL (Power Query Lint)
@@ -567,7 +580,7 @@ createOrReplace
 					"Passed", NOT _IsVisible
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.9.0
+		annotation DAXLIB_PackageVersion = 0.9.1
 
 	/// Asserts that a table is visible in metadata (OLS allows access).
 	/// Use this when a role SHOULD have access to view or query a table.
@@ -582,7 +595,7 @@ createOrReplace
 					"Passed", _IsVisible
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.9.0
+		annotation DAXLIB_PackageVersion = 0.9.1
 
 	/// Asserts that a column is hidden from metadata (OLS columnPermission = none).
 	/// Use this when a role should NOT have access to view or query a column.
@@ -597,7 +610,7 @@ createOrReplace
 					"Passed", NOT _IsVisible
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.9.0
+		annotation DAXLIB_PackageVersion = 0.9.1
 
 	/// Asserts that a column is visible in metadata (OLS allows access).
 	/// Use this when a role SHOULD have access to view or query a column.
@@ -612,4 +625,4 @@ createOrReplace
 					"Passed", _IsVisible
 				)
 		annotation DAXLIB_PackageId = PQL.Assert
-		annotation DAXLIB_PackageVersion = 0.9.0
+		annotation DAXLIB_PackageVersion = 0.9.1

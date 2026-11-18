@@ -15,7 +15,8 @@ $patterns = @(
     "$repoRoot\src\lib\*.tmdl",
     "$repoRoot\tests\model\TestingModel.SemanticModel\TMDLScripts\Load PQL*.tmdl",
     "$repoRoot\tests\model\TestingModel.SemanticModel\definition\functions.tmdl",
-    "$repoRoot\tests\rls_model\RLS_Model.SemanticModel\definition\functions.tmdl"
+    "$repoRoot\tests\rls_model\RLS_Model.SemanticModel\definition\functions.tmdl",
+    "$repoRoot\tests\model_directquery\TestingModel_DirectQuery.SemanticModel\definition\functions.tmdl"
 )
 
 $totalReplacements = 0

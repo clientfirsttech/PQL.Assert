@@ -302,15 +302,43 @@ DEFINE
 		VAR _Rel_ToCard_Pass = PQL.Assert.Relationship.ShouldExist("Relationship.ShouldExist: ToCardinality=One should pass", "TestData", "ID", "TestData-Fact", "ID", "", "One")
 		VAR _Rel_ToCard_Fail = PQL.Assert.Relationship.ShouldExist("Relationship.ShouldExist: ToCardinality=Many should fail", "TestData", "ID", "TestData-Fact", "ID", "", "Many")
 
-		// PQL.Assert.Relationship.ShouldExist — SecurityFilteringBehavior (default=OneDirection)
-		VAR _Rel_SecFilter_Pass = PQL.Assert.Relationship.ShouldExist("Relationship.ShouldExist: SecurityFiltering=OneDirection should pass", "TestData", "ID", "TestData-Fact", "ID", "", "", "OneDirection")
-		VAR _Rel_SecFilter_Fail = PQL.Assert.Relationship.ShouldExist("Relationship.ShouldExist: SecurityFiltering=BothDirections should fail", "TestData", "ID", "TestData-Fact", "ID", "", "", "BothDirections")
+		// PQL.Assert.Relationship.ShouldExist — security filter (RLS), argument 8: the "Apply security filter in both directions" checkbox.
+		// TestData[ID] -> TestData-Fact[ID] has cross-filter Both but the security box unchecked (default OneDirection),
+		// so BothDirections fails here: the security filter is not the cross-filter direction.
+		VAR _Rel_SecFilter_Pass = PQL.Assert.Relationship.ShouldExist("Relationship.ShouldExist: security filter (RLS) OneDirection should pass", "TestData", "ID", "TestData-Fact", "ID", "", "", "OneDirection")
+		VAR _Rel_SecFilter_Fail = PQL.Assert.Relationship.ShouldExist("Relationship.ShouldExist: security filter (RLS) BothDirections should fail", "TestData", "ID", "TestData-Fact", "ID", "", "", "BothDirections")
 
 		// PQL.Assert.Relationship.ShouldExist — all optional params correct
 		VAR _Rel_AllParams_Pass = PQL.Assert.Relationship.ShouldExist("Relationship.ShouldExist: All params correct should pass", "TestData", "ID", "TestData-Fact", "ID", "One", "One", "OneDirection")
 
 		// PQL.Assert.Relationship.ShouldExist — relationship not found with optional params
 		VAR _Rel_NotFound_WithParams_Fail = PQL.Assert.Relationship.ShouldExist("Relationship.ShouldExist: Non-existent relationship with cardinality should fail", "FakeFrom", "Col", "FakeTo", "Col", "One", "One", "OneDirection")
+
+		// Regression: an 8-argument call keeps its 0.9.0 Expected and Actual text
+		VAR _Rel_Expected_Unchanged = PQL.Assert.ShouldEqual("Relationship.ShouldExist: 8-argument Expected text unchanged from 0.9.0 should pass", "Relationship 'TestData[ID] -> TestData-Fact[ID]' exists | FromCardinality: One | ToCardinality: One | SecurityFiltering: OneDirection", MAXX(_Rel_AllParams_Pass, [Expected]))
+		VAR _Rel_Actual_Unchanged = PQL.Assert.ShouldEqual("Relationship.ShouldExist: 8-argument Actual text unchanged from 0.9.0 should pass", "EXISTS | FromCardinality: One | ToCardinality: One | SecurityFiltering: OneDirection", MAXX(_Rel_AllParams_Pass, [Actual]))
+
+		// PQL.Assert.Relationship.ShouldExist — cross-filter direction, argument 9 (0.9.1)
+		// TestData[ID] -> TestData-Fact[ID] is cross-filter Both; Mock-Fact[Date ID] -> Calendar[Date ID] has the default, Single (OneDirection)
+		VAR _Rel_CrossFilter_Both_Pass = PQL.Assert.Relationship.ShouldExist("Relationship.ShouldExist: cross-filter BothDirections on a Both relationship should pass", "TestData", "ID", "TestData-Fact", "ID", "", "", "", "BothDirections")
+		VAR _Rel_CrossFilter_Both_Fail = PQL.Assert.Relationship.ShouldExist("Relationship.ShouldExist: cross-filter OneDirection on a Both relationship should fail", "TestData", "ID", "TestData-Fact", "ID", "", "", "", "OneDirection")
+		VAR _Rel_CrossFilter_Single_Pass = PQL.Assert.Relationship.ShouldExist("Relationship.ShouldExist: cross-filter OneDirection on a Single relationship should pass", "Mock-Fact", "Date ID", "Calendar", "Date ID", "", "", "", "OneDirection")
+		VAR _Rel_CrossFilter_Single_Fail = PQL.Assert.Relationship.ShouldExist("Relationship.ShouldExist: cross-filter BothDirections on a Single relationship should fail", "Mock-Fact", "Date ID", "Calendar", "Date ID", "", "", "", "BothDirections")
+		VAR _Rel_CrossFilter_Case_Pass = PQL.Assert.Relationship.ShouldExist("Relationship.ShouldExist: cross-filter bothdirections (lower case) should pass", "TestData", "ID", "TestData-Fact", "ID", "", "", "", "bothdirections")
+
+		// PQL.Assert.Relationship.ShouldExist — active state, argument 10 (0.9.1)
+		// TestData-Fact[CreatedDate] -> Calendar[Date] is inactive on purpose (see its annotation in relationships.tmdl)
+		VAR _Rel_IsActive_Pass = PQL.Assert.Relationship.ShouldExist("Relationship.ShouldExist: isActive TRUE on an active relationship should pass", "TestData", "ID", "TestData-Fact", "ID", "", "", "", "", "TRUE")
+		VAR _Rel_IsActive_Fail = PQL.Assert.Relationship.ShouldExist("Relationship.ShouldExist: isActive FALSE on an active relationship should fail", "TestData", "ID", "TestData-Fact", "ID", "", "", "", "", "FALSE")
+		VAR _Rel_Inactive_Pass = PQL.Assert.Relationship.ShouldExist("Relationship.ShouldExist: isActive FALSE on an inactive relationship should pass", "TestData-Fact", "CreatedDate", "Calendar", "Date", "", "", "", "", "FALSE")
+		VAR _Rel_Inactive_Fail = PQL.Assert.Relationship.ShouldExist("Relationship.ShouldExist: isActive TRUE on an inactive relationship should fail", "TestData-Fact", "CreatedDate", "Calendar", "Date", "", "", "", "", "TRUE")
+		VAR _Rel_IsActive_Case_Pass = PQL.Assert.Relationship.ShouldExist("Relationship.ShouldExist: isActive true (lower case) should pass", "TestData", "ID", "TestData-Fact", "ID", "", "", "", "", "true")
+		VAR _Rel_IsActive_Boolean_Pass = PQL.Assert.Relationship.ShouldExist("Relationship.ShouldExist: isActive given the boolean TRUE() should pass", "TestData", "ID", "TestData-Fact", "ID", "", "", "", "", TRUE())
+
+		// PQL.Assert.Relationship.ShouldExist — all ten arguments, and a missing relationship with the new arguments
+		VAR _Rel_AllTen_Pass = PQL.Assert.Relationship.ShouldExist("Relationship.ShouldExist: All ten arguments correct should pass", "TestData", "ID", "TestData-Fact", "ID", "One", "One", "OneDirection", "BothDirections", "TRUE")
+		VAR _Rel_AllTen_Expected = PQL.Assert.ShouldEqual("Relationship.ShouldExist: All ten arguments Actual text should pass", "EXISTS | FromCardinality: One | ToCardinality: One | SecurityFiltering: OneDirection | CrossFiltering: BothDirections | IsActive: TRUE", MAXX(_Rel_AllTen_Pass, [Actual]))
+		VAR _Rel_NotFound_NewParams_Fail = PQL.Assert.Relationship.ShouldExist("Relationship.ShouldExist: Non-existent relationship with cross-filter and isActive should fail", "FakeFrom", "Col", "FakeTo", "Col", "", "", "", "OneDirection", "TRUE")
 
 		// ============================================
 		// 0.8.0 ASSERTIONS
@@ -487,6 +515,22 @@ DEFINE
 		    _Rel_SecFilter_Fail,
 		    _Rel_AllParams_Pass,
 		    _Rel_NotFound_WithParams_Fail,
+		    _Rel_Expected_Unchanged,
+		    _Rel_Actual_Unchanged,
+		    _Rel_CrossFilter_Both_Pass,
+		    _Rel_CrossFilter_Both_Fail,
+		    _Rel_CrossFilter_Single_Pass,
+		    _Rel_CrossFilter_Single_Fail,
+		    _Rel_CrossFilter_Case_Pass,
+		    _Rel_IsActive_Pass,
+		    _Rel_IsActive_Fail,
+		    _Rel_Inactive_Pass,
+		    _Rel_Inactive_Fail,
+		    _Rel_IsActive_Case_Pass,
+		    _Rel_IsActive_Boolean_Pass,
+		    _Rel_AllTen_Pass,
+		    _Rel_AllTen_Expected,
+		    _Rel_NotFound_NewParams_Fail,
 		    _ShouldNotBeBetween_Pass_Low,
 		    _ShouldNotBeBetween_Pass_High,
 		    _ShouldNotBeBetween_Fail,

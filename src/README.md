@@ -29,7 +29,7 @@ EVALUATE PQL.Assert.ShouldEqual("Test 1: 2+2 should equal 4", 4, 2+2)
 
 ### Library Version
 
-- `PQL.Assert.LibraryVersion()` - Returns the installed version as text, e.g. `"0.9.0"`. Added in 0.8.0, so if `EVALUATE { PQL.Assert.LibraryVersion() }` errors, the model has 0.7.x or older
+- `PQL.Assert.LibraryVersion()` - Returns the installed version as text, e.g. `"0.9.1"`. Added in 0.8.0, so if `EVALUATE { PQL.Assert.LibraryVersion() }` errors, the model has 0.7.x or older
 
 ### Basic Assertions
 
@@ -281,10 +281,21 @@ Mapping from ODCS (Open Data Contract Standard) SLA properties:
 
 ### Relationship Assertions
 
-- `PQL.Assert.Relationship.ShouldExist(testName, fromTable, fromColumn, toTable, toColumn, [fromCardinality], [toCardinality], [securityFilteringBehavior])` - Asserts a relationship exists between two columns, with optional cardinality and security filtering checks. Pass `""` (or omit) any optional argument to skip that check.
-  - `fromCardinality` (optional) — expected From-side cardinality: `"One"` or `"Many"`.
-  - `toCardinality` (optional) — expected To-side cardinality: `"One"` or `"Many"`.
-  - `securityFilteringBehavior` (optional) — expected filter direction: `"OneDirection"` or `"BothDirections"`.
+- `PQL.Assert.Relationship.ShouldExist(testName, fromTable, fromColumn, toTable, toColumn, [fromCardinality], [toCardinality], [securityFilteringBehavior], [crossFilteringBehavior], [isActive])` - Asserts a relationship exists between two columns, with optional checks of the settings on Power BI's Edit relationship dialog. Each optional argument is named after the TMDL property it checks, and values compare case-insensitively. Pass `""` (or omit) any optional argument to skip that check.
+  - `fromCardinality` (optional) — Cardinality, From side: `"One"` or `"Many"`.
+  - `toCardinality` (optional) — Cardinality, To side: `"One"` or `"Many"`.
+  - `securityFilteringBehavior` (optional) — the **Apply security filter in both directions** checkbox, which affects row-level security only: `"OneDirection"` (unchecked) or `"BothDirections"` (checked). `"None"` applies to limited relationships and is set outside Power BI Desktop. This is not the cross-filter direction.
+  - `crossFilteringBehavior` (optional, 0.9.1) — **Cross-filter direction**: `"OneDirection"` (Single) or `"BothDirections"` (Both). `"Automatic"` is set outside Power BI Desktop.
+  - `isActive` (optional, 0.9.1) — **Make this relationship active**: `"TRUE"` or `"FALSE"`.
+
+| Edit relationship dialog | TMDL property (written only when not the default) | `ShouldExist` argument | Values |
+|---|---|---|---|
+| Cardinality | `fromCardinality`, `toCardinality` (defaults `many`, `one`) | `fromCardinality`, `toCardinality` (6, 7) | `"One"`, `"Many"` |
+| Apply security filter in both directions | `securityFilteringBehavior` (default `oneDirection`) | `securityFilteringBehavior` (8) | `"OneDirection"`, `"BothDirections"`, `"None"` |
+| Cross-filter direction | `crossFilteringBehavior` (default `oneDirection`) | `crossFilteringBehavior` (9) | `"OneDirection"`, `"BothDirections"`, `"Automatic"` |
+| Make this relationship active | `isActive` (default `true`) | `isActive` (10) | `"TRUE"`, `"FALSE"` |
+
+"Assume referential integrity" (DirectQuery only) is not checked.
 
 **Example Usage:**
 ```dax
@@ -294,11 +305,18 @@ EVALUATE PQL.Assert.Relationship.ShouldExist(
     "Sales", "CustomerID", "Customers", "CustomerID"
 )
 
-// Full validation of cardinality and security filtering
+// Many-to-one, cross-filter Single, active; "" skips the security filter (RLS) check
 EVALUATE PQL.Assert.Relationship.ShouldExist(
-    "Sales-Customer is Many-to-One, single direction",
+    "Sales-Customer is Many-to-One, single direction, active",
     "Sales", "CustomerID", "Customers", "CustomerID",
-    "Many", "One", "OneDirection"
+    "Many", "One", "", "OneDirection", "TRUE"
+)
+
+// Inactive role-playing relationship, used with USERELATIONSHIP
+EVALUATE PQL.Assert.Relationship.ShouldExist(
+    "Sales ship date relationship is inactive",
+    "Sales", "Ship Date", "Date", "Date",
+    "", "", "", "", "FALSE"
 )
 ```
 
@@ -614,7 +632,7 @@ DEFINE
 		PQL.Assert.Tbl.ShouldExist("Sales table exists", "Sales"),
 		PQL.Assert.Col.ShouldExist("Customer ID column exists", "Customers", "CustomerID"),
 		PQL.Assert.Relationship.ShouldExist("Sales-Customer relationship", "Sales", "CustomerID", "Customers", "CustomerID"),
-		PQL.Assert.Relationship.ShouldExist("Sales-Customer is Many-to-One, single direction", "Sales", "CustomerID", "Customers", "CustomerID", "Many", "One", "OneDirection")
+		PQL.Assert.Relationship.ShouldExist("Sales-Customer is Many-to-One, single direction", "Sales", "CustomerID", "Customers", "CustomerID", "Many", "One", "", "OneDirection")
 	)
 
 EVALUATE Schema.ANY.Tests()

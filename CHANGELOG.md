@@ -9,6 +9,44 @@ match the `version` value in [src/manifest.daxlib](src/manifest.daxlib) and the
 
 ---
 
+## [0.9.1] - Unreleased
+
+Additive only. No function is added, renamed or removed, and no existing argument changes. An existing
+`Relationship.ShouldExist` call (5 to 8 arguments) gives the same `Expected`, `Actual` and `Passed` as on
+0.9.0 (checked against 0.9.0 in Power BI Desktop), except in the one case under Fixed.
+
+### Added
+- `Relationship.ShouldExist` takes two optional arguments at the end, named after the TMDL property each
+  one checks: `crossFilteringBehavior` (argument 9; the **Cross-filter direction** setting:
+  `"OneDirection"` for Single, `"BothDirections"` for Both, or `"Automatic"`) and `isActive` (argument 10;
+  **Make this relationship active**: `"TRUE"` or `"FALSE"`). Both default to `""`, which skips the check,
+  and compare case-insensitively. A boolean `TRUE()`/`FALSE()` also works for `isActive`. `Expected` and
+  `Actual` add ` | CrossFiltering: …` and ` | IsActive: …` only when the argument is given. Both values
+  are read from the `INFO.RELATIONSHIPS()` row the function already uses, so no new permission is needed.
+- README table mapping each setting on Power BI's Edit relationship dialog to its TMDL property and
+  `ShouldExist` argument.
+- Test model: an inactive relationship, `TestData-Fact[CreatedDate] → Calendar[Date]`, whose annotation
+  explains why it is inactive. Tests: 16 new cases in `Assert.ANY.Tests`, covering cross-filter on a Both
+  and a Single relationship, active and inactive relationships, lower-case values, the boolean
+  `isActive`, all ten arguments, a missing relationship, and the unchanged 8-argument `Expected` and
+  `Actual` text.
+
+### Fixed
+- The `securityFilteringBehavior` description called it the "expected filter direction". It is the
+  **Apply security filter in both directions** checkbox, which affects row-level security only, not the
+  cross-filter direction. Docs, the README example, the agent and skill copies, and the two existing
+  security-filter test names now say so. The README's "Many-to-One, single direction" example passed
+  `"OneDirection"` as the security filter; it now passes it as `crossFilteringBehavior`.
+- `securityFilteringBehavior` value 3 is reported as `None` instead of `Unknown`. This value is used on
+  limited relationships, and `"None"` can now be checked. This is the one result that changes: such a
+  call could pass on 0.9.0 only with the undocumented value `"Unknown"`.
+
+### Changed
+- `LibraryVersion()` returns `"0.9.1"`.
+- `scripts/Bump-Version.ps1` also updates the DirectQuery test model's `functions.tmdl`.
+
+---
+
 ## [0.9.0] - 2026-10-29
 
 Additive only. No existing function changes name, parameters or result, and no existing `Expected` or
